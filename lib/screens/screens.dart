@@ -1,10 +1,6 @@
-import 'package:components/Authentication/repo.dart';
 import 'package:components/base/base_screen.dart';
-import 'package:components/login/bloc.dart';
-import 'package:components/login/login.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreenTypes extends BaseScreen {
   const LoginScreenTypes({Key? key}) : super(key: key);
