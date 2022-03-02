@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "126290914735",
+    "project_id": "components-37540",
+    "storage_bucket": "components-37540.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126290914735:android:791f5f365bf6dfd3c2135a",
+        "android_client_info": {
+          "package_name": "applify.components.components"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "126290914735-ej2k9vvhar3crcnjc5850l1ovir37ug9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDV4abq8aaE8nDM34uc3PFEx9Aj-c_4ANg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "126290914735-ej2k9vvhar3crcnjc5850l1ovir37ug9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,83 @@
+# This file configures the analyzer, which statically analyzes Dart code to
+# check for errors, warnings, and lints.
+#
+# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
+# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
+# invoked from the command line by running `flutter analyze`.
+
+# The following line activates a set of recommended lints for Flutter apps,
+# packages, and plugins designed to encourage good coding practices.
+include: package:flutter_lints/flutter.yaml
+
+
+linter:
+  # The lint rules applied to this project can be customized in the
+  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
+  # included above or to enable additional rules. A list of all available lints
+  # and their documentation is published at
+  # https://dart-lang.github.io/linter/lints/index.html.
+  #
+  # Instead of disabling a lint rule for the entire project in the
+  # section below, it can also be suppressed for a single line of code
+  # or a specific dart file by using the `// ignore: name_of_lint` and
+  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
+  # producing the lint.
+  rules:
+    avoid_print: false  # Uncomment to disable the `avoid_print` rule
+    avoid_null_checks_in_equality_operators: true # 'if a is A() then a != null will always be true so don't need to check null' ;
+    avoid_slow_async_io: true # asynchronous file I/O methods, they are much slower than their synchronous counterparts. 'file.lastModifiedSync().isBefore(now)'
+    always_use_package_imports: true # always use package e.g. 'import 'package:foo/baz.dart';
+    avoid_type_to_string: true # Instead of 'other.runtimeType.toString() == 'Bar'' we should use other is Bar
+    avoid_web_libraries_in_flutter: true # don't use web imports. dart.html
+    avoid_types_as_parameter_names: true # don't use datatypes as parameter name
+    hash_and_equals : true # always use hascode in model class to compare objects
+    prefer_void_to_null: true # DO NOT use the type Null where void would work.
+    throw_in_finally : false # AVOID throwing exceptions in finally blocks.
+    unnecessary_statements: false # AVOID using unnecessary statements.
+    use_build_context_synchronously: false # When a BuildContext is used from a StatefulWidget, the mounted property must be checked after an asynchronous gap. 
+    use_key_in_widget_constructors: true # Use key in widget constructors. It's a good practice to expose the ability to provide a key when creating public widgets.
+    valid_regexps: true # 'RegExp(r'\(').hasMatch('foo()')' use valid regular expression syntax when creating regular expression instances.
+    always_declare_return_types: true # Must declare with return type
+    always_put_control_body_on_new_line: true # DO separate the control structure expression from its statement.
+    always_specify_types: true # DO specify type annotations. Avoid var when specifying that a type is unknown, use 'dynamic'
+    avoid_catches_without_on_clauses: true # 'use on  Exception before catch' Using catch clauses without on clauses make your code prone to encountering
+    avoid_classes_with_only_static_members: true # AVOID defining a class that contains only static members.
+    avoid_escaping_inner_quotes: true # use "It's not fun";
+    avoid_field_initializers_in_const_classes: true # use 'get a => const [];'
+    avoid_final_parameters: true # Declaring parameters as final can lead to unecessarily verbose code
+    avoid_multiple_declarations_per_line: true # DON'T declare multiple variables on a single line.
+    avoid_redundant_argument_values: true # DON'T declare arguments with values that match the defaults for the corresponding parameter.
+    avoid_return_types_on_setters: true # As setters do not return a value, declaring the return type of one is redundant.
+    avoid_returning_null: true # AVOID returning null from members whose return type is bool, double, int, or num
+    avoid_returning_null_for_void: true # AVOID returning null for void.
+    avoid_unnecessary_containers: true # Avoid wrapping widgets in unnecessary containers.
+    # avoid_types_on_closure_parameters: true #AVOID annotating types for function expression parameters.
+    await_only_futures: true # AVOID using await on anything which is not a future.
+    cascade_invocations: true # Use the cascading style when successively invoking methods on the same reference.
+    empty_constructor_bodies: false # DO use ; instead of {} for empty constructor bodies.
+    file_names: true # DO name source files using lowercase_with_underscores.
+    library_prefixes: true # DO use lowercase_with_underscores when specifying a library prefix.
+    no_default_cases: true # Switches on enums and enum-like classes should not use a default clause.
+    prefer_const_constructors: true # PREFER using const for instantiating constant constructors.
+    prefer_constructors_over_static_methods: true #PREFER defining constructors instead of static methods to create instances.
+    prefer_final_locals: true # DO prefer declaring variables as final if they are not reassigned later in the code.
+    prefer_is_empty: true # DON'T use length to see if a collection is empty.
+    prefer_is_not_empty: true # PREFER x.isNotEmpty to !x.isEmpty for Iterable and Map instances.
+    prefer_is_not_operator: true # When checking if an object is not of a specified type, it is preferable to use the 'is!' operator.
+    sized_box_shrink_expand: true # Use SizedBox.shrink(...) and SizedBox.expand(...) constructors appropriately.
+    sized_box_for_whitespace: true # Use SizedBox to add whitespace to a layout.
+    sort_constructors_first: true # DO sort constructor declarations before other members.
+    unnecessary_lambdas: false # use 'names.forEach(print);' DON'T create a lambda when a tear-off will do.
+    use_late_for_private_fields_and_variables: true
+    use_raw_strings: true # var s = r'A string with only \ and $';
+    secure_pubspec_urls: true #DO Use secure urls in pubspec.yaml.
+    unnecessary_new: false
+    unnecessary_this: false
+    no_duplicate_case_values: true
+    unnecessary_null_checks: false
+    avoid_empty_else: true
+    
+    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+
+# Additional information about this file can be found at
+# https://dart.dev/guides/language/analysis-options
