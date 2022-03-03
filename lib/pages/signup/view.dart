@@ -6,14 +6,14 @@ import 'package:components/dialogs/dialogs.dart';
 import 'package:components/widgets/image_avtar.dart';
 import 'package:flutter/material.dart';
 
-class SignupScreen extends BaseScreen {
-  const SignupScreen({Key? key}) : super(key: key);
+class SignupPage extends BaseScreen {
+  const SignupPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SignupState();
 }
 
-class _SignupState extends BaseScreenState<SignupScreen> {
+class _SignupState extends BaseScreenState<SignupPage> {
   late final FocusNode firstNameFocusNode;
   late final FocusNode lastNameFocusNode;
   late final FocusNode emailFocusNode;

@@ -3,14 +3,20 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/signup/event.dart';
-import 'package:components/signup/state.dart';
+import 'package:components/pages/signup/bloc/event.dart';
+import 'package:components/pages/signup/bloc/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
-  SignUpBloc({required this.authRepo, required this.authCubit})
-      : super(SignUpState()) {
+  SignUpBloc({
+    required AuthRepository authRepo,
+    required AuthCubit authCubit,
+    required ImagePicker picker,
+  })  : _authRepo = authRepo,
+        _authCubit = authCubit,
+        _picker = picker,
+        super(SignUpState()) {
     on<OpenImagePicker>((event, emit) async {
       final XFile? pickedImage =
           await _picker.pickImage(source: event.imageSource);
@@ -65,7 +71,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       }
     });
   }
-  final AuthRepository authRepo;
-  final AuthCubit authCubit;
-  final ImagePicker _picker = ImagePicker();
+  
+  final AuthRepository _authRepo;
+  final AuthCubit _authCubit;
+  final ImagePicker _picker;
 }
