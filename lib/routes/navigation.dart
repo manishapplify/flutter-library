@@ -5,9 +5,9 @@ import 'package:components/feedback/feedback_third.dart';
 import 'package:components/feedback/list.dart';
 import 'package:components/login/login_one.dart';
 import 'package:components/otp/view.dart';
+import 'package:components/pages/signup/view.dart';
 import 'package:components/password/forgot/forgot_password.dart';
 import 'package:components/screens/screens.dart';
-import 'package:components/signup/signup.dart';
 import 'package:flutter/material.dart';
 
 class Navigation {
@@ -26,9 +26,9 @@ class Navigation {
           builder: (_) => const LoginScreen(),
         );
       case Routes.signupOne:
-        return MaterialPageRoute<SignupScreen>(
+        return MaterialPageRoute<SignupPage>(
           settings: settings,
-          builder: (_) => const SignupScreen(),
+          builder: (_) => const SignupPage(),
         );
       case Routes.forgotPasswordOne:
         return MaterialPageRoute<ForgotPasswordScreen>(

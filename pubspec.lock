@@ -65,7 +65,7 @@ packages:
     source: hosted
     version: "1.15.0"
   connectivity_plus:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
@@ -114,7 +114,7 @@ packages:
     source: hosted
     version: "3.0.1"
   country_code_picker:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: country_code_picker
       url: "https://pub.dartlang.org"
@@ -149,7 +149,7 @@ packages:
     source: hosted
     version: "0.6.8"
   device_info_plus:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: device_info_plus
       url: "https://pub.dartlang.org"
@@ -191,14 +191,14 @@ packages:
     source: hosted
     version: "2.1.1"
   dio:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.4"
   encrypt:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: encrypt
       url: "https://pub.dartlang.org"
@@ -226,7 +226,7 @@ packages:
     source: hosted
     version: "6.1.2"
   firebase_core:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
@@ -247,7 +247,7 @@ packages:
     source: hosted
     version: "1.5.4"
   firebase_messaging:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: firebase_messaging
       url: "https://pub.dartlang.org"
@@ -273,7 +273,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_bloc:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_bloc
       url: "https://pub.dartlang.org"
@@ -294,7 +294,7 @@ packages:
     source: hosted
     version: "2.0.5"
   flutter_rating_bar:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_rating_bar
       url: "https://pub.dartlang.org"
@@ -325,14 +325,14 @@ packages:
     source: hosted
     version: "4.0.0"
   image_cropper:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: image_cropper
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.0"
   image_picker:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: image_picker
       url: "https://pub.dartlang.org"

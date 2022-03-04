@@ -59,7 +59,7 @@ dynamic imageCropper(
   final File? croppedFile = await ImageCropper().cropImage(
     sourcePath: imagePath,
     compressQuality: 20,
-    aspectRatioPresets: [
+    aspectRatioPresets: <CropAspectRatioPreset>[
       CropAspectRatioPreset.square,
       CropAspectRatioPreset.ratio3x2,
       CropAspectRatioPreset.original,

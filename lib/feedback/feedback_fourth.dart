@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:components/base/base_screen.dart';
 import 'package:components/dialogs/dialogs.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class FeedbackFourthScreen extends BaseScreen {
   const FeedbackFourthScreen({Key? key}) : super(key: key);

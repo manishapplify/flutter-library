@@ -32,9 +32,9 @@ linter:
     avoid_types_as_parameter_names: true # don't use datatypes as parameter name
     hash_and_equals : true # always use hascode in model class to compare objects
     prefer_void_to_null: true # DO NOT use the type Null where void would work.
-    throw_in_finally : false # AVOID throwing exceptions in finally blocks.
-    unnecessary_statements: false # AVOID using unnecessary statements.
-    use_build_context_synchronously: false # When a BuildContext is used from a StatefulWidget, the mounted property must be checked after an asynchronous gap. 
+    throw_in_finally : true # AVOID throwing exceptions in finally blocks.
+    unnecessary_statements: true # AVOID using unnecessary statements.
+    use_build_context_synchronously: true # When a BuildContext is used from a StatefulWidget, the mounted property must be checked after an asynchronous gap. 
     use_key_in_widget_constructors: true # Use key in widget constructors. It's a good practice to expose the ability to provide a key when creating public widgets.
     valid_regexps: true # 'RegExp(r'\(').hasMatch('foo()')' use valid regular expression syntax when creating regular expression instances.
     always_declare_return_types: true # Must declare with return type
@@ -71,10 +71,10 @@ linter:
     use_late_for_private_fields_and_variables: true
     use_raw_strings: true # var s = r'A string with only \ and $';
     secure_pubspec_urls: true #DO Use secure urls in pubspec.yaml.
-    unnecessary_new: false
+    unnecessary_new: true
     unnecessary_this: false
     no_duplicate_case_values: true
-    unnecessary_null_checks: false
+    unnecessary_null_checks: true
     avoid_empty_else: true
     
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
