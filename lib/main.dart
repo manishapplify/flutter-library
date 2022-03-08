@@ -4,11 +4,10 @@ import 'package:components/screens/screens.dart';
 import 'package:components/theme/style.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  new FcmService()
+  FcmService()
     ..registerFCM()
     ..getToken();
 
@@ -25,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'Login Demo',
       theme: appTheme,
       onGenerateRoute: Navigation.onGenerateRoute,
-      initialRoute: Routes.login,
+      initialRoute: Routes.splash,
       home: const LoginScreenTypes(),
     );
   }

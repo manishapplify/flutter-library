@@ -6,7 +6,7 @@ abstract class BaseScreen extends StatefulWidget {
 
 abstract class BaseScreenState<T extends BaseScreen> extends State<T> {
   EdgeInsets padding = const EdgeInsets.all(16.0);
-  PreferredSizeWidget appBar(BuildContext context);
+  PreferredSizeWidget? appBar(BuildContext context) => null;
 
   Widget body(BuildContext context);
   bool isLoading = false;
