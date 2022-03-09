@@ -5,8 +5,8 @@ abstract class SplashState {}
 
 class SplashInitial extends SplashState {}
 
-class UpgradeAvailable extends SplashState {
-  UpgradeAvailable({
+class UpdateAvailable extends SplashState {
+  UpdateAvailable({
     required this.isForceful,
   });
 

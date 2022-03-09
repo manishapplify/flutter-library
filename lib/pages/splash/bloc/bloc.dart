@@ -28,13 +28,13 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 
     if (event.version.compareTo(appVersionResponse.minimumVersion) < 0) {
       emit(
-        UpgradeAvailable(
+        UpdateAvailable(
           isForceful: true,
         ),
       );
     } else if (event.version.compareTo(appVersionResponse.version) < 0) {
       emit(
-        UpgradeAvailable(
+        UpdateAvailable(
           isForceful: false,
         ),
       );
