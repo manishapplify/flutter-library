@@ -50,7 +50,7 @@ class _SplashState extends BaseScreenState<SplashPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<SplashBloc, SplashState>(
       builder: (BuildContext context, SplashState state) {
-        if (state is UpgradeAvailable && state.isForceful) {
+        if (state is UpgradeAvailable) {
           Future<void>.microtask(
             () => showDialog<String>(
               context: context,
