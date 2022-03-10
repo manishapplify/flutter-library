@@ -67,7 +67,7 @@ class _SplashState extends BaseScreenState<SplashPage> {
                           )
                           ..pushNamed(Routes.login);
                       },
-                      child: const Text('Continue'),
+                      child: const Text('Skip'),
                     ),
                 ],
               ),
