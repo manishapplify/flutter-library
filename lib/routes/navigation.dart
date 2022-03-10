@@ -6,15 +6,35 @@ import 'package:components/feedback/list.dart';
 import 'package:components/login/login_one.dart';
 import 'package:components/otp/view.dart';
 import 'package:components/pages/signup/view.dart';
+import 'package:components/pages/splash/bloc/bloc.dart';
+import 'package:components/pages/splash/view.dart';
 import 'package:components/password/forgot/forgot_password.dart';
 import 'package:components/screens/screens.dart';
+import 'package:components/services/api.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Navigation {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final Api _api = Api(
+    baseOptions: BaseOptions(
+      baseUrl: 'https://api-lib.applifyapps.com',
+    ),
+  );
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Routes.splash:
+        return MaterialPageRoute<SplashPage>(
+          settings: settings,
+          builder: (_) => BlocProvider<SplashBloc>(
+            create: (BuildContext context) => SplashBloc(
+              api: _api,
+            ),
+            child: const SplashPage(),
+          ),
+        );
       case Routes.login:
         return MaterialPageRoute<LoginScreenTypes>(
           settings: settings,
@@ -76,7 +96,7 @@ class Navigation {
 }
 
 class Routes {
-  const Routes._(String name) : super();
+  static const String splash = "splash";
 
   static const String login = "loginType";
   static const String loginOne = "loginScreenOne";

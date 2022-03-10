@@ -37,5 +37,18 @@ class Api {
     );
     return response;
   }
+
+  Future<Response<dynamic>> appVersion(
+    String platform,
+  ) async {
+    final Response<dynamic> response = await dio.get(
+      _appVersion,
+      queryParameters: <String, dynamic>{
+        'platform': platform,
+      },
+    );
+    return response;
+  }
 }
 
+const String _appVersion = '/api/v1/common/appVersion';
