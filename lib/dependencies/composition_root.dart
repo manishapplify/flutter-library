@@ -61,6 +61,7 @@ Future<CompositionRoot> configureDependencies() async {
       api: api,
       authRepository: authRepository,
       authCubit: authCubit,
+      config: config,
     ),
   );
 }

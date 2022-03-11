@@ -14,6 +14,7 @@ import 'package:components/pages/splash/view.dart';
 import 'package:components/password/forgot/forgot_password.dart';
 import 'package:components/screens/screens.dart';
 import 'package:components/services/api.dart';
+import 'package:components/utils/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,13 +23,16 @@ class Navigation {
     required Api api,
     required AuthRepository authRepository,
     required AuthCubit authCubit,
+    required Config config,
   })  : _api = api,
         _authRepository = authRepository,
-        _authCubit = authCubit;
+        _authCubit = authCubit,
+        _config = config;
 
   final Api _api;
   final AuthRepository _authRepository;
   final AuthCubit _authCubit;
+  final Config _config;
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -39,6 +43,7 @@ class Navigation {
           builder: (_) => BlocProvider<SplashBloc>(
             create: (BuildContext context) => SplashBloc(
               api: _api,
+              config: _config,
             ),
             child: const SplashPage(),
           ),

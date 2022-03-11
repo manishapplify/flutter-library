@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:components/enums/platform.dart';
 import 'package:components/pages/splash/models/response.dart';
 import 'package:components/services/api.dart';
+import 'package:components/utils/config.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
@@ -11,28 +11,31 @@ part 'state.dart';
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc({
     required Api api,
+    required Config config,
   })  : _api = api,
+        _config = config,
         super(SplashInitial()) {
-    on<CurrentVersionFetched>(_currentVersionFetchedHandler);
+    on<OnAppOpened>(_onAppOpenedHandler);
   }
 
   final Api _api;
+  final Config _config;
 
-  Future<void> _currentVersionFetchedHandler(
-      CurrentVersionFetched event, Emitter<SplashState> emit) async {
+  Future<void> _onAppOpenedHandler(
+      OnAppOpened event, Emitter<SplashState> emit) async {
     final Response<dynamic> response =
-        await _api.appVersion(event.platform.name);
+        await _api.appVersion(_config.platform.name);
 
     final AppVersionResponse appVersionResponse =
         AppVersionResponse.fromJson(response.data);
 
-    if (event.version.compareTo(appVersionResponse.minimumVersion) < 0) {
+    if (_config.appVersion.compareTo(appVersionResponse.minimumVersion) < 0) {
       emit(
         UpdateAvailable(
           isForceful: true,
         ),
       );
-    } else if (event.version.compareTo(appVersionResponse.version) < 0) {
+    } else if (_config.appVersion.compareTo(appVersionResponse.version) < 0) {
       emit(
         UpdateAvailable(
           isForceful: false,
