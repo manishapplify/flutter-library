@@ -1,9 +1,12 @@
+import 'package:components/Authentication/repo.dart';
+import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/feedback/feedback_fourth.dart';
 import 'package:components/feedback/feedback_one.dart';
 import 'package:components/feedback/feedback_second.dart';
 import 'package:components/feedback/feedback_third.dart';
 import 'package:components/feedback/list.dart';
-import 'package:components/login/login_one.dart';
+import 'package:components/pages/login/bloc/bloc.dart';
+import 'package:components/pages/login/login.dart';
 import 'package:components/otp/view.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
@@ -11,19 +14,24 @@ import 'package:components/pages/splash/view.dart';
 import 'package:components/password/forgot/forgot_password.dart';
 import 'package:components/screens/screens.dart';
 import 'package:components/services/api.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Navigation {
-  GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  static final Api _api = Api(
-    baseOptions: BaseOptions(
-      baseUrl: 'https://api-lib.applifyapps.com',
-    ),
-  );
+  Navigation({
+    required Api api,
+    required AuthRepository authRepository,
+    required AuthCubit authCubit,
+  })  : _api = api,
+        _authRepository = authRepository,
+        _authCubit = authCubit;
 
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+  final Api _api;
+  final AuthRepository _authRepository;
+  final AuthCubit _authCubit;
+
+  GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.splash:
         return MaterialPageRoute<SplashPage>(
@@ -36,14 +44,16 @@ class Navigation {
           ),
         );
       case Routes.login:
-        return MaterialPageRoute<LoginScreenTypes>(
+        return MaterialPageRoute<LoginPage>(
           settings: settings,
-          builder: (_) => const LoginScreenTypes(),
-        );
-      case Routes.loginOne:
-        return MaterialPageRoute<LoginScreen>(
-          settings: settings,
-          builder: (_) => const LoginScreen(),
+          builder: (_) => BlocProvider<LoginBloc>(
+            create: (BuildContext context) => LoginBloc(
+              api: _api,
+              authRepository: _authRepository,
+              authCubit: _authCubit,
+            ),
+            child: const LoginPage(),
+          ),
         );
       case Routes.signupOne:
         return MaterialPageRoute<SignupPage>(
@@ -98,7 +108,7 @@ class Navigation {
 class Routes {
   static const String splash = "splash";
 
-  static const String login = "loginType";
+  static const String login = "login";
   static const String loginOne = "loginScreenOne";
   static const String signupOne = "signupScreenOne";
   static const String forgotPasswordOne = "forgotPasswordScreenOne";

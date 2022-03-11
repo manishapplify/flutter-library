@@ -1,5 +1,7 @@
+// ignore_for_file: constant_identifier_names
+
 enum Platform {
-  ios,
-  android,
-  web,
+  IOS,
+  ANDROID,
+  WEB,
 }

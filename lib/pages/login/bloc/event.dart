@@ -1,3 +1,5 @@
+part of 'bloc.dart';
+
 abstract class LoginEvent {}
 
 class LoginUsernameChanged extends LoginEvent {

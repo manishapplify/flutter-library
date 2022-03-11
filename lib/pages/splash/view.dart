@@ -34,10 +34,10 @@ class _SplashState extends BaseScreenState<SplashPage> {
           CurrentVersionFetched(
             version: info.version,
             platform: kIsWeb
-                ? enums.Platform.web
+                ? enums.Platform.WEB
                 : Platform.isAndroid
-                    ? enums.Platform.android
-                    : enums.Platform.ios,
+                    ? enums.Platform.ANDROID
+                    : enums.Platform.IOS,
           ),
         );
       },

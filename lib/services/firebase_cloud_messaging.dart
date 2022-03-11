@@ -3,8 +3,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 // ignore: constant_identifier_names
 const String FIREBASE_TOPIC_NAME = "NEWWIT_NOTIFICATION";
 
-class FcmService {
+class FirebaseCloudMessaging {
   late FirebaseMessaging _messaging;
+  late String? deviceToken;
 
   Future<void> registerFCM() async {
     _messaging = FirebaseMessaging.instance;
@@ -19,8 +20,8 @@ class FcmService {
     }
   }
 
-  void getToken() async {
-    final String? token = await _messaging.getToken();
-    print(token);
+  Future<void> getToken() async {
+    deviceToken = await _messaging.getToken();
+    print(deviceToken);
   }
 }

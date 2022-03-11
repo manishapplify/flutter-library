@@ -1,4 +1,4 @@
-import 'package:components/cubits/user.dart';
+import 'package:components/cubits/models/user.dart';
 import 'package:components/services/persistence.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

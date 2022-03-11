@@ -65,7 +65,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           password: state.password,
         );
         emit(state.copyWith(formStatus: SubmissionSuccess()));
-        authCubit.showConfirmSignUp();
       } on Exception catch (e) {
         emit(state.copyWith(formStatus: SubmissionFailed(e)));
       }

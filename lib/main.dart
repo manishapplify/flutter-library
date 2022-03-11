@@ -1,31 +1,41 @@
-import 'package:components/firebase/messaging/initilize.dart';
+import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/dependencies/composition_root.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:components/screens/screens.dart';
 import 'package:components/theme/style.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FcmService()
-    ..registerFCM()
-    ..getToken();
-
-  runApp(const MyApp());
+  final CompositionRoot compositionRoot = await configureDependencies();
+  runApp(
+    MyApp(
+      compositionRoot: compositionRoot,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({
+    required this.compositionRoot,
+    Key? key,
+  }) : super(key: key);
 
-  // This widget is the root of your application.
+  final CompositionRoot compositionRoot;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login Demo',
-      theme: appTheme,
-      onGenerateRoute: Navigation.onGenerateRoute,
-      initialRoute: Routes.splash,
-      home: const LoginScreenTypes(),
+    return BlocProvider<AuthCubit>(
+      create: (_) => compositionRoot.authCubit,
+      child: MaterialApp(
+        title: 'Flutter library',
+        theme: appTheme,
+        onGenerateRoute: compositionRoot.navigation.onGenerateRoute,
+        navigatorKey: compositionRoot.navigation.navigatorKey,
+        initialRoute: Routes.splash,
+      ),
     );
   }
 }
