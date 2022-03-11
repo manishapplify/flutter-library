@@ -1,4 +1,4 @@
-import 'package:components/Authentication/form_submission.dart';
+part of 'bloc.dart';
 
 class LoginState {
   LoginState({

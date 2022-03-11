@@ -1,3 +1,4 @@
+import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
 import 'package:dio/dio.dart';
 
@@ -49,6 +50,15 @@ class Api {
     );
     return response;
   }
+
+  Future<Response<dynamic>> login(LoginRequest request) async {
+    final Response<dynamic> response = await dio.post(
+      _login,
+      data: request.toJson(),
+    );
+    return response;
+  }
 }
 
 const String _appVersion = '/api/v1/common/appVersion';
+const String _login = '/api/v1/user/login';

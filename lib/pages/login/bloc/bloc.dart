@@ -1,35 +1,62 @@
 import 'package:components/Authentication/repo.dart';
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/login/event.dart';
-import 'package:components/login/state.dart';
+import 'package:components/services/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+part 'event.dart';
+part 'state.dart';
+
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc({required this.authRepo, required this.authCubit})
-      : super(LoginState()) {
+  LoginBloc({
+    required Api api,
+    required AuthRepository authRepository,
+    required AuthCubit authCubit,
+  })  : _api = api,
+        _authRepository = authRepository,
+        _authCubit = authCubit,
+        super(LoginState()) {
     on<LoginUsernameChanged>(
         (LoginUsernameChanged event, Emitter<LoginState> emit) {
-      emit(state.copyWith(username: event.username));
+      emit(
+        state.copyWith(username: event.username),
+      );
     });
     on<LoginPasswordChanged>(
         (LoginPasswordChanged event, Emitter<LoginState> emit) {
-      emit(state.copyWith(password: event.password));
+      emit(
+        state.copyWith(password: event.password),
+      );
     });
     on<LoginSubmitted>((LoginSubmitted event, Emitter<LoginState> emit) async {
-      emit(state.copyWith(formStatus: FormSubmitting()));
+      emit(
+        state.copyWith(
+          formStatus: FormSubmitting(),
+        ),
+      );
       try {
-        await authRepo.login(
-            username: state.username, password: state.password);
-        emit(state.copyWith(formStatus: SubmissionSuccess()));
+        await _authRepository.login(
+          username: state.username,
+          password: state.password,
+        );
+        emit(
+          state.copyWith(
+            formStatus: SubmissionSuccess(),
+          ),
+        );
       } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(e)));
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(e),
+          ),
+        );
       }
     });
   }
 
-  final AuthRepository authRepo;
-  final AuthCubit authCubit;
+  final Api _api;
+  final AuthRepository _authRepository;
+  final AuthCubit _authCubit;
 }
 
  /* @override
