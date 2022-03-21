@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/cubits/password_auth.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/api.dart';
@@ -17,10 +18,12 @@ import 'package:components/enums/platform.dart' as enums;
 class CompositionRoot {
   CompositionRoot({
     required this.authCubit,
+    required this.passwordAuthCubit,
     required this.navigation,
   });
 
   final AuthCubit authCubit;
+  final PasswordAuthCubit passwordAuthCubit;
   final Navigation navigation;
 }
 
@@ -43,25 +46,53 @@ Future<CompositionRoot> configureDependencies() async {
     baseOptions: BaseOptions(
       baseUrl: 'https://api-lib.applifyapps.com',
     ),
+    interceptorsWrapper: InterceptorsWrapper(
+      onRequest: _requestInterceptor,
+      onResponse: _responseInterceptor,
+    ),
   );
   final FirebaseCloudMessaging fcm = FirebaseCloudMessaging()
     ..registerFCM()
     ..getToken();
+  final PasswordAuthCubit passwordAuthCubit = PasswordAuthCubit(
+    persistence,
+  );
   final AuthRepository authRepository = AuthRepository(
     api: api,
     config: config,
     fcm: fcm,
     persistence: persistence,
     authCubit: authCubit,
+    passwordAuthCubit: passwordAuthCubit,
   );
 
   return CompositionRoot(
     authCubit: authCubit,
+    passwordAuthCubit: passwordAuthCubit,
     navigation: Navigation(
       api: api,
       authRepository: authRepository,
       authCubit: authCubit,
       config: config,
+      persistence: persistence,
     ),
   );
+}
+
+void _responseInterceptor(
+    Response<dynamic> response, ResponseInterceptorHandler handler) {
+  print('Response');
+  print('${response.realUri} $response');
+
+  handler.next(response);
+}
+
+void _requestInterceptor(
+    RequestOptions options, RequestInterceptorHandler handler) async {
+  options.headers["Content-Type"] = "application/json";
+  print('Request');
+  print('(${options.method}) ${options.path}');
+  print('${options.headers} ${options.data}');
+
+  handler.next(options);
 }
