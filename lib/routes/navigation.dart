@@ -5,15 +5,17 @@ import 'package:components/feedback/feedback_one.dart';
 import 'package:components/feedback/feedback_second.dart';
 import 'package:components/feedback/feedback_third.dart';
 import 'package:components/feedback/list.dart';
+import 'package:components/pages/forgot_password/bloc/bloc.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/pages/login/login.dart';
 import 'package:components/otp/view.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/pages/splash/view.dart';
-import 'package:components/password/forgot/forgot_password.dart';
+import 'package:components/pages/forgot_password/view.dart';
 import 'package:components/screens/screens.dart';
 import 'package:components/services/api.dart';
+import 'package:components/services/persistence.dart';
 import 'package:components/utils/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,15 +26,20 @@ class Navigation {
     required AuthRepository authRepository,
     required AuthCubit authCubit,
     required Config config,
+  required Persistence persistence,
   })  : _api = api,
         _authRepository = authRepository,
         _authCubit = authCubit,
-        _config = config;
+        _config = config,_persistence = persistence;
 
   final Api _api;
   final AuthRepository _authRepository;
   final AuthCubit _authCubit;
   final Config _config;
+  final Persistence _persistence;
+
+
+        
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -41,7 +48,7 @@ class Navigation {
         return MaterialPageRoute<SplashPage>(
           settings: settings,
           builder: (_) => BlocProvider<SplashBloc>(
-            create: (BuildContext context) => SplashBloc(
+            create: (_) => SplashBloc(
               api: _api,
               config: _config,
             ),
@@ -65,10 +72,16 @@ class Navigation {
           settings: settings,
           builder: (_) => const SignupPage(),
         );
-      case Routes.forgotPasswordOne:
-        return MaterialPageRoute<ForgotPasswordScreen>(
+      case Routes.forgotPassword:
+        return MaterialPageRoute<ForgotPasswordPage>(
           settings: settings,
-          builder: (_) => const ForgotPasswordScreen(),
+          builder: (_) => BlocProvider<ForgotPasswordBloc>(
+            create: (_) => ForgotPasswordBloc(
+              authRepository: _authRepository,
+              persistence: _persistence,
+            ),
+            child: const ForgotPasswordPage(),
+          ),
         );
       case Routes.otp:
         return MaterialPageRoute<OtpScreen>(
@@ -116,7 +129,7 @@ class Routes {
   static const String login = "login";
   static const String loginOne = "loginScreenOne";
   static const String signupOne = "signupScreenOne";
-  static const String forgotPasswordOne = "forgotPasswordScreenOne";
+  static const String forgotPassword = "forgotPassword";
   static const String otp = "otpScreen";
 
   static const String feedbackScreens = "feedbackScreens";

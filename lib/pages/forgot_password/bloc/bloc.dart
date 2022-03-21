@@ -1,0 +1,49 @@
+import 'package:bloc/bloc.dart';
+import 'package:components/Authentication/form_submission.dart';
+import 'package:components/Authentication/repo.dart';
+import 'package:components/pages/forgot_password/models/request.dart';
+import 'package:components/services/persistence.dart';
+import 'package:meta/meta.dart';
+
+part 'event.dart';
+part 'state.dart';
+
+class ForgotPasswordBloc
+    extends Bloc<ForgotPasswordEvent, ForgotPasswordState> {
+  ForgotPasswordBloc({
+    required Persistence persistence,
+    required AuthRepository authRepository,
+  })  : _persistence = persistence,
+        _authRepository = authRepository,
+        super(const ForgotPasswordState()) {
+    on<EmailChanged>(_onEmailChangedHandler);
+    on<ForgotPasswordSubmitted>(_onForgotPasswordSubmittedHandler);
+  }
+
+  final Persistence _persistence;
+  final AuthRepository _authRepository;
+
+  void _onEmailChangedHandler(
+          EmailChanged event, Emitter<ForgotPasswordState> emit) =>
+      emit(
+        state.copyWith(email: event.email),
+      );
+
+  void _onForgotPasswordSubmittedHandler(
+      ForgotPasswordSubmitted event, Emitter<ForgotPasswordState> emit) async {
+    emit(state.copyWith(formStatus: FormSubmitting()));
+
+    final ForgotPasswordRequest request = ForgotPasswordRequest(
+      email: state.email,
+      countryCode: _persistence.fetchCountryCode() ?? 'in',
+      phoneNumber: null,
+    );
+
+    try {
+      await _authRepository.forgotPassword(request);
+      emit(state.copyWith(formStatus: SubmissionSuccess()));
+    } on Exception catch (e) {
+      emit(state.copyWith(formStatus: SubmissionFailed(e)));
+    }
+  }
+}

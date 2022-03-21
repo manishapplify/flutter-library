@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:components/cubits/models/forgot_password.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,7 +30,25 @@ class Persistence {
   String? fetchCountryCode() => _preferences.getString(_countryCode);
 
   Future<void> deleteCountryCode() => _preferences.remove(_countryCode);
+
+  Future<bool> saveForgotPasswordToken(
+          ForgotPasswordToken forgotPasswordToken) =>
+      _preferences.setString(
+          _forgotPasswordToken, jsonEncode(forgotPasswordToken.toJson()));
+
+  ForgotPasswordToken? fetchForgotPasswordToken() {
+    final String? json = _preferences.getString(_forgotPasswordToken);
+
+    if (json is String) {
+      return ForgotPasswordToken.fromJson(jsonDecode(json));
+    }
+    return null;
+  }
+
+  Future<void> deleteForgotPasswordToken() =>
+      _preferences.remove(_forgotPasswordToken);
 }
 
 const String _user = 'user';
 const String _countryCode = 'countryCode';
+const String _forgotPasswordToken = 'forgotPasswordToken';
