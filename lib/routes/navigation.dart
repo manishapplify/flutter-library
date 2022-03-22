@@ -2,7 +2,9 @@ import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/feedback/feedback_fourth.dart';
 import 'package:components/feedback/feedback_one.dart';
+import 'package:components/feedback/feedback_one/bloc/bloc.dart';
 import 'package:components/feedback/feedback_second.dart';
+import 'package:components/feedback/feedback_second/bloc/bloc.dart';
 import 'package:components/feedback/feedback_third.dart';
 import 'package:components/feedback/list.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
@@ -82,14 +84,32 @@ class Navigation {
           builder: (_) => const FeedbackScreenTypes(),
         );
       case Routes.feedbackOne:
-        return MaterialPageRoute<FeedbackScreenOne>(
+        return /*MaterialPageRoute<FeedbackScreenOne>(
           settings: settings,
           builder: (_) => const FeedbackScreenOne(),
+        );*/
+            MaterialPageRoute<FeedbackScreenOne>(
+          settings: settings,
+          builder: (_) => BlocProvider<FeedbackOneBloc>(
+            create: (BuildContext context) => FeedbackOneBloc(
+              api: _api,
+              authRepository: _authRepository,
+              authCubit: _authCubit,
+            ),
+            child: const FeedbackScreenOne(),
+          ),
         );
       case Routes.feedbackSecond:
         return MaterialPageRoute<FeedbackScreenSecond>(
           settings: settings,
-          builder: (_) => const FeedbackScreenSecond(),
+          builder: (_) => BlocProvider<FeedbackSecondBloc>(
+            create: (BuildContext context) => FeedbackSecondBloc(
+              api: _api,
+              authRepository: _authRepository,
+              authCubit: _authCubit,
+            ),
+            child: const FeedbackScreenSecond(),
+          ),
         );
       case Routes.feedbackThird:
         return MaterialPageRoute<FeedbackScreenThird>(

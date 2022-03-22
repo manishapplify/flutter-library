@@ -54,7 +54,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<SignUpSubmitted>((event, emit) async {
       emit(state.copyWith(formStatus: FormSubmitting()));
       try {
-        await authRepo.signUp(
+        await _authRepo.signUp(
           profilePic: state.profilePic,
           firstName: state.firstname,
           lastName: state.lastname,
