@@ -83,7 +83,7 @@ Future<CompositionRoot> configureDependencies() async {
 void _responseInterceptor(
     Response<dynamic> response, ResponseInterceptorHandler handler) {
   print('Response');
-  print('${response.realUri} $response');
+  print('(${response.realUri.path}) $response');
 
   handler.next(response);
 }
@@ -92,7 +92,7 @@ void _requestInterceptor(
     RequestOptions options, RequestInterceptorHandler handler) async {
   options.headers["Content-Type"] = "application/json";
   print('Request');
-  print('(${options.method}) ${options.path}');
+  print('(${options.method}) ${options.uri}');
   print('${options.headers} ${options.data}');
 
   handler.next(options);
@@ -100,7 +100,7 @@ void _requestInterceptor(
 
 void _errorInterceptor(DioError error, ErrorInterceptorHandler handler) {
   print('Error');
-  print('${error.requestOptions.uri} $error');
+  print('(${error.requestOptions.uri.path}) $error');
 
   handler.next(error);
 }
