@@ -9,7 +9,7 @@ import 'package:components/feedback/feedback_third.dart';
 import 'package:components/feedback/list.dart';
 import 'package:components/pages/forgot_password/bloc/bloc.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
-import 'package:components/pages/login/login.dart';
+import 'package:components/pages/login/view.dart';
 import 'package:components/pages/otp/bloc/bloc.dart';
 import 'package:components/pages/otp/view.dart';
 import 'package:components/pages/reset_password/bloc/bloc.dart';
