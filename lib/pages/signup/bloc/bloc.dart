@@ -13,7 +13,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     required AuthRepository authRepo,
     required AuthCubit authCubit,
     required ImagePicker picker,
-  })  : _picker = picker,
+  })  : _authRepo = authRepo,
+        _picker = picker,
         super(SignUpState()) {
     on<OpenImagePicker>((event, emit) async {
       final XFile? pickedImage =
@@ -69,5 +70,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     });
   }
 
+  final AuthRepository _authRepo;
   final ImagePicker _picker;
 }
