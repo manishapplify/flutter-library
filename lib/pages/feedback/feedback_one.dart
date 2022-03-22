@@ -1,8 +1,6 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/base/base_screen.dart';
-import 'package:components/feedback/feedback_one/bloc/bloc.dart';
-import 'package:components/feedback/feedback_one/bloc/event.dart';
-import 'package:components/feedback/feedback_one/bloc/state.dart';
+import 'package:components/pages/feedback/feedback_one/bloc/bloc.dart';
 import 'package:components/widgets/checkbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
