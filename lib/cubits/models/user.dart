@@ -37,7 +37,7 @@ class User {
       registrationStep: json['registrationStep'],
       notificationEnabled: json['notificationEnabled'],
       address: json['address'] ?? '',
-      city: json['city'] ??'',
+      city: json['city'] ?? '',
       isPhoneVerified: json['isPhoneVerified'],
       isEmailVerified: json['isEmailVerified'],
       referralCode: json['referralCode'],
@@ -52,7 +52,7 @@ class User {
   final String lastName;
   final String gender;
   final String? profilePic;
-  final int age;
+  final int? age;
   final String email;
   final String countryCode;
   final String phoneNumber;
