@@ -87,13 +87,13 @@ class Navigation {
           ),
         );
       case Routes.otp:
-        return MaterialPageRoute<OtpScreen>(
+        return MaterialPageRoute<OtpPage>(
           settings: settings,
           builder: (_) => BlocProvider<OtpBloc>(
             create: (_) => OtpBloc(
               authRepository: _authRepository,
             ),
-            child: const OtpScreen(),
+            child: const OtpPage(),
           ),
         );
       case Routes.resetPassword:

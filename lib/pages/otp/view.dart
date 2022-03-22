@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class OtpScreen extends BaseScreen {
-  const OtpScreen({Key? key}) : super(key: key);
+class OtpPage extends BaseScreen {
+  const OtpPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _OTPState();
 }
 
-class _OTPState extends BaseScreenState<OtpScreen> {
+class _OTPState extends BaseScreenState<OtpPage> {
   final int otpDigits = 4;
   final RegExp onlyDigitsPattern = RegExp(r'\d');
   late final List<FocusNode> focusNodes;
