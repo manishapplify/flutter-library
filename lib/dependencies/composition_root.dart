@@ -49,6 +49,7 @@ Future<CompositionRoot> configureDependencies() async {
     interceptorsWrapper: InterceptorsWrapper(
       onRequest: _requestInterceptor,
       onResponse: _responseInterceptor,
+      onError: _errorInterceptor,
     ),
   );
   final FirebaseCloudMessaging fcm = FirebaseCloudMessaging()
@@ -95,4 +96,11 @@ void _requestInterceptor(
   print('${options.headers} ${options.data}');
 
   handler.next(options);
+}
+
+void _errorInterceptor(DioError error, ErrorInterceptorHandler handler) {
+  print('Error');
+  print('${error.requestOptions.uri} $error');
+
+  handler.next(error);
 }
