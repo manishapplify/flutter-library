@@ -86,7 +86,7 @@ class _FeedbackFourthScreenState extends BaseScreenState<FeedbackFourthScreen> {
                 const SizedBox(height: 10.0),
                 OutlinedButton(
                   onPressed: () {
-                    showImagePickerPopup(context, (File selectedImage) {
+                    showImagePickerPopup(context: context, onImagePicked: (File selectedImage) {
                       setState(() {
                         if (selectedImage.path.isNotEmpty) {
                           setState(() {

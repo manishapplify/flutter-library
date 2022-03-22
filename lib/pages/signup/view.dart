@@ -78,11 +78,17 @@ class _SignupState extends BaseScreenState<SignupPage> {
               UserProfileImage(
                 image: image,
                 edit: () {
-                  showImagePickerPopup(context, (File file) {
-                    setState(() {
-                      image = file.path;
-                    });
-                  });
+                  showImagePickerPopup(
+                      context: context,
+                      onImagePicked: (File file) {
+                        setState(() {
+                          image = file.path;
+                        });
+
+                        if (mounted) {
+                          Navigator.pop(context);
+                        }
+                      });
                 },
               ),
               const SizedBox(height: 32),
