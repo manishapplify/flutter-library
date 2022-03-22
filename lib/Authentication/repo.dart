@@ -6,6 +6,7 @@ import 'package:components/pages/forgot_password/models/response.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/login/models/response.dart';
 import 'package:components/pages/otp/models/request.dart';
+import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
 import 'package:components/services/api.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
@@ -112,6 +113,20 @@ class AuthRepository {
 
     await _api.verifyForgetPasswordOtp(request);
   }
+
+  Future<void> resetPassword(String password) async {
+    if (!_passwordAuthCubit.state.isTokenGenerated) {
+      throw Exception('No token present');
+    }
+
+    final ResetPasswordRequest request = ResetPasswordRequest(
+      token: _passwordAuthCubit.state.forgotPasswordToken!.token,
+      password: password,
+    );
+
+    await _api.resetPassword(request);
+  }
+
   Future<dynamic> feedbackSubmit({
     required String? feedbackissue,
     List<String>? feedbackreasons,

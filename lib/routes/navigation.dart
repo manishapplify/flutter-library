@@ -12,6 +12,8 @@ import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/pages/login/login.dart';
 import 'package:components/pages/otp/bloc/bloc.dart';
 import 'package:components/pages/otp/view.dart';
+import 'package:components/pages/reset_password/bloc/bloc.dart';
+import 'package:components/pages/reset_password/view.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/pages/splash/view.dart';
@@ -92,6 +94,16 @@ class Navigation {
               authRepository: _authRepository,
             ),
             child: const OtpScreen(),
+          ),
+        );
+      case Routes.resetPassword:
+       return MaterialPageRoute<ResetPasswordPage>(
+          settings: settings,
+          builder: (_) => BlocProvider<ResetPasswordBloc>(
+            create: (_) => ResetPasswordBloc(
+              authRepository: _authRepository,
+            ),
+            child: const ResetPasswordPage(),
           ),
         );
 
