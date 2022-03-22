@@ -1,5 +1,5 @@
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/otp/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class OtpPage extends BaseScreen {
+class OtpPage extends BasePage {
   const OtpPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _OTPState();
 }
 
-class _OTPState extends BaseScreenState<OtpPage> {
+class _OTPState extends BasePageState<OtpPage> {
   final int otpDigits = 4;
   final RegExp onlyDigitsPattern = RegExp(r'\d');
   late final List<FocusNode> focusNodes;

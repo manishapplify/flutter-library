@@ -1,14 +1,14 @@
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends BaseScreen {
+class HomePage extends BasePage {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _HomeState();
 }
 
-class _HomeState extends BaseScreenState<HomePage> {
+class _HomeState extends BasePageState<HomePage> {
   @override
   PreferredSizeWidget? appBar(BuildContext context) => AppBar(
         title: const Text('Home'),

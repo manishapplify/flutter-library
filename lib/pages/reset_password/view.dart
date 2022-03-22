@@ -1,19 +1,19 @@
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/reset_password/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ResetPasswordPage extends BaseScreen {
+class ResetPasswordPage extends BasePage {
   const ResetPasswordPage({Key? key}) : super(key: key);
 
   @override
   State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
-class _ResetPasswordPageState extends BaseScreenState<ResetPasswordPage> {
+class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   late final FocusNode passwordFocusNode;
   late final TextEditingController passwordTextEditingController;

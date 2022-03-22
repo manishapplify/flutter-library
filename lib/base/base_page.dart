@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-abstract class BaseScreen extends StatefulWidget {
-  const BaseScreen({Key? key}) : super(key: key);
+abstract class BasePage extends StatefulWidget {
+  const BasePage({Key? key}) : super(key: key);
 }
 
-abstract class BaseScreenState<T extends BaseScreen> extends State<T> {
+abstract class BasePageState<T extends BasePage> extends State<T> {
   EdgeInsets padding = const EdgeInsets.all(16.0);
   PreferredSizeWidget? appBar(BuildContext context) => null;
 

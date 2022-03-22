@@ -1,18 +1,18 @@
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/pages/feedback/feedback_one/bloc/bloc.dart';
 import 'package:components/widgets/checkbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FeedbackScreenOne extends BaseScreen {
+class FeedbackScreenOne extends BasePage {
   const FeedbackScreenOne({Key? key}) : super(key: key);
 
   @override
   State<FeedbackScreenOne> createState() => _FeedbackScreenOneState();
 }
 
-class _FeedbackScreenOneState extends BaseScreenState<FeedbackScreenOne> {
+class _FeedbackScreenOneState extends BasePageState<FeedbackScreenOne> {
   late final FocusNode emailFocusNode;
   late final FocusNode describeFocusNode;
   List<bool> isTypeSelected = <bool>[false, false, false, false, false];

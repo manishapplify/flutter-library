@@ -1,15 +1,15 @@
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreenTypes extends BaseScreen {
+class LoginScreenTypes extends BasePage {
   const LoginScreenTypes({Key? key}) : super(key: key);
 
   @override
   State<LoginScreenTypes> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends BaseScreenState<LoginScreenTypes> {
+class _LoginScreenState extends BasePageState<LoginScreenTypes> {
   @override
   PreferredSizeWidget appBar(BuildContext context) {
     return AppBar(

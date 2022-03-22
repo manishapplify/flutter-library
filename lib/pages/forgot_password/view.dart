@@ -1,19 +1,19 @@
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/forgot_password/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ForgotPasswordPage extends BaseScreen {
+class ForgotPasswordPage extends BasePage {
   const ForgotPasswordPage({Key? key}) : super(key: key);
 
   @override
   State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _ForgotPasswordPageState extends BaseScreenState<ForgotPasswordPage> {
+class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   late final FocusNode emailFocusNode;
   late final TextEditingController emailTextEditingController;

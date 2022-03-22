@@ -1,19 +1,19 @@
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/pages/feedback/feedback_second/bloc/bloc.dart';
 import 'package:components/widgets/chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class FeedbackScreenSecond extends BaseScreen {
+class FeedbackScreenSecond extends BasePage {
   const FeedbackScreenSecond({Key? key}) : super(key: key);
 
   @override
   State<FeedbackScreenSecond> createState() => _FeedbackScreenSecondState();
 }
 
-class _FeedbackScreenSecondState extends BaseScreenState<FeedbackScreenSecond> {
+class _FeedbackScreenSecondState extends BasePageState<FeedbackScreenSecond> {
   late final FeedbackSecondBloc feedbackSecondBloc;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   List<bool> isTypeSelected = <bool>[false, false, false, false, false];
