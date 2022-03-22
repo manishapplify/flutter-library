@@ -86,6 +86,20 @@ class _LoginState extends BaseScreenState<LoginPage> {
                   onFieldSubmitted: (_) => onFormSubmitted(),
                 ),
                 const SizedBox(height: 10.0),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      navigator.pushNamed(
+                        Routes.forgotPassword,
+                      );
+                    },
+                    child: Text(
+                      'Forgot Password?',
+                      style: textTheme.headline4,
+                    ),
+                  ),
+                ),
                 state.formStatus is FormSubmitting
                     ? const CircularProgressIndicator()
                     : ElevatedButton(

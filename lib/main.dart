@@ -1,4 +1,5 @@
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/cubits/password_auth.dart';
 import 'package:components/dependencies/composition_root.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/theme/style.dart';
@@ -27,8 +28,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthCubit>(
-      create: (_) => compositionRoot.authCubit,
+    return MultiBlocProvider(
+      providers: <BlocProvider<dynamic>>[
+        BlocProvider<AuthCubit>(
+          create: (_) => compositionRoot.authCubit,
+        ),
+        BlocProvider<PasswordAuthCubit>(
+          create: (_) => compositionRoot.passwordAuthCubit,
+        ),
+      ],
       child: MaterialApp(
         title: 'Flutter library',
         theme: appTheme,

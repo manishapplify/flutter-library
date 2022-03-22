@@ -1,3 +1,4 @@
+import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
 import 'package:dio/dio.dart';
@@ -58,7 +59,17 @@ class Api {
     );
     return response;
   }
+
+  Future<Response<dynamic>> forgotPassword(
+      ForgotPasswordRequest request) async {
+    final Response<dynamic> response = await dio.put(
+      _forgotPassword,
+      data: request.toJson(),
+    );
+    return response;
+  }
 }
 
 const String _appVersion = '/api/v1/common/appVersion';
 const String _login = '/api/v1/user/login';
+const String _forgotPassword = '/api/v1/user/forgotPassword';
