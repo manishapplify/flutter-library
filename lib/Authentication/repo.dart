@@ -1,5 +1,4 @@
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/cubits/models/forgot_password.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/forgot_password/models/response.dart';
@@ -61,7 +60,6 @@ class AuthRepository {
     final LoginResponse loginResponse = LoginResponse.fromJson(response.data);
 
     _authCubit.signupOrLogin(loginResponse.user);
-    _persistence.saveUser(loginResponse.user);
   }
 
   Future<void> signUp({
