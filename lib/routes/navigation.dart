@@ -10,7 +10,8 @@ import 'package:components/feedback/list.dart';
 import 'package:components/pages/forgot_password/bloc/bloc.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/pages/login/login.dart';
-import 'package:components/otp/view.dart';
+import 'package:components/pages/otp/bloc/bloc.dart';
+import 'package:components/pages/otp/view.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/pages/splash/view.dart';
@@ -28,20 +29,18 @@ class Navigation {
     required AuthRepository authRepository,
     required AuthCubit authCubit,
     required Config config,
-  required Persistence persistence,
+    required Persistence persistence,
   })  : _api = api,
         _authRepository = authRepository,
         _authCubit = authCubit,
-        _config = config,_persistence = persistence;
+        _config = config,
+        _persistence = persistence;
 
   final Api _api;
   final AuthRepository _authRepository;
   final AuthCubit _authCubit;
   final Config _config;
   final Persistence _persistence;
-
-
-        
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -88,7 +87,12 @@ class Navigation {
       case Routes.otp:
         return MaterialPageRoute<OtpScreen>(
           settings: settings,
-          builder: (_) => const OtpScreen(),
+          builder: (_) => BlocProvider<OtpBloc>(
+            create: (_) => OtpBloc(
+              authRepository: _authRepository,
+            ),
+            child: const OtpScreen(),
+          ),
         );
 
       case Routes.feedbackScreens:
@@ -151,6 +155,7 @@ class Routes {
   static const String signupOne = "signupScreenOne";
   static const String forgotPassword = "forgotPassword";
   static const String otp = "otpScreen";
+  static const String resetPassword = "resetPassword";
 
   static const String feedbackScreens = "feedbackScreens";
   static const String feedbackOne = "feedbackOneScreen";

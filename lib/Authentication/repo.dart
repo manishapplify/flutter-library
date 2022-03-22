@@ -5,6 +5,7 @@ import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/forgot_password/models/response.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/login/models/response.dart';
+import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
 import 'package:components/services/api.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
@@ -50,7 +51,7 @@ class AuthRepository {
     final LoginRequest request = LoginRequest(
       platformType: _config.platform.name,
       deviceToken: _fcm.deviceToken!,
-      countryCode: _persistence.fetchCountryCode() ?? 'in',
+      countryCode: _persistence.fetchCountryCode() ?? '+91',
       emailOrPhoneNumber: username,
       password: password,
     );
@@ -96,8 +97,20 @@ class AuthRepository {
       token: forgotPasswordResponse.token,
       email: request.email,
     );
-    _persistence.saveForgotPasswordToken(ForgotPasswordToken(
-        token: forgotPasswordResponse.token, email: request.email));
+  }
+
+  Future<void> verifyForgetPasswordOtp(String otp) async {
+    if (!_passwordAuthCubit.state.isTokenGenerated) {
+      throw Exception('No token present');
+    }
+
+    final VerifyForgetPasswordOtpRequest request =
+        VerifyForgetPasswordOtpRequest(
+      token: _passwordAuthCubit.state.forgotPasswordToken!.token,
+      forgotPasswordOtp: otp,
+    );
+
+    await _api.verifyForgetPasswordOtp(request);
   }
   Future<dynamic> feedbackSubmit({
     required String? feedbackissue,

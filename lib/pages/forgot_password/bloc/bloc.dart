@@ -35,7 +35,7 @@ class ForgotPasswordBloc
 
     final ForgotPasswordRequest request = ForgotPasswordRequest(
       email: state.email,
-      countryCode: _persistence.fetchCountryCode() ?? 'in',
+      countryCode: _persistence.fetchCountryCode() ?? '+91',
       phoneNumber: null,
     );
 
@@ -43,7 +43,7 @@ class ForgotPasswordBloc
       await _authRepository.forgotPassword(request);
       emit(state.copyWith(formStatus: SubmissionSuccess()));
     } on Exception catch (e) {
-      emit(state.copyWith(formStatus: SubmissionFailed(e)));
+      emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
     }
   }
 }

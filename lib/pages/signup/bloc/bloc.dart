@@ -13,9 +13,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     required AuthRepository authRepo,
     required AuthCubit authCubit,
     required ImagePicker picker,
-  })  : _authRepo = authRepo,
-        _authCubit = authCubit,
-        _picker = picker,
+  })  : _picker = picker,
         super(SignUpState()) {
     on<OpenImagePicker>((event, emit) async {
       final XFile? pickedImage =
@@ -66,12 +64,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         );
         emit(state.copyWith(formStatus: SubmissionSuccess()));
       } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(e)));
+        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
       }
     });
   }
-  
-  final AuthRepository _authRepo;
-  final AuthCubit _authCubit;
+
   final ImagePicker _picker;
 }
