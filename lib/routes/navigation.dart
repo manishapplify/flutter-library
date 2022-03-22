@@ -97,7 +97,7 @@ class Navigation {
           ),
         );
       case Routes.resetPassword:
-       return MaterialPageRoute<ResetPasswordPage>(
+        return MaterialPageRoute<ResetPasswordPage>(
           settings: settings,
           builder: (_) => BlocProvider<ResetPasswordBloc>(
             create: (_) => ResetPasswordBloc(
@@ -168,6 +168,8 @@ class Routes {
   static const String forgotPassword = "forgotPassword";
   static const String otp = "otpScreen";
   static const String resetPassword = "resetPassword";
+
+  static const String home = "home";
 
   static const String feedbackScreens = "feedbackScreens";
   static const String feedbackOne = "feedbackOneScreen";

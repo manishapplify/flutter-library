@@ -46,6 +46,20 @@ class _LoginState extends BaseScreenState<LoginPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: BlocBuilder<LoginBloc, LoginState>(
           builder: (BuildContext context, LoginState state) {
+            if (state.formStatus is SubmissionSuccess) {
+              Future<void>.microtask(
+                () => navigator.popAndPushNamed(Routes.home),
+              );
+            } else if (state.formStatus is SubmissionFailed) {
+              Future<void>.microtask(
+                () => showSnackBar(
+                  const SnackBar(
+                    content: Text('Failure'),
+                  ),
+                ),
+              );
+            }
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

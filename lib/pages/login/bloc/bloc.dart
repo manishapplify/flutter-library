@@ -17,13 +17,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginUsernameChanged>(
         (LoginUsernameChanged event, Emitter<LoginState> emit) {
       emit(
-        state.copyWith(username: event.username),
+        state.copyWith(
+            username: event.username, formStatus: const InitialFormStatus()),
       );
     });
     on<LoginPasswordChanged>(
         (LoginPasswordChanged event, Emitter<LoginState> emit) {
       emit(
-        state.copyWith(password: event.password),
+        state.copyWith(
+            password: event.password, formStatus: const InitialFormStatus()),
       );
     });
     on<LoginSubmitted>((LoginSubmitted event, Emitter<LoginState> emit) async {
