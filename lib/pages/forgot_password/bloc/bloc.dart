@@ -26,7 +26,7 @@ class ForgotPasswordBloc
   void _onEmailChangedHandler(
           EmailChanged event, Emitter<ForgotPasswordState> emit) =>
       emit(
-        state.copyWith(email: event.email),
+        state.copyWith(email: event.email, formStatus: const InitialFormStatus()),
       );
 
   void _onForgotPasswordSubmittedHandler(
