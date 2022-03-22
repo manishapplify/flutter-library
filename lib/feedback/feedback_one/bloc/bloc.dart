@@ -12,33 +12,33 @@ class FeedbackOneBloc extends Bloc<FeedbackEvent, FeedbackOneState> {
       {required Api api,
       required AuthRepository authRepository,
       required AuthCubit authCubit})
-      : _api = api,
-        _authRepository = authRepository,
-        _authCubit = authCubit,
+      : _authRepository = authRepository,
         super(FeedbackOneState()) {
-    on<FeedbackIssueChanged>((FeedbackIssueChanged event, Emitter<FeedbackOneState> emit) {
+    on<FeedbackIssueChanged>(
+        (FeedbackIssueChanged event, Emitter<FeedbackOneState> emit) {
       emit(state.copyWith(feebackIssue: event.feebackIssue));
       print(event.feebackIssue);
     });
-    on<FeedbackEmailChanged>((FeedbackEmailChanged event, Emitter<FeedbackOneState> emit) {
+    on<FeedbackEmailChanged>(
+        (FeedbackEmailChanged event, Emitter<FeedbackOneState> emit) {
       emit(state.copyWith(feedbackEmail: event.feedbackEmail));
     });
-    on<FeedbackReasonChanged>((FeedbackReasonChanged event, Emitter<FeedbackOneState> emit) {
+    on<FeedbackReasonChanged>(
+        (FeedbackReasonChanged event, Emitter<FeedbackOneState> emit) {
       emit(state.copyWith(reasons: event.reason));
       print(event.reason);
     });
-    on<FeedbackSubmitted>((FeedbackSubmitted event, Emitter<FeedbackOneState> emit) async {
+    on<FeedbackSubmitted>(
+        (FeedbackSubmitted event, Emitter<FeedbackOneState> emit) async {
       emit(state.copyWith(formStatus: FormSubmitting()));
       try {
         await _authRepository.feedbackSubmit(
             feedbackissue: state.feebackIssue, feedbackreasons: state.reasons);
         emit(state.copyWith(formStatus: SubmissionSuccess()));
       } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(e)));
+        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
       }
     });
   }
-  final Api _api;
   final AuthRepository _authRepository;
-  final AuthCubit _authCubit;
 }

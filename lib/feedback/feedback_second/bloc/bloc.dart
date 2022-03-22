@@ -11,9 +11,7 @@ class FeedbackSecondBloc extends Bloc<FeedbackEvent, FeedbackSecondState> {
       {required Api api,
       required AuthRepository authRepository,
       required AuthCubit authCubit})
-      : _api = api,
-        _authRepository = authRepository,
-        _authCubit = authCubit,
+      :       _authRepository = authRepository,
         super(FeedbackSecondState()) {
     on<FeedbackIssueChanged>(
         (FeedbackIssueChanged event, Emitter<FeedbackSecondState> emit) {
@@ -39,11 +37,10 @@ class FeedbackSecondBloc extends Bloc<FeedbackEvent, FeedbackSecondState> {
             feedbackRating: state.feedbackRating);
         emit(state.copyWith(formStatus: SubmissionSuccess()));
       } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(e)));
+        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
       }
     });
   }
-  final Api _api;
+
   final AuthRepository _authRepository;
-  final AuthCubit _authCubit;
 }
