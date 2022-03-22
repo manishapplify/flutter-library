@@ -62,9 +62,11 @@ class _OTPState extends BaseScreenState<OtpScreen> {
 
   void onFormSubmitted() async {
     FocusScope.of(context).unfocus();
-    otpBloc.add(
-      OtpSubmitted(),
-    );
+    if (otpBloc.state.isOtpValid) {
+      otpBloc.add(
+        OtpSubmitted(),
+      );
+    }
   }
 
   void valueChangeHandler(int i, String value) {
