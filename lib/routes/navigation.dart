@@ -8,6 +8,7 @@ import 'package:components/pages/feedback/feedback_second/bloc/bloc.dart';
 import 'package:components/pages/feedback/feedback_third.dart';
 import 'package:components/pages/feedback/list.dart';
 import 'package:components/pages/forgot_password/bloc/bloc.dart';
+import 'package:components/pages/home/view.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/pages/login/view.dart';
 import 'package:components/pages/otp/bloc/bloc.dart';
@@ -105,6 +106,11 @@ class Navigation {
             ),
             child: const ResetPasswordPage(),
           ),
+        );
+      case Routes.home:
+        return MaterialPageRoute<ResetPasswordPage>(
+          settings: settings,
+          builder: (_) => const HomePage(),
         );
 
       case Routes.feedbackScreens:
