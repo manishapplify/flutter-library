@@ -1,9 +1,12 @@
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
+import 'package:components/pages/change_password/model/request.dart';
+import 'package:components/pages/delete_account/model/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/forgot_password/models/response.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/login/models/response.dart';
+import 'package:components/pages/logout/model/request.dart';
 import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
@@ -123,6 +126,50 @@ class AuthRepository {
     );
 
     await _api.resetPassword(request);
+  }
+
+  Future<dynamic> changePassword({
+    required String? currentPassword,
+    required String? newPassword,
+  }) async {
+    if (!_authCubit.state.isAuthorized) {
+      throw Exception('not signed in');
+    }
+    await Future<dynamic>.delayed(const Duration(seconds: 5));
+    print('ChamgePasswordSubmit');
+    final ChangePasswordRequest request = ChangePasswordRequest(
+        oldPassword: currentPassword!,
+        password: newPassword!,
+        authorization: _authCubit.state.user!.accessToken);
+
+    final Response<dynamic> response = await _api.changePassword(request);
+    throw Exception('failed ChangePasswordSubmission');
+  }
+
+  Future<dynamic> logout() async {
+    print('Logout');
+    if (!_authCubit.state.isAuthorized) {
+      throw Exception('not signed in');
+    }
+    final LogoutRequest request = LogoutRequest(
+        deviceToken: _fcm.deviceToken!,
+        authorization: _authCubit.state.user!.accessToken);
+
+    final Response<dynamic> response = await _api.logout(request);
+    //final LogoutResponse logoutResponse = LogoutResponse.fromJson(response.data);
+    throw Exception('failed ChangePasswordSubmission');
+  }
+
+  Future<dynamic> deleteAccount() async {
+    if (!_authCubit.state.isAuthorized) {
+      throw Exception('not signed in');
+    }
+    print('DeleteAccount');
+    final DeleteAccountRequest request =
+        DeleteAccountRequest(authorization: _authCubit.state.user!.accessToken);
+
+    final Response<dynamic> response = await _api.deleteAccount(request);
+    throw Exception('failed ChangePasswordSubmission');
   }
 
   Future<dynamic> feedbackSubmit({

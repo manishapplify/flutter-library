@@ -1,5 +1,8 @@
+import 'package:components/pages/change_password/model/request.dart';
+import 'package:components/pages/delete_account/model/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/login/models/request.dart';
+import 'package:components/pages/logout/model/request.dart';
 import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
@@ -71,6 +74,31 @@ class Api {
     return response;
   }
 
+  Future<Response<dynamic>> changePassword(
+      ChangePasswordRequest request) async {
+    final Response<dynamic> response = await dio.put(
+      _changePassword,
+      data: request.toJson(),
+    );
+    return response;
+  }
+
+  Future<Response<dynamic>> logout(LogoutRequest request) async {
+    final Response<dynamic> response = await dio.put(
+      _logout,
+      data: request.toJson(),
+    );
+    return response;
+  }
+
+  Future<Response<dynamic>> deleteAccount(DeleteAccountRequest request) async {
+    final Response<dynamic> response = await dio.delete(
+      _deleteAccount,
+      data: request.toJson(),
+    );
+    return response;
+  }
+
   Future<Response<dynamic>> verifyForgetPasswordOtp(
       VerifyForgetPasswordOtpRequest request) async {
     final Response<dynamic> response = await dio.put(
@@ -80,8 +108,7 @@ class Api {
     return response;
   }
 
-  Future<Response<dynamic>> resetPassword(
-      ResetPasswordRequest request) async {
+  Future<Response<dynamic>> resetPassword(ResetPasswordRequest request) async {
     final Response<dynamic> response = await dio.put(
       _resetPassword,
       data: request.toJson(),
@@ -95,3 +122,6 @@ const String _login = '/api/v1/user/login';
 const String _forgotPassword = '/api/v1/user/forgotPassword';
 const String _verifyForgetPasswordOtp = '/api/v1/user/verifyForgetPasswordOtp';
 const String _resetPassword = '/api/v1/user/resetPassword';
+const String _changePassword = '/api/v1/user/changePassword';
+const String _logout = '/api/v1/user/logout';
+const String _deleteAccount = '/api/v1/user';

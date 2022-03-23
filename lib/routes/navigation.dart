@@ -1,5 +1,8 @@
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/pages/change_password/bloc/bloc.dart';
+import 'package:components/pages/change_password/view.dart';
+import 'package:components/pages/delete_account/bloc/bloc.dart';
 import 'package:components/pages/feedback/feedback_fourth.dart';
 import 'package:components/pages/feedback/feedback_one.dart';
 import 'package:components/pages/feedback/feedback_one/bloc/bloc.dart';
@@ -11,10 +14,12 @@ import 'package:components/pages/forgot_password/bloc/bloc.dart';
 import 'package:components/pages/home/view.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/pages/login/view.dart';
+import 'package:components/pages/logout/bloc/bloc.dart';
 import 'package:components/pages/otp/bloc/bloc.dart';
 import 'package:components/pages/otp/view.dart';
 import 'package:components/pages/reset_password/bloc/bloc.dart';
 import 'package:components/pages/reset_password/view.dart';
+import 'package:components/pages/settings.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/pages/splash/view.dart';
@@ -112,18 +117,49 @@ class Navigation {
           settings: settings,
           builder: (_) => const HomePage(),
         );
-
+      case Routes.settings:
+        return MaterialPageRoute<SettingsScreen>(
+            settings: settings,
+            builder: (_) => MultiBlocProvider(
+                  providers: <BlocProvider<dynamic>>[
+                    BlocProvider<LogoutBloc>(
+                      create: (BuildContext context) => LogoutBloc(
+                        api: _api,
+                        authRepository: _authRepository,
+                        authCubit: _authCubit,
+                      ),
+                      //child: const SettingsScreen(),
+                    ),
+                    BlocProvider<DeleteAccountBloc>(
+                      create: (BuildContext context) => DeleteAccountBloc(
+                        api: _api,
+                        authRepository: _authRepository,
+                        authCubit: _authCubit,
+                      ),
+                      //child: const SettingsScreen(),
+                    ),
+                  ],
+                  child: const SettingsScreen(),
+                ));
+      case Routes.changePassword:
+        return MaterialPageRoute<ChangePasswordPage>(
+          settings: settings,
+          builder: (_) => BlocProvider<ChangePasswordBloc>(
+            create: (BuildContext context) => ChangePasswordBloc(
+              api: _api,
+              authRepository: _authRepository,
+              authCubit: _authCubit,
+            ),
+            child: const ChangePasswordPage(),
+          ),
+        );
       case Routes.feedbackScreens:
         return MaterialPageRoute<FeedbackScreenTypes>(
           settings: settings,
           builder: (_) => const FeedbackScreenTypes(),
         );
       case Routes.feedbackOne:
-        return /*MaterialPageRoute<FeedbackScreenOne>(
-          settings: settings,
-          builder: (_) => const FeedbackScreenOne(),
-        );*/
-            MaterialPageRoute<FeedbackScreenOne>(
+        return MaterialPageRoute<FeedbackScreenOne>(
           settings: settings,
           builder: (_) => BlocProvider<FeedbackOneBloc>(
             create: (BuildContext context) => FeedbackOneBloc(
@@ -176,6 +212,9 @@ class Routes {
   static const String resetPassword = "resetPassword";
 
   static const String home = "home";
+
+  static const String settings = "settings";
+  static const String changePassword = "changePassword";
 
   static const String feedbackScreens = "feedbackScreens";
   static const String feedbackOne = "feedbackOneScreen";
