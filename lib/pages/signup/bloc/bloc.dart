@@ -14,7 +14,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     required AuthCubit authCubit,
     required ImagePicker picker,
   })  : _authRepo = authRepo,
-        _authCubit = authCubit,
         _picker = picker,
         super(SignUpState()) {
     on<OpenImagePicker>((event, emit) async {
@@ -27,28 +26,68 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     });
 
     on<SignUpProfileImageChanged>((event, emit) {
-      emit(state.copyWith(profilePic: event.profilePic));
+      emit(
+        state.copyWith(
+          profilePic: event.profilePic,
+          formStatus: const InitialFormStatus(),
+        ),
+      );
     });
     on<SignUpFirstnameChanged>((event, emit) {
-      emit(state.copyWith(firstname: event.firstname));
+      emit(
+        state.copyWith(
+          firstname: event.firstname,
+          formStatus: const InitialFormStatus(),
+        ),
+      );
     });
     on<SignUpCountryCodeChanged>((event, emit) {
-      emit(state.copyWith(code: event.code));
+      emit(
+        state.copyWith(
+          code: event.code,
+          formStatus: const InitialFormStatus(),
+        ),
+      );
     });
     on<SignUpPhoneNumberChanged>((event, emit) {
-      emit(state.copyWith(phoneNumber: event.phoneNumber));
+      emit(
+        state.copyWith(
+          phoneNumber: event.phoneNumber,
+          formStatus: const InitialFormStatus(),
+        ),
+      );
     });
     on<SignUpLastnameChanged>((event, emit) {
-      emit(state.copyWith(lastname: event.lastname));
+      emit(
+        state.copyWith(
+          lastname: event.lastname,
+          formStatus: const InitialFormStatus(),
+        ),
+      );
     });
     on<SignUpReferralCodeChanged>((event, emit) {
-      emit(state.copyWith(referralCode: event.referralCode));
+      emit(
+        state.copyWith(
+          referralCode: event.referralCode,
+          formStatus: const InitialFormStatus(),
+        ),
+      );
     });
     on<SignUpEmailChanged>((event, emit) {
-      emit(state.copyWith(password: event.email));
+      emit(
+        state.copyWith(
+          password: event.email,
+          formStatus: const InitialFormStatus(),
+        ),
+      );
     });
     on<SignUpPasswordChanged>((event, emit) {
-      emit(state.copyWith(password: event.password));
+      emit(
+        state.copyWith(
+          password: event.password,
+          formStatus: const InitialFormStatus(),
+        ),
+      );
       print(event.password.toString());
     });
     on<SignUpSubmitted>((event, emit) async {
@@ -66,12 +105,11 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         );
         emit(state.copyWith(formStatus: SubmissionSuccess()));
       } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(e)));
+        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
       }
     });
   }
-  
+
   final AuthRepository _authRepo;
-  final AuthCubit _authCubit;
   final ImagePicker _picker;
 }

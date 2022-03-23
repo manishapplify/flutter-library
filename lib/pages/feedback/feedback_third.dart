@@ -1,14 +1,14 @@
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:flutter/material.dart';
 
-class FeedbackScreenThird extends BaseScreen {
+class FeedbackScreenThird extends BasePage {
   const FeedbackScreenThird({Key? key}) : super(key: key);
 
   @override
   State<FeedbackScreenThird> createState() => _FeedbackScreenThirdState();
 }
 
-class _FeedbackScreenThirdState extends BaseScreenState<FeedbackScreenThird> {
+class _FeedbackScreenThirdState extends BasePageState<FeedbackScreenThird> {
   late final FocusNode emailFocusNode;
   late final FocusNode describeFocusNode;
   String? value;

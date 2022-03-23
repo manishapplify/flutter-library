@@ -10,12 +10,12 @@ class ForgotPasswordRequest {
   final String? phoneNumber;
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> map = <String, dynamic>{
-      'email': email,
-      'countryCode': countryCode,
-    };
+    final Map<String, dynamic> map = <String, dynamic>{};
     if (phoneNumber is String) {
+      map['countryCode'] = countryCode;
       map['phoneNumber'] = phoneNumber;
+    } else {
+      map['email'] = email;
     }
     return map;
   }

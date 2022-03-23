@@ -1,10 +1,11 @@
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/cubits/models/forgot_password.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/forgot_password/models/response.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/login/models/response.dart';
+import 'package:components/pages/otp/models/request.dart';
+import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
 import 'package:components/services/api.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
@@ -50,7 +51,7 @@ class AuthRepository {
     final LoginRequest request = LoginRequest(
       platformType: _config.platform.name,
       deviceToken: _fcm.deviceToken!,
-      countryCode: _persistence.fetchCountryCode() ?? 'in',
+      countryCode: _persistence.fetchCountryCode() ?? '+91',
       emailOrPhoneNumber: username,
       password: password,
     );
@@ -59,7 +60,6 @@ class AuthRepository {
     final LoginResponse loginResponse = LoginResponse.fromJson(response.data);
 
     _authCubit.signupOrLogin(loginResponse.user);
-    _persistence.saveUser(loginResponse.user);
   }
 
   Future<void> signUp({
@@ -96,9 +96,35 @@ class AuthRepository {
       token: forgotPasswordResponse.token,
       email: request.email,
     );
-    _persistence.saveForgotPasswordToken(ForgotPasswordToken(
-        token: forgotPasswordResponse.token, email: request.email));
   }
+
+  Future<void> verifyForgetPasswordOtp(String otp) async {
+    if (!_passwordAuthCubit.state.isTokenGenerated) {
+      throw Exception('No token present');
+    }
+
+    final VerifyForgetPasswordOtpRequest request =
+        VerifyForgetPasswordOtpRequest(
+      token: _passwordAuthCubit.state.forgotPasswordToken!.token,
+      forgotPasswordOtp: otp,
+    );
+
+    await _api.verifyForgetPasswordOtp(request);
+  }
+
+  Future<void> resetPassword(String password) async {
+    if (!_passwordAuthCubit.state.isTokenGenerated) {
+      throw Exception('No token present');
+    }
+
+    final ResetPasswordRequest request = ResetPasswordRequest(
+      token: _passwordAuthCubit.state.forgotPasswordToken!.token,
+      password: password,
+    );
+
+    await _api.resetPassword(request);
+  }
+
   Future<dynamic> feedbackSubmit({
     required String? feedbackissue,
     List<String>? feedbackreasons,

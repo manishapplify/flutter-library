@@ -12,20 +12,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required Api api,
     required AuthRepository authRepository,
     required AuthCubit authCubit,
-  })  : _api = api,
-        _authRepository = authRepository,
-        _authCubit = authCubit,
+  })  : _authRepository = authRepository,
         super(LoginState()) {
     on<LoginUsernameChanged>(
         (LoginUsernameChanged event, Emitter<LoginState> emit) {
       emit(
-        state.copyWith(username: event.username),
+        state.copyWith(
+            username: event.username, formStatus: const InitialFormStatus()),
       );
     });
     on<LoginPasswordChanged>(
         (LoginPasswordChanged event, Emitter<LoginState> emit) {
       emit(
-        state.copyWith(password: event.password),
+        state.copyWith(
+            password: event.password, formStatus: const InitialFormStatus()),
       );
     });
     on<LoginSubmitted>((LoginSubmitted event, Emitter<LoginState> emit) async {
@@ -47,16 +47,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            formStatus: SubmissionFailed(e),
+            formStatus: SubmissionFailed(exception: e),
           ),
         );
       }
     });
   }
 
-  final Api _api;
   final AuthRepository _authRepository;
-  final AuthCubit _authCubit;
 }
 
  /* @override

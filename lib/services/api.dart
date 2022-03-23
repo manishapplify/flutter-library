@@ -1,5 +1,7 @@
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/login/models/request.dart';
+import 'package:components/pages/otp/models/request.dart';
+import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
 import 'package:dio/dio.dart';
 
@@ -68,8 +70,28 @@ class Api {
     );
     return response;
   }
+
+  Future<Response<dynamic>> verifyForgetPasswordOtp(
+      VerifyForgetPasswordOtpRequest request) async {
+    final Response<dynamic> response = await dio.put(
+      _verifyForgetPasswordOtp,
+      data: request.toJson(),
+    );
+    return response;
+  }
+
+  Future<Response<dynamic>> resetPassword(
+      ResetPasswordRequest request) async {
+    final Response<dynamic> response = await dio.put(
+      _resetPassword,
+      data: request.toJson(),
+    );
+    return response;
+  }
 }
 
 const String _appVersion = '/api/v1/common/appVersion';
 const String _login = '/api/v1/user/login';
 const String _forgotPassword = '/api/v1/user/forgotPassword';
+const String _verifyForgetPasswordOtp = '/api/v1/user/verifyForgetPasswordOtp';
+const String _resetPassword = '/api/v1/user/resetPassword';

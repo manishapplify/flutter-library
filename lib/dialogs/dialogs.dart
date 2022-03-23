@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 dynamic showImagePickerPopup(
-    BuildContext context, Function(File) onImagePicked) {
+    {required BuildContext context,required  Function(File) onImagePicked}) {
   showCupertinoModalPopup(
     barrierColor: Colors.black45,
     context: context,
@@ -17,10 +17,11 @@ dynamic showImagePickerPopup(
           onPressed: () async {
             final XFile? pickedFile = await ImagePicker()
                 .pickImage(source: ImageSource.gallery, imageQuality: 20);
-            imageCropper(context, pickedFile!.path, (File croppedImage) {
-              onImagePicked(croppedImage);
-            });
-            Navigator.pop(context);
+            imageCropper(
+                imagePath: pickedFile!.path,
+                onCropped: (File croppedImage) {
+                  onImagePicked(croppedImage);
+                });
           },
         ),
         CupertinoActionSheetAction(
@@ -28,10 +29,11 @@ dynamic showImagePickerPopup(
           onPressed: () async {
             final XFile? pickedFile = await ImagePicker()
                 .pickImage(source: ImageSource.camera, imageQuality: 20);
-            imageCropper(context, pickedFile!.path, (File croppedImage) {
-              onImagePicked(croppedImage);
-            });
-            Navigator.pop(context);
+            imageCropper(
+                imagePath: pickedFile!.path,
+                onCropped: (File croppedImage) {
+                  onImagePicked(croppedImage);
+                });
           },
         ),
       ],
@@ -54,8 +56,10 @@ dynamic showImagePickerPopup(
   );
 }
 
-dynamic imageCropper(
-    BuildContext context, String imagePath, Function(File) onCropped) async {
+dynamic imageCropper({
+  required String imagePath,
+  required Function(File) onCropped,
+}) async {
   final File? croppedFile = await ImageCropper().cropImage(
     sourcePath: imagePath,
     compressQuality: 20,

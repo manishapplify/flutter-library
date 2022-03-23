@@ -28,7 +28,12 @@ class PasswordAuthCubit extends Cubit<PasswordAuthState> {
   }) {
     emit(PasswordAuthState(
         forgotPasswordToken: ForgotPasswordToken(token: token, email: email)));
+    _persistence.saveForgotPasswordToken(
+        ForgotPasswordToken(token: token, email: email));
   }
 
-  void resetToken() => emit(PasswordAuthState());
+  void resetToken() {
+    emit(PasswordAuthState());
+    _persistence.deleteForgotPasswordToken();
+  }
 }

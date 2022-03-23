@@ -1,17 +1,17 @@
 import 'dart:io';
 
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/dialogs/dialogs.dart';
 import 'package:flutter/material.dart';
 
-class FeedbackFourthScreen extends BaseScreen {
+class FeedbackFourthScreen extends BasePage {
   const FeedbackFourthScreen({Key? key}) : super(key: key);
 
   @override
   State<FeedbackFourthScreen> createState() => _FeedbackFourthScreenState();
 }
 
-class _FeedbackFourthScreenState extends BaseScreenState<FeedbackFourthScreen> {
+class _FeedbackFourthScreenState extends BasePageState<FeedbackFourthScreen> {
   late final FocusNode emailFocusNode;
   late final FocusNode nameFocusNode;
   late final FocusNode describeFocusNode;
@@ -86,7 +86,7 @@ class _FeedbackFourthScreenState extends BaseScreenState<FeedbackFourthScreen> {
                 const SizedBox(height: 10.0),
                 OutlinedButton(
                   onPressed: () {
-                    showImagePickerPopup(context, (File selectedImage) {
+                    showImagePickerPopup(context: context, onImagePicked: (File selectedImage) {
                       setState(() {
                         if (selectedImage.path.isNotEmpty) {
                           setState(() {

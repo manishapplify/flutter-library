@@ -1,17 +1,17 @@
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginPage extends BaseScreen {
+class LoginPage extends BasePage {
   const LoginPage({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _LoginState();
 }
 
-class _LoginState extends BaseScreenState<LoginPage> {
+class _LoginState extends BasePageState<LoginPage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   late final LoginBloc loginBloc;
@@ -46,6 +46,20 @@ class _LoginState extends BaseScreenState<LoginPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: BlocBuilder<LoginBloc, LoginState>(
           builder: (BuildContext context, LoginState state) {
+            if (state.formStatus is SubmissionSuccess) {
+              Future<void>.microtask(
+                () => navigator.popAndPushNamed(Routes.home),
+              );
+            } else if (state.formStatus is SubmissionFailed) {
+              Future<void>.microtask(
+                () => showSnackBar(
+                  const SnackBar(
+                    content: Text('Failure'),
+                  ),
+                ),
+              );
+            }
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

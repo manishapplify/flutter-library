@@ -1,8 +1,10 @@
+part of 'bloc.dart';
+
 abstract class FeedbackEvent {}
 
 class FeedbackReasonChanged extends FeedbackEvent {
   FeedbackReasonChanged({this.reason});
-  final String? reason;
+  List<String>? reason;
 }
 
 class FeedbackIssueChanged extends FeedbackEvent {
@@ -10,9 +12,9 @@ class FeedbackIssueChanged extends FeedbackEvent {
   final String? feebackIssue;
 }
 
-class FeedbackRatingChanged extends FeedbackEvent {
-  FeedbackRatingChanged({this.feedbackRating});
-  final double? feedbackRating;
+class FeedbackEmailChanged extends FeedbackEvent {
+  FeedbackEmailChanged({this.feedbackEmail});
+  final String? feedbackEmail;
 }
 
 class FeedbackSubmitted extends FeedbackEvent {}

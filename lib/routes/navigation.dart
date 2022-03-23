@@ -1,16 +1,20 @@
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/feedback/feedback_fourth.dart';
-import 'package:components/feedback/feedback_one.dart';
-import 'package:components/feedback/feedback_one/bloc/bloc.dart';
-import 'package:components/feedback/feedback_second.dart';
-import 'package:components/feedback/feedback_second/bloc/bloc.dart';
-import 'package:components/feedback/feedback_third.dart';
-import 'package:components/feedback/list.dart';
+import 'package:components/pages/feedback/feedback_fourth.dart';
+import 'package:components/pages/feedback/feedback_one.dart';
+import 'package:components/pages/feedback/feedback_one/bloc/bloc.dart';
+import 'package:components/pages/feedback/feedback_second.dart';
+import 'package:components/pages/feedback/feedback_second/bloc/bloc.dart';
+import 'package:components/pages/feedback/feedback_third.dart';
+import 'package:components/pages/feedback/list.dart';
 import 'package:components/pages/forgot_password/bloc/bloc.dart';
+import 'package:components/pages/home/view.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
-import 'package:components/pages/login/login.dart';
-import 'package:components/otp/view.dart';
+import 'package:components/pages/login/view.dart';
+import 'package:components/pages/otp/bloc/bloc.dart';
+import 'package:components/pages/otp/view.dart';
+import 'package:components/pages/reset_password/bloc/bloc.dart';
+import 'package:components/pages/reset_password/view.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/pages/splash/view.dart';
@@ -28,20 +32,18 @@ class Navigation {
     required AuthRepository authRepository,
     required AuthCubit authCubit,
     required Config config,
-  required Persistence persistence,
+    required Persistence persistence,
   })  : _api = api,
         _authRepository = authRepository,
         _authCubit = authCubit,
-        _config = config,_persistence = persistence;
+        _config = config,
+        _persistence = persistence;
 
   final Api _api;
   final AuthRepository _authRepository;
   final AuthCubit _authCubit;
   final Config _config;
   final Persistence _persistence;
-
-
-        
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -86,9 +88,29 @@ class Navigation {
           ),
         );
       case Routes.otp:
-        return MaterialPageRoute<OtpScreen>(
+        return MaterialPageRoute<OtpPage>(
           settings: settings,
-          builder: (_) => const OtpScreen(),
+          builder: (_) => BlocProvider<OtpBloc>(
+            create: (_) => OtpBloc(
+              authRepository: _authRepository,
+            ),
+            child: const OtpPage(),
+          ),
+        );
+      case Routes.resetPassword:
+        return MaterialPageRoute<ResetPasswordPage>(
+          settings: settings,
+          builder: (_) => BlocProvider<ResetPasswordBloc>(
+            create: (_) => ResetPasswordBloc(
+              authRepository: _authRepository,
+            ),
+            child: const ResetPasswordPage(),
+          ),
+        );
+      case Routes.home:
+        return MaterialPageRoute<ResetPasswordPage>(
+          settings: settings,
+          builder: (_) => const HomePage(),
         );
 
       case Routes.feedbackScreens:
@@ -151,6 +173,9 @@ class Routes {
   static const String signupOne = "signupScreenOne";
   static const String forgotPassword = "forgotPassword";
   static const String otp = "otpScreen";
+  static const String resetPassword = "resetPassword";
+
+  static const String home = "home";
 
   static const String feedbackScreens = "feedbackScreens";
   static const String feedbackOne = "feedbackOneScreen";

@@ -1,51 +1,44 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
-import 'package:components/pages/forgot_password/bloc/bloc.dart';
+import 'package:components/pages/reset_password/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ForgotPasswordPage extends BasePage {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+class ResetPasswordPage extends BasePage {
+  const ResetPasswordPage({Key? key}) : super(key: key);
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
-class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
+class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  late final FocusNode emailFocusNode;
-  late final TextEditingController emailTextEditingController;
-  late final ForgotPasswordBloc forgotPasswordBloc;
+  late final FocusNode passwordFocusNode;
+  late final TextEditingController passwordTextEditingController;
   late final PasswordAuthCubit passwordAuthCubit;
+  late final ResetPasswordBloc resetPasswordBloc;
 
   @override
   void initState() {
-    emailFocusNode = FocusNode();
-    emailTextEditingController = TextEditingController();
-    forgotPasswordBloc = BlocProvider.of(context);
+    passwordFocusNode = FocusNode();
+    passwordTextEditingController = TextEditingController();
     passwordAuthCubit = BlocProvider.of(context);
-    
-    // Token is already present, no need to regenerate.
-    if (passwordAuthCubit.state.isTokenGenerated) {
-      Future<void>.microtask(
-        () => navigator.popAndPushNamed(Routes.otp),
-      );
-    }
+    resetPasswordBloc = BlocProvider.of(context);
     super.initState();
   }
 
   @override
   void dispose() {
-    emailTextEditingController.dispose();
-    emailFocusNode.dispose();
+    passwordTextEditingController.dispose();
+    passwordFocusNode.dispose();
     super.dispose();
   }
 
   @override
   PreferredSizeWidget appBar(BuildContext context) {
-    return AppBar(title: const Text("Forgot Password"));
+    return AppBar(title: const Text("Reset Password"));
   }
 
   @override
@@ -57,11 +50,13 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
-              BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
-                builder: (BuildContext context, ForgotPasswordState state) {
+              BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
+                builder: (BuildContext context, ResetPasswordState state) {
                   if (state.formStatus is SubmissionSuccess) {
+                    passwordAuthCubit.resetToken();
                     Future<void>.microtask(
-                      () => navigator.popAndPushNamed(Routes.otp),
+                      () =>
+                          navigator.popUntil(ModalRoute.withName(Routes.login)),
                     );
                   } else if (state.formStatus is SubmissionFailed) {
                     Future<void>.microtask(
@@ -79,21 +74,22 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                         height: 5,
                       ),
                       TextFormField(
-                        controller: emailTextEditingController,
-                        focusNode: emailFocusNode,
+                        controller: passwordTextEditingController,
+                        focusNode: passwordFocusNode,
                         autofocus: true,
+                        obscureText: true,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
-                          hintText: 'Email',
+                          hintText: 'New Password',
                           prefixIcon: Icon(
-                            Icons.email,
+                            Icons.lock,
                           ),
                         ),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (_) =>
-                            state.isValidEmail ? null : "Username is too short",
-                        onChanged: (String value) => forgotPasswordBloc.add(
-                          EmailChanged(value),
+                        validator: (_) => state.isValidPassword
+                            ? null
+                            : "Password is too short",
+                        onChanged: (String value) => resetPasswordBloc.add(
+                          ResetPasswordChanged(password: value),
                         ),
                         onFieldSubmitted: (_) => onFormSubmitted(),
                       ),
@@ -127,8 +123,8 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
   void onFormSubmitted() {
     if (_formkey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
-      forgotPasswordBloc.add(
-        ForgotPasswordSubmitted(),
+      resetPasswordBloc.add(
+        ResetPasswordSubmitted(),
       );
     }
   }

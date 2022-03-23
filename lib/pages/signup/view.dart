@@ -1,19 +1,19 @@
 import 'dart:io';
 import 'package:components/routes/navigation.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/dialogs/dialogs.dart';
 import 'package:components/widgets/image_avtar.dart';
 import 'package:flutter/material.dart';
 
-class SignupPage extends BaseScreen {
+class SignupPage extends BasePage {
   const SignupPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SignupState();
 }
 
-class _SignupState extends BaseScreenState<SignupPage> {
+class _SignupState extends BasePageState<SignupPage> {
   late final FocusNode firstNameFocusNode;
   late final FocusNode lastNameFocusNode;
   late final FocusNode emailFocusNode;
@@ -78,11 +78,17 @@ class _SignupState extends BaseScreenState<SignupPage> {
               UserProfileImage(
                 image: image,
                 edit: () {
-                  showImagePickerPopup(context, (File file) {
-                    setState(() {
-                      image = file.path;
-                    });
-                  });
+                  showImagePickerPopup(
+                      context: context,
+                      onImagePicked: (File file) {
+                        setState(() {
+                          image = file.path;
+                        });
+
+                        if (mounted) {
+                          Navigator.pop(context);
+                        }
+                      });
                 },
               ),
               const SizedBox(height: 32),

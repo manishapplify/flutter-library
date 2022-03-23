@@ -1,19 +1,18 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/feedback/feedback_second/bloc/event.dart';
-import 'package:components/feedback/feedback_second/bloc/state.dart';
 import 'package:components/services/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+part 'event.dart';
+part 'state.dart';
 
 class FeedbackSecondBloc extends Bloc<FeedbackEvent, FeedbackSecondState> {
   FeedbackSecondBloc(
       {required Api api,
       required AuthRepository authRepository,
       required AuthCubit authCubit})
-      : _api = api,
-        _authRepository = authRepository,
-        _authCubit = authCubit,
+      : _authRepository = authRepository,
         super(FeedbackSecondState()) {
     on<FeedbackIssueChanged>(
         (FeedbackIssueChanged event, Emitter<FeedbackSecondState> emit) {
@@ -39,11 +38,10 @@ class FeedbackSecondBloc extends Bloc<FeedbackEvent, FeedbackSecondState> {
             feedbackRating: state.feedbackRating);
         emit(state.copyWith(formStatus: SubmissionSuccess()));
       } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(e)));
+        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
       }
     });
   }
-  final Api _api;
+
   final AuthRepository _authRepository;
-  final AuthCubit _authCubit;
 }

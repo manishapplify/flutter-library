@@ -1,17 +1,17 @@
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:components/base/base_screen.dart';
+import 'package:components/base/base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SplashPage extends BaseScreen {
+class SplashPage extends BasePage {
   const SplashPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SplashState();
 }
 
-class _SplashState extends BaseScreenState<SplashPage> {
+class _SplashState extends BasePageState<SplashPage> {
   bool expand = false;
   late final SplashBloc bloc;
 
