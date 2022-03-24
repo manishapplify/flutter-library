@@ -16,6 +16,7 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
   TextTheme get textTheme => Theme.of(context).textTheme;
   NavigatorState get navigator => Navigator.of(context);
+  RouteSettings get routeSettings => ModalRoute.of(context)!.settings;
 
   @override
   Widget build(BuildContext context) {

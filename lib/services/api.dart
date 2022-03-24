@@ -39,7 +39,7 @@ class Api {
 
   Future<Response<dynamic>> signup(SignupRequest signupRequest) async {
     final Response<dynamic> response = await dio.post(
-      '',
+      _signUp,
       data: signupRequest.toJson(),
     );
     return response;
@@ -127,9 +127,11 @@ class Api {
 
 const String _appVersion = '/api/v1/common/appVersion';
 const String _login = '/api/v1/user/login';
+const String _signUp = '/api/v1/user/signUp';
 const String _forgotPassword = '/api/v1/user/forgotPassword';
 const String _verifyForgetPasswordOtp = '/api/v1/user/verifyForgetPasswordOtp';
 const String _resetPassword = '/api/v1/user/resetPassword';
 const String _changePassword = '/api/v1/user/changePassword';
 const String _logout = '/api/v1/user/logout';
 const String _deleteAccount = '/api/v1/user';
+const String _registerUser = '/api/v1/user/registerUser';

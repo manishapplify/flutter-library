@@ -1,55 +1,29 @@
-// ignore_for_file: always_specify_types
-
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/pages/signup/bloc/event.dart';
-import 'package:components/pages/signup/bloc/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:components/validators/validators.dart' as validators;
+
+part 'event.dart';
+part 'state.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   SignUpBloc({
-    required AuthRepository authRepo,
+    required AuthRepository authRepository,
     required AuthCubit authCubit,
-    required ImagePicker picker,
-  })  : _authRepo = authRepo,
-        _picker = picker,
+  })  : _authRepo = authRepository,
         super(SignUpState()) {
-    on<OpenImagePicker>((event, emit) async {
-      final XFile? pickedImage =
-          await _picker.pickImage(source: event.imageSource);
-      if (pickedImage == null) {
-        return;
-      }
-      emit(state.copyWith(profilePic: pickedImage.path));
-    });
-
-    on<SignUpProfileImageChanged>((event, emit) {
+    on<SignUpCountryCodeChanged>(
+        (SignUpCountryCodeChanged event, Emitter<SignUpState> emit) {
       emit(
         state.copyWith(
-          profilePic: event.profilePic,
+          countryCode: event.countryCode,
           formStatus: const InitialFormStatus(),
         ),
       );
     });
-    on<SignUpFirstnameChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          firstname: event.firstname,
-          formStatus: const InitialFormStatus(),
-        ),
-      );
-    });
-    on<SignUpCountryCodeChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          code: event.code,
-          formStatus: const InitialFormStatus(),
-        ),
-      );
-    });
-    on<SignUpPhoneNumberChanged>((event, emit) {
+    on<SignUpPhoneNumberChanged>(
+        (SignUpPhoneNumberChanged event, Emitter<SignUpState> emit) {
       emit(
         state.copyWith(
           phoneNumber: event.phoneNumber,
@@ -57,51 +31,44 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         ),
       );
     });
-    on<SignUpLastnameChanged>((event, emit) {
+    on<SignUpEmailChanged>(
+        (SignUpEmailChanged event, Emitter<SignUpState> emit) {
       emit(
         state.copyWith(
-          lastname: event.lastname,
+          email: event.email,
           formStatus: const InitialFormStatus(),
         ),
       );
     });
-    on<SignUpReferralCodeChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          referralCode: event.referralCode,
-          formStatus: const InitialFormStatus(),
-        ),
-      );
-    });
-    on<SignUpEmailChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          password: event.email,
-          formStatus: const InitialFormStatus(),
-        ),
-      );
-    });
-    on<SignUpPasswordChanged>((event, emit) {
+    on<SignUpPasswordChanged>(
+        (SignUpPasswordChanged event, Emitter<SignUpState> emit) {
       emit(
         state.copyWith(
           password: event.password,
           formStatus: const InitialFormStatus(),
         ),
       );
-      print(event.password.toString());
     });
-    on<SignUpSubmitted>((event, emit) async {
+    on<SignUpConfirmPasswordChanged>(
+        (SignUpConfirmPasswordChanged event, Emitter<SignUpState> emit) {
+      emit(
+        state.copyWith(
+          confirmPassword: event.confirmPassword,
+          formStatus: const InitialFormStatus(),
+        ),
+      );
+    });
+
+    on<SignUpSubmitted>(
+        (SignUpSubmitted event, Emitter<SignUpState> emit) async {
       emit(state.copyWith(formStatus: FormSubmitting()));
       try {
         await _authRepo.signUp(
-          profilePic: state.profilePic,
-          firstName: state.firstname,
-          lastName: state.lastname,
-          countryCode: state.code,
+          countryCode: state.countryCode,
           phoneNumber: state.phoneNumber,
-          referralCode: state.referralCode,
           email: state.email,
           password: state.password,
+          userType: 1,
         );
         emit(state.copyWith(formStatus: SubmissionSuccess()));
       } on Exception catch (e) {
@@ -111,5 +78,4 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   }
 
   final AuthRepository _authRepo;
-  final ImagePicker _picker;
 }

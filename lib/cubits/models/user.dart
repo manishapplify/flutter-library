@@ -47,6 +47,34 @@ class User {
     );
   }
 
+  User copyWithJson(Map<String, dynamic> json) {
+    final S3Folders? s3Folders = json['s3Folders'] == null
+        ? null
+        : S3Folders.fromJson(json['s3Folders']);
+
+    return User(
+      id: json['id'] ?? this.id,
+      firstName: json['firstName'] ?? this.firstName,
+      lastName: json['lastName'] ?? this.lastName,
+      gender: json['gender'] ?? this.gender,
+      profilePic: json['profilePic'] ?? this.profilePic,
+      age: json['age'] ?? this.age,
+      email: json['email'] ?? this.email,
+      countryCode: json['countryCode'] ?? this.countryCode,
+      phoneNumber: json['phoneNumber'] ?? this.phoneNumber,
+      registrationStep: json['registrationStep'] ?? this.registrationStep,
+      notificationEnabled: json['notificationEnabled'] ?? this.notificationEnabled,
+      address: json['address'] ?? this.address,
+      city: json['city'] ?? this.city,
+      isPhoneVerified: json['isPhoneVerified'] ?? this.isPhoneVerified,
+      isEmailVerified: json['isEmailVerified'] ?? this.isEmailVerified,
+      referralCode: json['referralCode'] ?? this.referralCode,
+      createdAt: json['createdAt'] ?? this.createdAt,
+      accessToken: json['accessToken'] ?? this.accessToken,
+      s3Folders: s3Folders ?? this.s3Folders,
+    );
+  }
+
   final String id;
   final String firstName;
   final String lastName;

@@ -144,7 +144,7 @@ class _LoginState extends BasePageState<LoginPage> {
                   ),
                   onPressed: () {
                     navigator.pushNamed(
-                      Routes.signupOne,
+                      Routes.signup,
                     );
                   },
                 )

@@ -12,6 +12,7 @@ import 'package:components/pages/logout/model/response.dart';
 import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
+import 'package:components/pages/signup/models/response.dart';
 import 'package:components/services/api.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/services/persistence.dart';
@@ -68,28 +69,36 @@ class AuthRepository {
   }
 
   Future<void> signUp({
-    required String profilePic,
-    required String firstName,
-    required String lastName,
-    required String countryCode,
-    required String phoneNumber,
-    required String email,
+    String? countryCode,
+    String? phoneNumber,
+    String? email,
     required String password,
-    String? referralCode,
+    required int userType,
   }) async {
-    await Future<dynamic>.delayed(const Duration(seconds: 2));
-    _api.signup(
+    if (_fcm.deviceToken == null) {
+      await _fcm.getToken();
+    }
+
+    final Response<dynamic> response = await _api.signup(
       SignupRequest(
-        profilePic: profilePic,
-        firstName: firstName,
-        lastName: lastName,
+        platformType: _config.platform.name,
+        deviceToken: _fcm.deviceToken!,
         countryCode: countryCode,
         phoneNumber: phoneNumber,
         email: email,
         password: password,
-        referralCode: referralCode,
+        userType: userType,
       ),
     );
+    final SignupResponse signupResponse =
+        SignupResponse.fromJson(response.data);
+    _authCubit.signupOrLogin(signupResponse.user);
+
+    if (countryCode is String) {
+      _persistence.saveCountryCode(countryCode);
+    }
+    _persistence
+        .saveRegistrationStatus(signupResponse.user.registrationStep < 1);
   }
 
   Future<void> forgotPassword(ForgotPasswordRequest request) async {
