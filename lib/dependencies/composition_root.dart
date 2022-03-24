@@ -44,7 +44,10 @@ Future<CompositionRoot> configureDependencies() async {
   );
   final Api api = Api(
     baseOptions: BaseOptions(
-      baseUrl: 'https://api-lib.applifyapps.com',
+      baseUrl: const String.fromEnvironment(
+        "baseUrl",
+        defaultValue: 'https://api-lib.applifyapps.com',
+      ),
     ),
     interceptorsWrapper: InterceptorsWrapper(
       onRequest: _requestInterceptor,
