@@ -54,8 +54,8 @@ class User {
   final String? profilePic;
   final int? age;
   final String email;
-  final String countryCode;
-  final String phoneNumber;
+  final String? countryCode;
+  final String? phoneNumber;
   final int registrationStep;
   final int notificationEnabled;
   final String address;

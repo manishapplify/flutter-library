@@ -1,3 +1,4 @@
+import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/base/base_page.dart';
@@ -14,10 +15,12 @@ class SplashPage extends BasePage {
 class _SplashState extends BasePageState<SplashPage> {
   bool expand = false;
   late final SplashBloc bloc;
+  late final AuthCubit authCubit;
 
   @override
   void initState() {
     bloc = BlocProvider.of(context)..add(OnAppOpened());
+    authCubit = BlocProvider.of(context);
     Future<void>.delayed(
       const Duration(
         milliseconds: 500,
@@ -56,11 +59,19 @@ class _SplashState extends BasePageState<SplashPage> {
             ),
           );
         } else if (state is LatestApp) {
-          Future<void>.microtask(
-            () => navigator.popAndPushNamed(
-              Routes.login,
-            ),
-          );
+          if (authCubit.state.isAuthorized) {
+            Future<void>.microtask(
+              () => navigator.popAndPushNamed(
+                Routes.home,
+              ),
+            );
+          } else {
+            Future<void>.microtask(
+              () => navigator.popAndPushNamed(
+                Routes.login,
+              ),
+            );
+          }
         }
 
         return Center(
