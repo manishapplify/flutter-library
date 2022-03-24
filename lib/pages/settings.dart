@@ -3,7 +3,6 @@ import 'package:components/pages/delete_account/bloc/bloc.dart';
 import 'package:components/pages/logout/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsScreen extends BasePage {

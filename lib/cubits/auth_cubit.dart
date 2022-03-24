@@ -1,4 +1,5 @@
 import 'package:components/cubits/models/user.dart';
+import 'package:components/services/api.dart';
 import 'package:components/services/persistence.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,26 +12,27 @@ class AuthState {
 }
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit(Persistence persistence)
-      : _persistence = persistence,
+  AuthCubit({
+    required Persistence persistence,
+    required Api api,
+  })  : _persistence = persistence,
+        _api = api,
         super(AuthState()) {
     emit(AuthState(user: _persistence.fetchUser()));
   }
 
   final Persistence _persistence;
+  final Api _api;
 
   void signupOrLogin(User user) {
     emit(AuthState(user: user));
+    _api.addAuthorizationHeader(user.accessToken);
     _persistence.saveUser(user);
   }
 
-  void logout() {
+  void logoutOrDeleteAccount() {
     emit(AuthState());
-    _persistence.deleteUser();
-  }
-
-  void deleteAccount() {
-    emit(AuthState());
+    _api.removeAuthorizationHeader();
     _persistence.deleteUser();
   }
 }

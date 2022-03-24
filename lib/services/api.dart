@@ -37,6 +37,16 @@ class Api {
   final String _baseUrl = const String.fromEnvironment("baseUrl");
   late final Dio dio;
 
+  void addAuthorizationHeader(String authorization) {
+    dio.options.headers = <String, dynamic>{
+      'authorization': authorization,
+    };
+  }
+
+  void removeAuthorizationHeader() {
+    dio.options.headers = <String, dynamic>{};
+  }
+
   Future<Response<dynamic>> signup(SignupRequest signupRequest) async {
     final Response<dynamic> response = await dio.post(
       _signUp,
@@ -76,31 +86,22 @@ class Api {
 
   Future<Response<dynamic>> changePassword(
       ChangePasswordRequest request) async {
-    dio.options.headers = <String, dynamic>{
-      'authorization': request.authorization,
-    };
     final Response<dynamic> response = await dio.put(
       _changePassword,
-      data: request.toJson()..remove('authorization'),
+      data: request.toJson(),
     );
     return response;
   }
 
   Future<Response<dynamic>> logout(LogoutRequest request) async {
-    dio.options.headers = <String, dynamic>{
-      'authorization': request.authorization,
-    };
     final Response<dynamic> response = await dio.put(
       _logout,
-      data: request.toJson()..remove('authorization'),
+      data: request.toJson(),
     );
     return response;
   }
 
   Future<Response<dynamic>> deleteAccount(DeleteAccountRequest request) async {
-    dio.options.headers = <String, dynamic>{
-      'authorization': request.authorization,
-    };
     final Response<dynamic> response = await dio.delete(
       _deleteAccount,
     );

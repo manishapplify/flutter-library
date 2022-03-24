@@ -147,18 +147,16 @@ class AuthRepository {
       throw Exception('not signed in');
     }
     await Future<dynamic>.delayed(const Duration(seconds: 5));
-    print('ChamgePasswordSubmit');
     final ChangePasswordRequest request = ChangePasswordRequest(
-        oldPassword: currentPassword,
-        password: newPassword,
-        authorization: _authCubit.state.user!.accessToken);
+      oldPassword: currentPassword,
+      password: newPassword,
+    );
 
-    final Response<dynamic> response = await _api.changePassword(request);
+    await _api.changePassword(request);
     throw Exception('failed ChangePasswordSubmission');
   }
 
   Future<dynamic> logout() async {
-    print('Logout');
     if (_fcm.deviceToken == null) {
       await _fcm.getToken();
     }
@@ -166,42 +164,40 @@ class AuthRepository {
       throw Exception('not signed in');
     }
     final LogoutRequest request = LogoutRequest(
-        deviceToken: _fcm.deviceToken!,
-        authorization: _authCubit.state.user!.accessToken);
+      deviceToken: _fcm.deviceToken!,
+    );
 
     final Response<dynamic> response = await _api.logout(request);
     final LogoutResponse logoutResponse =
         LogoutResponse.fromJson(response.data);
     if (logoutResponse.message == "success") {
-      _authCubit.logout();
+      _authCubit.logoutOrDeleteAccount();
+    } else {
+      throw Exception('failed Logout');
     }
-    throw Exception('failed Logout');
   }
 
   Future<dynamic> deleteAccount() async {
     if (!_authCubit.state.isAuthorized) {
       throw Exception('not signed in');
     }
-    print('DeleteAccount');
-    final DeleteAccountRequest request =
-        DeleteAccountRequest(authorization: _authCubit.state.user!.accessToken);
+    final DeleteAccountRequest request = DeleteAccountRequest();
 
     final Response<dynamic> response = await _api.deleteAccount(request);
     final DeleteAccountResponse deleteAccountResponse =
         DeleteAccountResponse.fromJson(response.data);
     if (deleteAccountResponse.message == "success") {
-      _authCubit.deleteAccount();
+      _authCubit.logoutOrDeleteAccount();
+    } else {
+      throw Exception('failed ChangePasswordSubmission');
     }
-    throw Exception('failed ChangePasswordSubmission');
   }
 
   Future<dynamic> feedbackSubmit({
     required String? feedbackissue,
     List<String>? feedbackreasons,
   }) async {
-    print('Feedback Submit');
     await Future<dynamic>.delayed(const Duration(seconds: 5));
-    print('feedbackSubmit');
     throw Exception('failed feedbackSubmission');
   }
 
@@ -209,9 +205,7 @@ class AuthRepository {
       {required String? feedbackissue,
       required String? feedbackreason,
       required double? feedbackRating}) async {
-    print('Feedback Submit');
     await Future<dynamic>.delayed(const Duration(seconds: 5));
-    print('feedbackSubmit');
     throw Exception('failed feedbackSubmission');
   }
 }

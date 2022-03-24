@@ -32,7 +32,6 @@ Future<CompositionRoot> configureDependencies() async {
       await SharedPreferences.getInstance();
   final Persistence persistence =
       Persistence(sharedPreferences: sharedPreferences);
-  final AuthCubit authCubit = AuthCubit(persistence);
   final PackageInfo packageInfo = await PackageInfo.fromPlatform();
   final Config config = Config(
     appVersion: packageInfo.version,
@@ -54,6 +53,10 @@ Future<CompositionRoot> configureDependencies() async {
       onResponse: _responseInterceptor,
       onError: _errorInterceptor,
     ),
+  );
+  final AuthCubit authCubit = AuthCubit(
+    persistence: persistence,
+    api: api,
   );
   final FirebaseCloudMessaging fcm = FirebaseCloudMessaging()
     ..registerFCM()
