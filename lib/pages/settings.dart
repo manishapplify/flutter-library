@@ -46,41 +46,7 @@ class _SettingsState extends BasePageState<SettingsScreen> {
         ),
         buildOption(
           "Delete Account",
-          () {
-            showDialog(
-                context: context,
-                builder: (BuildContext childContext) => CupertinoAlertDialog(
-                      actionScrollController: ScrollController(),
-                      title: const Text(
-                        "Confirm Delete Account",
-                      ),
-                      actions: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            CupertinoDialogAction(
-                              onPressed: () => () {
-                                onDeleteAccount();
-                              },
-                              // isDefaultAction: true,
-                              child: const Text("Delete Account"),
-                            ),
-                            const Divider(
-                              height: 0.0,
-                            ),
-                            CupertinoDialogAction(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              //  isDefaultAction: false,
-                              child: const Text(
-                                "Cancel",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ));
-          },
+          onDeleteAccount,
           const Icon(
             Icons.account_circle,
             color: Colors.black,
@@ -88,41 +54,7 @@ class _SettingsState extends BasePageState<SettingsScreen> {
         ),
         buildOption(
           "Logout",
-          () {
-            showDialog(
-                context: context,
-                builder: (BuildContext childContext) => CupertinoAlertDialog(
-                      actionScrollController: ScrollController(),
-                      title: const Text(
-                        "Confirm Logout",
-                      ),
-                      actions: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            CupertinoDialogAction(
-                              onPressed: () => () {
-                                onLogout();
-                              },
-                              // isDefaultAction: true,
-                              child: const Text("Logout"),
-                            ),
-                            const Divider(
-                              height: 0.0,
-                            ),
-                            CupertinoDialogAction(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              //  isDefaultAction: false,
-                              child: const Text(
-                                "Cancel",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ));
-          },
+          onLogout,
           const Icon(
             Icons.logout_rounded,
             color: Colors.black,

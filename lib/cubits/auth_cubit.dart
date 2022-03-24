@@ -28,4 +28,9 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthState());
     _persistence.deleteUser();
   }
+
+  void deleteAccount() {
+    emit(AuthState());
+    _persistence.deleteUser();
+  }
 }

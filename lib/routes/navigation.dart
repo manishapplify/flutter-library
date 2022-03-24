@@ -42,7 +42,17 @@ class Navigation {
         _authRepository = authRepository,
         _authCubit = authCubit,
         _config = config,
-        _persistence = persistence;
+        _persistence = persistence {
+    _authCubit.stream.listen((AuthState event) {
+      if (!event.isAuthorized) {
+        Navigator.popUntil(
+          navigatorKey.currentContext!,
+          (_) => true,
+        );
+        Navigator.pushNamed(navigatorKey.currentContext!, Routes.login);
+      }
+    });
+  }
 
   final Api _api;
   final AuthRepository _authRepository;

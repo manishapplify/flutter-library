@@ -76,25 +76,33 @@ class Api {
 
   Future<Response<dynamic>> changePassword(
       ChangePasswordRequest request) async {
+    dio.options.headers = <String, dynamic>{
+      'authorization': request.authorization,
+    };
     final Response<dynamic> response = await dio.put(
       _changePassword,
-      data: request.toJson(),
+      data: request.toJson()..remove('authorization'),
     );
     return response;
   }
 
   Future<Response<dynamic>> logout(LogoutRequest request) async {
+    dio.options.headers = <String, dynamic>{
+      'authorization': request.authorization,
+    };
     final Response<dynamic> response = await dio.put(
       _logout,
-      data: request.toJson(),
+      data: request.toJson()..remove('authorization'),
     );
     return response;
   }
 
   Future<Response<dynamic>> deleteAccount(DeleteAccountRequest request) async {
+    dio.options.headers = <String, dynamic>{
+      'authorization': request.authorization,
+    };
     final Response<dynamic> response = await dio.delete(
       _deleteAccount,
-      data: request.toJson(),
     );
     return response;
   }
