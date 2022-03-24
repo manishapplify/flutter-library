@@ -5,31 +5,40 @@ import 'package:flutter/material.dart';
 class UserProfileImage extends StatelessWidget {
   const UserProfileImage({
     Key? key,
-    required this.image,
+    this.imagePath,
+    this.imageUrl,
     required this.edit,
   }) : super(key: key);
 
-  final String image;
+  final String? imagePath;
+  final String? imageUrl;
   final Function() edit;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      width: 100,
-      alignment: Alignment.bottomRight,
-      child: InkWell(
-        onTap: this.edit,
-        child: const Icon(Icons.camera_enhance_rounded),
-      ),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.grey[300],
-        image: DecorationImage(
-          image: image.isEmpty
-              ? const AssetImage("assets/images/avtar.png")
-              : FileImage(File(image)) as ImageProvider,
-          fit: BoxFit.fill,
+    return InkWell(
+      onTap: this.edit,
+      borderRadius: const BorderRadius.all(Radius.circular(100)),
+      child: Container(
+        height: 100,
+        width: 100,
+        alignment: Alignment.bottomRight,
+        child: const Icon(
+          Icons.camera_enhance_rounded,
+        ),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.grey[300],
+          image: DecorationImage(
+            image:
+                // Prefer to show selected image.
+                imagePath is String && imagePath!.isNotEmpty
+                    ? FileImage(File(imagePath!))
+                    : imageUrl is String && imageUrl!.isNotEmpty
+                        ? NetworkImage(imageUrl!) as ImageProvider
+                        : const AssetImage("assets/images/avtar.png"),
+            fit: BoxFit.fill,
+          ),
         ),
       ),
     );
