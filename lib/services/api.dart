@@ -4,6 +4,7 @@ import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/logout/model/request.dart';
 import 'package:components/pages/otp/models/request.dart';
+import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
 import 'package:dio/dio.dart';
@@ -121,6 +122,29 @@ class Api {
     final Response<dynamic> response = await dio.put(
       _resetPassword,
       data: request.toJson(),
+    );
+    return response;
+  }
+
+  Future<Response<dynamic>> registerUser(RegisterUserRequest request) async {
+    final Map<String, dynamic> map = request.toJson();
+    final String imagePath = map['profilePic'];
+    map.remove('profilePic');
+
+    final FormData formData = FormData.fromMap(map);
+    formData.files.add(
+      MapEntry<String, MultipartFile>(
+        'profilePic',
+        await MultipartFile.fromFile(
+          imagePath,
+          filename: imagePath,
+        ),
+      ),
+    );
+
+    final Response<dynamic> response = await dio.put(
+      _registerUser,
+      data: formData,
     );
     return response;
   }

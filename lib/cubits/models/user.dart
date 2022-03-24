@@ -76,21 +76,21 @@ class User {
   }
 
   final String id;
-  final String firstName;
-  final String lastName;
-  final String gender;
+  final String? firstName;
+  final String? lastName;
+  final String? gender;
   final String? profilePic;
   final int? age;
-  final String email;
+  final String? email;
   final String? countryCode;
   final String? phoneNumber;
   final int registrationStep;
   final int notificationEnabled;
-  final String address;
-  final String city;
+  final String? address;
+  final String? city;
   final int isPhoneVerified;
   final int isEmailVerified;
-  final String referralCode;
+  final String? referralCode;
   final String createdAt;
   final String accessToken;
   final S3Folders s3Folders;

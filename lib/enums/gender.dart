@@ -6,3 +6,18 @@ enum Gender {
   Other,
   NA,
 }
+
+Gender genderFromString(String gender) {
+  switch (gender) {
+    case 'Male':
+      return Gender.Male;
+    case 'Female':
+      return Gender.Female;
+    case 'Other':
+      return Gender.Other;
+    case 'NA':
+      return Gender.NA;
+  }
+
+  return Gender.NA;
+}

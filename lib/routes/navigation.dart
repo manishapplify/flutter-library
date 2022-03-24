@@ -3,6 +3,7 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/pages/change_password/bloc/bloc.dart';
 import 'package:components/pages/change_password/view.dart';
 import 'package:components/pages/delete_account/bloc/bloc.dart';
+import 'package:components/enums/screen.dart';
 import 'package:components/pages/feedback/feedback_fourth.dart';
 import 'package:components/pages/feedback/feedback_one.dart';
 import 'package:components/pages/feedback/feedback_one/bloc/bloc.dart';
@@ -17,6 +18,8 @@ import 'package:components/pages/login/view.dart';
 import 'package:components/pages/logout/bloc/bloc.dart';
 import 'package:components/pages/otp/bloc/bloc.dart';
 import 'package:components/pages/otp/view.dart';
+import 'package:components/pages/profile/bloc/bloc.dart';
+import 'package:components/pages/profile/view.dart';
 import 'package:components/pages/reset_password/bloc/bloc.dart';
 import 'package:components/pages/reset_password/view.dart';
 import 'package:components/pages/settings.dart';
@@ -43,17 +46,19 @@ class Navigation {
         _authRepository = authRepository,
         _authCubit = authCubit,
         _config = config,
-        _persistence = persistence{
-          _authCubit.stream.listen((AuthState event) { 
-            if(!event.isAuthorized){
-              Navigator.popUntil(navigatorKey.currentContext!,
-                            (_) => true,
-                          );
-              Navigator.pushNamed(navigatorKey.currentContext!, Routes.login);
-                          
-            }
-          });
+        _persistence = persistence {
+    _authCubit.stream.listen(
+      (AuthState event) {
+        if (!event.isAuthorized) {
+          Navigator.popUntil(
+            navigatorKey.currentContext!,
+            (_) => true,
+          );
+          Navigator.pushNamed(navigatorKey.currentContext!, Routes.login);
         }
+      },
+    );
+  }
 
   final Api _api;
   final AuthRepository _authRepository;
@@ -127,6 +132,16 @@ class Navigation {
               authRepository: _authRepository,
             ),
             child: const ResetPasswordPage(),
+          ),
+        );
+      case Routes.profile:
+        return MaterialPageRoute<ProfilePage>(
+          settings: settings,
+          builder: (_) => BlocProvider<ProfileBloc>(
+            create: (_) => ProfileBloc(
+              screenType: settings.arguments as Screen,
+            ),
+            child: const ProfilePage(),
           ),
         );
       case Routes.home:
