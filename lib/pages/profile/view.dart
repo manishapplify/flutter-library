@@ -42,10 +42,8 @@ class _UserProfileState extends BasePageState<ProfilePage> {
     Gender.values.length,
     (int index) => DropdownMenuItem<Gender>(
       child: SizedBox(
-        width: 70,
-        child: ListTile(
-          title: Text(Gender.values[index].name),
-        ),
+        width: 120,
+        child: Text(Gender.values[index].name),
       ),
       value: Gender.values[index],
     ),
@@ -101,8 +99,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
           TextEditingValue(text: user.phoneNumber!);
     }
     if (user.gender is String) {
-      profileBloc
-          .add(ProfileGenderChanged(gender: genderFromString(user.gender!)));
+      profileBloc.add(
+        ProfileGenderChanged(
+          gender: genderFromString(user.gender!),
+        ),
+      );
     }
 
     super.initState();
@@ -134,15 +135,14 @@ class _UserProfileState extends BasePageState<ProfilePage> {
   }
 
   void onFormSubmitted() async {
-    if (_formkey.currentState!.validate()) {
+    final ProfileState profileState = profileBloc.state;
+    if (_formkey.currentState!.validate() &&
+        profileState.isValidCountryCode &&
+        profileState.isValidGender &&
+        profileState.isValidProfilePicFilePath) {
       FocusScope.of(context).unfocus();
+      profileBloc.add(ProfileSubmitted());
     }
-
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      Routes.home,
-      (Route<dynamic> route) => false,
-    );
   }
 
   @override
@@ -155,7 +155,15 @@ class _UserProfileState extends BasePageState<ProfilePage> {
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (BuildContext context, ProfileState state) {
               if (state.formStatus is SubmissionSuccess) {
-                Future<void>.microtask(() => navigator.pushNamed(Routes.home));
+                Future<void>.microtask(
+                  () => navigator
+                    ..popUntil(
+                      (_) => false,
+                    )
+                    ..pushNamed(
+                      Routes.home,
+                    ),
+                );
               } else if (state.formStatus is SubmissionFailed) {
                 Future<void>.microtask(
                   () => showSnackBar(
@@ -172,7 +180,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     height: 5,
                   ),
                   UserProfileImage(
-                    imagePath: state.profilePicFilePath,
+                    imagePath: state.profilePicFile?.path,
                     imageUrl: state.profilePicUrlPath,
                     edit: () {
                       showImagePickerPopup(
@@ -180,8 +188,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                         onImagePicked: (File file) {
                           if (!profileBloc.isClosed) {
                             profileBloc.add(
-                              ProfileProfileImageChanged(
-                                  profilePicPath: file.path),
+                              ProfileImageChanged(
+                                profilePic: file,
+                              ),
                             );
                           }
                           if (mounted) {
@@ -203,6 +212,12 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                       keyboardType: TextInputType.text,
                       onFieldSubmitted: (_) =>
                           firstNameFocusNode.requestFocus(),
+                      textInputAction: TextInputAction.next,
+                      onChanged: (String value) => profileBloc.add(
+                        ProfileRefferalCodeChanged(
+                          refferalCode: value,
+                        ),
+                      ),
                     ),
                   if (screen == Screen.registerUser)
                     const SizedBox(
@@ -211,7 +226,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   TextFormField(
                     controller: firstNameTextEditingController,
                     focusNode: firstNameFocusNode,
-                    autofocus: screen == Screen.editProfile,
+                    autofocus: screen != Screen.registerUser,
                     textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
                       hintText: 'Enter your first name',
@@ -219,6 +234,14 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => lastNameFocusNode.requestFocus(),
+                    validator: (_) =>
+                        state.isValidFirstname ? null : "First name too short",
+                    textInputAction: TextInputAction.next,
+                    onChanged: (String value) => profileBloc.add(
+                      ProfileFirstnameChanged(
+                        firstname: value,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
@@ -232,6 +255,14 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => emailFocusNode.requestFocus(),
+                    validator: (_) =>
+                        state.isValidLastname ? null : "Last name too short",
+                    textInputAction: TextInputAction.next,
+                    onChanged: (String value) => profileBloc.add(
+                      ProfileLastnameChanged(
+                        lastname: value,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
@@ -245,6 +276,14 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     ),
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (_) => phoneFocusNode.requestFocus(),
+                    validator: (_) =>
+                        state.isValidEmail ? null : "Username is too short",
+                    textInputAction: TextInputAction.next,
+                    onChanged: (String value) => profileBloc.add(
+                      ProfileEmailChanged(
+                        email: value,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 15),
                   Row(
@@ -274,6 +313,15 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                           ),
                           keyboardType: TextInputType.phone,
                           onFieldSubmitted: (_) => ageFocusNode.requestFocus(),
+                          validator: (_) => state.isValidPhoneNumber
+                              ? null
+                              : 'Enter a valid phone number',
+                          textInputAction: TextInputAction.next,
+                          onChanged: (String value) => profileBloc.add(
+                            ProfilePhoneNumberChanged(
+                              phoneNumber: value,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -286,7 +334,10 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                         profileBloc.add(ProfileGenderChanged(gender: gender));
                       }
                     },
-                    hint: const Text('Select your gender'),
+                    decoration: const InputDecoration(
+                      hintText: 'Select your gender',
+                      labelText: 'Gender',
+                    ),
                     value: state.gender,
                   ),
                   const SizedBox(height: 15),
@@ -298,8 +349,17 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                       hintText: 'Enter your age',
                       labelText: 'Age',
                     ),
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     onFieldSubmitted: (_) => addressFocusNode.requestFocus(),
+                    validator: (_) => state.isValidAge
+                        ? null
+                        : 'Must be above 18 to use the app',
+                    textInputAction: TextInputAction.next,
+                    onChanged: (String value) => profileBloc.add(
+                      ProfileAgeChanged(
+                        age: int.tryParse(value) ?? 0,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
@@ -312,6 +372,15 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => cityFocusNode.requestFocus(),
+                    validator: (_) => state.isValidAddress
+                        ? null
+                        : 'Address must not be empty',
+                    textInputAction: TextInputAction.next,
+                    onChanged: (String value) => profileBloc.add(
+                      ProfileAddressChanged(
+                        address: value,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
@@ -323,14 +392,21 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                       labelText: 'City',
                     ),
                     keyboardType: TextInputType.text,
-                    onFieldSubmitted: (_) => emailFocusNode.requestFocus(),
+                    onFieldSubmitted: (_) => onFormSubmitted(),
+                    validator: (_) =>
+                        state.isValidCity ? null : 'City must not be empty',
+                    onChanged: (String value) => profileBloc.add(
+                      ProfileCityChanged(
+                        city: value,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 15),
                   Row(
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          'Enable Notifications',
+                          'Enable Push Notifications',
                           style: textTheme.headline2,
                         ),
                       ),
@@ -349,19 +425,21 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  ElevatedButton(
-                    onPressed: onFormSubmitted,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
-                      child: Text(
-                        'Submit',
-                        style: textTheme.headline2,
-                      ),
-                    ),
-                  ),
+                  state.formStatus is FormSubmitting
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: onFormSubmitted,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
+                            child: Text(
+                              'Submit',
+                              style: textTheme.headline2,
+                            ),
+                          ),
+                        ),
                 ],
               );
             },

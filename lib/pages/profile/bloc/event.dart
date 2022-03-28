@@ -38,14 +38,9 @@ class ProfileGenderChanged extends ProfileEvent {
   final Gender gender;
 }
 
-class OpenImagePicker extends ProfileEvent {
-  OpenImagePicker({required this.imageSource});
-  final ImageSource imageSource;
-}
-
-class ProfileProfileImageChanged extends ProfileEvent {
-  ProfileProfileImageChanged({required this.profilePicPath});
-  final String profilePicPath;
+class ProfileImageChanged extends ProfileEvent {
+  ProfileImageChanged({required this.profilePic});
+  final File profilePic;
 }
 
 class ProfileAgeChanged extends ProfileEvent {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
+import 'package:components/pages/profile/repo.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/api.dart';
@@ -72,6 +73,12 @@ Future<CompositionRoot> configureDependencies() async {
     authCubit: authCubit,
     passwordAuthCubit: passwordAuthCubit,
   );
+  final ProfileRepository profileRepository = ProfileRepository(
+    api: api,
+    config: config,
+    persistence: persistence,
+    authCubit: authCubit,
+  );
 
   return CompositionRoot(
     authCubit: authCubit,
@@ -79,6 +86,7 @@ Future<CompositionRoot> configureDependencies() async {
     navigation: Navigation(
       api: api,
       authRepository: authRepository,
+      profileRepository: profileRepository,
       authCubit: authCubit,
       config: config,
       persistence: persistence,
@@ -96,7 +104,6 @@ void _responseInterceptor(
 
 void _requestInterceptor(
     RequestOptions options, RequestInterceptorHandler handler) async {
-  options.headers["Content-Type"] = "application/json";
   print('Request');
   print('(${options.method}) ${options.uri}');
   print('${options.headers} ${options.data}');

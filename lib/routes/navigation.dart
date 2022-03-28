@@ -19,6 +19,7 @@ import 'package:components/pages/logout/bloc/bloc.dart';
 import 'package:components/pages/otp/bloc/bloc.dart';
 import 'package:components/pages/otp/view.dart';
 import 'package:components/pages/profile/bloc/bloc.dart';
+import 'package:components/pages/profile/repo.dart';
 import 'package:components/pages/profile/view.dart';
 import 'package:components/pages/reset_password/bloc/bloc.dart';
 import 'package:components/pages/reset_password/view.dart';
@@ -39,11 +40,13 @@ class Navigation {
   Navigation({
     required Api api,
     required AuthRepository authRepository,
+    required ProfileRepository profileRepository,
     required AuthCubit authCubit,
     required Config config,
     required Persistence persistence,
   })  : _api = api,
         _authRepository = authRepository,
+        _profileRepository = profileRepository,
         _authCubit = authCubit,
         _config = config,
         _persistence = persistence {
@@ -66,6 +69,7 @@ class Navigation {
 
   final Api _api;
   final AuthRepository _authRepository;
+  final ProfileRepository _profileRepository;
   final AuthCubit _authCubit;
   final Config _config;
   final Persistence _persistence;
@@ -144,6 +148,7 @@ class Navigation {
           builder: (_) => BlocProvider<ProfileBloc>(
             create: (_) => ProfileBloc(
               screenType: settings.arguments as Screen,
+              profileRepository: _profileRepository,
             ),
             child: const ProfilePage(),
           ),

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:components/common_models/s3_image_upload/request.dart';
 import 'package:components/pages/change_password/model/request.dart';
 import 'package:components/pages/delete_account/model/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
@@ -41,6 +44,7 @@ class Api {
   void addAuthorizationHeader(String authorization) {
     dio.options.headers = <String, dynamic>{
       'authorization': authorization,
+      "Content-Type": "application/json",
     };
   }
 
@@ -127,24 +131,36 @@ class Api {
   }
 
   Future<Response<dynamic>> registerUser(RegisterUserRequest request) async {
-    final Map<String, dynamic> map = request.toJson();
-    final String imagePath = map['profilePic'];
-    map.remove('profilePic');
-
-    final FormData formData = FormData.fromMap(map);
-    formData.files.add(
-      MapEntry<String, MultipartFile>(
-        'profilePic',
-        await MultipartFile.fromFile(
-          imagePath,
-          filename: imagePath,
-        ),
-      ),
-    );
-
     final Response<dynamic> response = await dio.put(
       _registerUser,
-      data: formData,
+      data: request.toJson(),
+    );
+    return response;
+  }
+
+  Future<Response<dynamic>> getS3UploadSignedURL(
+      S3ImageUploadRequest request) async {
+    final Response<dynamic> response = await dio.post(
+      _getS3UploadSignedURL,
+      data: request.toJson(),
+    );
+    return response;
+  }
+
+  Future<Response<dynamic>> uploadImageToS3SignedURL({
+    required String s3SignedURL,
+    required File image,
+  }) async {
+    final Response<dynamic> response = await dio.put(
+      s3SignedURL,
+      data: image.openRead(),
+      options: Options(
+        headers: <String, dynamic>{
+          "Content-Length": image.lengthSync(),
+          "authorization": null,
+          "Content-Type": 'image/jpeg',
+        },
+      ),
     );
     return response;
   }
@@ -160,3 +176,4 @@ const String _changePassword = '/api/v1/user/changePassword';
 const String _logout = '/api/v1/user/logout';
 const String _deleteAccount = '/api/v1/user';
 const String _registerUser = '/api/v1/user/registerUser';
+const String _getS3UploadSignedURL = '/api/v1/common/getSignedURL';
