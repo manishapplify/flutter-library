@@ -137,9 +137,12 @@ class _UserProfileState extends BasePageState<ProfilePage> {
     if (_formkey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
     }
-    navigator
-      ..popUntil((_) => true)
-      ..pushNamed(Routes.home);
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      Routes.home,
+      (Route<dynamic> route) => false,
+    );
   }
 
   @override

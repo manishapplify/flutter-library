@@ -36,6 +36,7 @@ class _LoginState extends BasePageState<LoginPage> {
   @override
   PreferredSizeWidget appBar(BuildContext context) => AppBar(
         title: const Text('Login'),
+        automaticallyImplyLeading: false,
       );
 
   @override

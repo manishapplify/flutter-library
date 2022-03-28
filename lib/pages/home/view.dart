@@ -13,6 +13,7 @@ class _HomeState extends BasePageState<HomePage> {
   @override
   PreferredSizeWidget? appBar(BuildContext context) => AppBar(
         title: const Text('Home'),
+        automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
               onPressed: () {

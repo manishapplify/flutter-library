@@ -54,7 +54,11 @@ class Navigation {
             navigatorKey.currentContext!,
             (_) => true,
           );
-          Navigator.pushNamed(navigatorKey.currentContext!, Routes.login);
+          Navigator.pushNamedAndRemoveUntil(
+            navigatorKey.currentContext!,
+            Routes.login,
+            (Route<dynamic> route) => false,
+          );
         }
       },
     );

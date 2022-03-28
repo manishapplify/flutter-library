@@ -58,7 +58,7 @@ class AuthRepository {
       platformType: _config.platform.name,
       deviceToken: _fcm.deviceToken!,
       countryCode: _persistence.fetchCountryCode() ?? '+91',
-      emailOrPhoneNumber: username,
+      emailOrPhoneNumber: username.trim(),
       password: password,
     );
 
@@ -83,9 +83,9 @@ class AuthRepository {
       SignupRequest(
         platformType: _config.platform.name,
         deviceToken: _fcm.deviceToken!,
-        countryCode: countryCode,
-        phoneNumber: phoneNumber,
-        email: email,
+        countryCode: countryCode?.trim(),
+        phoneNumber: phoneNumber?.trim(),
+        email: email?.trim(),
         password: password,
         userType: userType,
       ),
@@ -108,7 +108,7 @@ class AuthRepository {
 
     _passwordAuthCubit.setToken(
       token: forgotPasswordResponse.token,
-      email: request.email,
+      email: request.email.trim(),
     );
   }
 
@@ -189,7 +189,7 @@ class AuthRepository {
     if (deleteAccountResponse.message == "success") {
       _authCubit.logoutOrDeleteAccount();
     } else {
-      throw Exception('failed ChangePasswordSubmission');
+      throw Exception('failed DeleteAccount');
     }
   }
 
