@@ -126,7 +126,10 @@ class Navigation {
           settings: settings,
           builder: (_) => BlocProvider<OtpBloc>(
             create: (_) => OtpBloc(
+              screenType: settings.arguments as Screen,
               authRepository: _authRepository,
+              api: _api,
+              authCubit: _authCubit,
             ),
             child: const OtpPage(),
           ),

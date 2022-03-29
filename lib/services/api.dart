@@ -123,6 +123,17 @@ class Api {
     return response;
   }
 
+  Future<Response<dynamic>> verifyEmail(String otp) async {
+    final Response<dynamic> response = await dio.put(
+      _verifyEmail,
+      queryParameters: <String, String>{
+        'otp': otp,
+      },
+    );
+
+    return response;
+  }
+
   Future<Response<dynamic>> resetPassword(ResetPasswordRequest request) async {
     final Response<dynamic> response = await dio.put(
       _resetPassword,
@@ -180,6 +191,7 @@ const String _login = '/api/v1/user/login';
 const String _signUp = '/api/v1/user/signUp';
 const String _forgotPassword = '/api/v1/user/forgotPassword';
 const String _verifyForgetPasswordOtp = '/api/v1/user/verifyForgetPasswordOtp';
+const String _verifyEmail = '/api/v1/user/verifyEmail';
 const String _resetPassword = '/api/v1/user/resetPassword';
 const String _changePassword = '/api/v1/user/changePassword';
 const String _logout = '/api/v1/user/logout';

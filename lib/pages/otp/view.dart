@@ -1,6 +1,8 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
+import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
+import 'package:components/enums/screen.dart';
 import 'package:components/pages/otp/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ class _OTPState extends BasePageState<OtpPage> {
   late final List<FocusNode> focusNodes;
   late final List<TextEditingController> textEditingControllers;
   late final PasswordAuthCubit passwordAuthCubit;
+  late final AuthCubit authCubit;
   late final OtpBloc otpBloc;
 
   @override
@@ -30,6 +33,7 @@ class _OTPState extends BasePageState<OtpPage> {
     Future<void>.delayed(Duration.zero)
         .then((_) => focusNodes[0].requestFocus());
     passwordAuthCubit = BlocProvider.of(context);
+    authCubit = BlocProvider.of(context);
     otpBloc = BlocProvider.of(context);
 
     super.initState();
@@ -48,9 +52,10 @@ class _OTPState extends BasePageState<OtpPage> {
   }
 
   @override
-  PreferredSizeWidget appBar(BuildContext context) => AppBar(
-        title: const Text('OTP'),
-      );
+  PreferredSizeWidget appBar(BuildContext context) {
+    final Screen screen = routeSettings.arguments as Screen;
+    return AppBar(title: Text(screen.screenName()));
+  }
 
   String get otp {
     String otp = '';
@@ -95,15 +100,40 @@ class _OTPState extends BasePageState<OtpPage> {
 
   @override
   Widget body(BuildContext context) {
-    if (!passwordAuthCubit.state.isTokenGenerated) {
+    final Screen screen = routeSettings.arguments as Screen;
+
+    if (screen == Screen.forgotPassword &&
+        !passwordAuthCubit.state.isTokenGenerated) {
       Future<void>.microtask(
-        () => navigator.popUntil(ModalRoute.withName(Routes.login)),
+        () => navigator.popUntil(
+          ModalRoute.withName(
+            Routes.login,
+          ),
+        ),
       );
+    } else if (screen == Screen.verifyEmail) {
+      if (!authCubit.state.isAuthorized) {
+        throw Exception('not signed in');
+      }
+      if (authCubit.state.user!.isEmailVerified == 1) {
+        Future<void>.microtask(
+          () => showSnackBar(
+            const SnackBar(
+              content: Text('Email already verified'),
+            ),
+          ),
+        );
+        Future<void>.microtask(
+          () => navigator.pop(),
+        );
+      }
     }
 
     return WillPopScope(
       onWillPop: () {
-        passwordAuthCubit.resetToken();
+        if (screen == Screen.forgotPassword) {
+          passwordAuthCubit.resetToken();
+        }
         return Future<bool>.value(true);
       },
       child: Form(
@@ -121,7 +151,11 @@ class _OTPState extends BasePageState<OtpPage> {
                       style: textTheme.headline2,
                     ),
                     Text(
-                      passwordAuthCubit.state.forgotPasswordToken?.email ?? '',
+                      screen == Screen.forgotPassword
+                          ? passwordAuthCubit
+                                  .state.forgotPasswordToken?.email ??
+                              ''
+                          : authCubit.state.user!.email ?? '',
                       style: textTheme.headline1!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -167,10 +201,18 @@ class _OTPState extends BasePageState<OtpPage> {
                 BlocBuilder<OtpBloc, OtpState>(
                   builder: (_, OtpState state) {
                     if (state.formStatus is SubmissionSuccess) {
-                      Future<void>.microtask(
-                        () => navigator.popAndPushNamed(Routes.resetPassword),
-                      );
+                      otpBloc.add(ResetFormStatus());
+                      if (screen == Screen.forgotPassword) {
+                        Future<void>.microtask(
+                          () => navigator.popAndPushNamed(Routes.resetPassword),
+                        );
+                      } else if (screen == Screen.verifyEmail) {
+                        Future<void>.microtask(
+                          () => navigator.pop(),
+                        );
+                      }
                     } else if (state.formStatus is SubmissionFailed) {
+                      otpBloc.add(ResetFormStatus());
                       Future<void>.microtask(
                         () => showSnackBar(
                           const SnackBar(

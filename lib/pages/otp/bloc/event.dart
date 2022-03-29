@@ -10,3 +10,5 @@ class OtpChanged extends OtpEvent {
 }
 
 class OtpSubmitted extends OtpEvent {}
+
+class ResetFormStatus extends OtpEvent {}

@@ -1,6 +1,7 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
+import 'package:components/enums/screen.dart';
 import 'package:components/pages/forgot_password/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +27,14 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
     emailTextEditingController = TextEditingController();
     forgotPasswordBloc = BlocProvider.of(context);
     passwordAuthCubit = BlocProvider.of(context);
-    
+
     // Token is already present, no need to regenerate.
     if (passwordAuthCubit.state.isTokenGenerated) {
       Future<void>.microtask(
-        () => navigator.popAndPushNamed(Routes.otp),
+        () => navigator.popAndPushNamed(
+          Routes.otp,
+          arguments: Screen.forgotPassword,
+        ),
       );
     }
     super.initState();
@@ -61,7 +65,10 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                 builder: (BuildContext context, ForgotPasswordState state) {
                   if (state.formStatus is SubmissionSuccess) {
                     Future<void>.microtask(
-                      () => navigator.popAndPushNamed(Routes.otp),
+                      () => navigator.popAndPushNamed(
+                        Routes.otp,
+                        arguments: Screen.forgotPassword,
+                      ),
                     );
                   } else if (state.formStatus is SubmissionFailed) {
                     Future<void>.microtask(
