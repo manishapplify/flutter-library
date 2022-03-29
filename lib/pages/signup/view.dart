@@ -72,6 +72,7 @@ class _SignupState extends BasePageState<SignupPage> {
                 decoration: const InputDecoration(
                   hintText: 'Enter your email',
                   labelText: 'Email',
+                  prefixIcon: Icon(Icons.mail),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 onFieldSubmitted: (_) => phoneFocusNode.requestFocus(),
@@ -109,6 +110,7 @@ class _SignupState extends BasePageState<SignupPage> {
                       decoration: const InputDecoration(
                         hintText: 'Enter your phone number',
                         labelText: 'Phone number',
+                        prefixIcon: Icon(Icons.phone),
                       ),
                       keyboardType: TextInputType.phone,
                       onFieldSubmitted: (_) =>
@@ -132,6 +134,7 @@ class _SignupState extends BasePageState<SignupPage> {
                       focusNode: passwordFocusNodes[i],
                       textAlignVertical: TextAlignVertical.top,
                       decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.password),
                         hintText: i == 0
                             ? 'Enter your password'
                             : 'Confirm your password',

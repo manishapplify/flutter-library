@@ -223,6 +223,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                       autofocus: screen == Screen.registerUser,
                       textAlignVertical: TextAlignVertical.top,
                       decoration: const InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.qr_code_rounded,
+                        ),
                         hintText: 'Enter a referral code',
                         labelText: 'Referral code',
                       ),
@@ -246,6 +249,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     autofocus: screen != Screen.registerUser,
                     textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.account_circle_outlined,
+                      ),
                       hintText: 'Enter your first name',
                       labelText: 'First name',
                     ),
@@ -267,6 +273,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     autofocus: true,
                     textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.account_circle_outlined,
+                      ),
                       hintText: 'Enter your last name',
                       labelText: 'Last name',
                     ),
@@ -288,6 +297,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     autofocus: true,
                     textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.email,
+                      ),
                       hintText: 'Enter your email',
                       labelText: 'Email',
                     ),
@@ -325,6 +337,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                           autofocus: true,
                           textAlignVertical: TextAlignVertical.top,
                           decoration: const InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.phone,
+                            ),
                             hintText: 'Enter your phone number',
                             labelText: 'Phone number',
                           ),
@@ -363,6 +378,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     focusNode: ageFocusNode,
                     textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.home_work_outlined),
                       hintText: 'Enter your age',
                       labelText: 'Age',
                     ),
@@ -384,6 +400,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     focusNode: addressFocusNode,
                     textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.home),
                       hintText: 'Enter your address',
                       labelText: 'Address',
                     ),
@@ -405,6 +422,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     focusNode: cityFocusNode,
                     textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.home,
+                      ),
                       hintText: 'Enter your city',
                       labelText: 'City',
                     ),
