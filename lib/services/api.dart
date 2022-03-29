@@ -7,6 +7,7 @@ import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/logout/model/request.dart';
 import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/profile/models/register_user_request.dart';
+import 'package:components/pages/profile/models/update_profile_request.dart';
 import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
 import 'package:components/services/s3_image_upload/request.dart';
@@ -138,6 +139,14 @@ class Api {
     return response;
   }
 
+  Future<Response<dynamic>> updateProfile(UpdateProfileRequest request) async {
+    final Response<dynamic> response = await dio.put(
+      _user,
+      data: request.toJson(),
+    );
+    return response;
+  }
+
   Future<Response<dynamic>> getS3UploadSignedURL(
       S3SignedUrlRequest request) async {
     final Response<dynamic> response = await dio.post(
@@ -176,4 +185,5 @@ const String _changePassword = '/api/v1/user/changePassword';
 const String _logout = '/api/v1/user/logout';
 const String _deleteAccount = '/api/v1/user';
 const String _registerUser = '/api/v1/user/registerUser';
+const String _user = '/api/v1/user';
 const String _getS3UploadSignedURL = '/api/v1/common/getSignedURL';

@@ -70,3 +70,5 @@ class ExistingUserProfileFetched extends ProfileEvent {
 }
 
 class ProfileSubmitted extends ProfileEvent {}
+
+class ResetFormStatus extends ProfileEvent {}

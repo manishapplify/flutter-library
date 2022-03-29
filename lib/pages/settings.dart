@@ -1,4 +1,5 @@
 import 'package:components/base/base_page.dart';
+import 'package:components/enums/screen.dart';
 import 'package:components/pages/delete_account/bloc/bloc.dart';
 import 'package:components/pages/logout/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
@@ -34,6 +35,17 @@ class _SettingsState extends BasePageState<SettingsScreen> {
       children: <Widget>[
         buildHeading("Account"),
         buildOption(
+          "Update profile",
+          () => navigator.pushNamed(
+            Routes.profile,
+            arguments: Screen.updateProfile,
+          ),
+          const Icon(
+            Icons.account_circle,
+            color: Colors.black,
+          ),
+        ),
+        buildOption(
           "Change Password",
           () => navigator.pushNamed(
             Routes.changePassword,
@@ -47,7 +59,7 @@ class _SettingsState extends BasePageState<SettingsScreen> {
           "Delete Account",
           onDeleteAccount,
           const Icon(
-            Icons.account_circle,
+            Icons.delete,
             color: Colors.black,
           ),
         ),
@@ -59,18 +71,18 @@ class _SettingsState extends BasePageState<SettingsScreen> {
             color: Colors.black,
           ),
         ),
-        const Divider(
-          color: Colors.black12,
-        ),
-        buildHeading("Notification"),
-        buildOption(
-          "Change Notification",
-          () => null,
-          const Icon(
-            Icons.notification_important_rounded,
-            color: Colors.black,
-          ),
-        ),
+        // const Divider(
+        //   color: Colors.black12,
+        // ),
+        // buildHeading("Notification"),
+        // buildOption(
+        //   "Change Notification",
+        //   () => null,
+        //   const Icon(
+        //     Icons.notification_important_rounded,
+        //     color: Colors.black,
+        //   ),
+        // ),
       ],
     );
   }

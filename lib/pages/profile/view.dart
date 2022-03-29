@@ -105,6 +105,17 @@ class _UserProfileState extends BasePageState<ProfilePage> {
         ),
       );
     }
+    if (user.age is int) {
+      ageTextEditingController.value =
+          TextEditingValue(text: user.age!.toString());
+    }
+    if (user.address is String) {
+      addressTextEditingController.value =
+          TextEditingValue(text: user.address!);
+    }
+    if (user.city is String) {
+      cityTextEditingController.value = TextEditingValue(text: user.city!);
+    }
 
     super.initState();
   }
@@ -155,16 +166,22 @@ class _UserProfileState extends BasePageState<ProfilePage> {
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (BuildContext context, ProfileState state) {
               if (state.formStatus is SubmissionSuccess) {
-                Future<void>.microtask(
-                  () => navigator
-                    ..popUntil(
-                      (_) => false,
-                    )
-                    ..pushNamed(
-                      Routes.home,
-                    ),
-                );
+                profileBloc.add(ResetFormStatus());
+                if (screen == Screen.registerUser) {
+                  Future<void>.microtask(
+                    () => navigator
+                      ..popUntil(
+                        (_) => false,
+                      )
+                      ..pushNamed(
+                        Routes.home,
+                      ),
+                  );
+                } else {
+                  Future<void>.microtask(() => navigator.pop());
+                }
               } else if (state.formStatus is SubmissionFailed) {
+                profileBloc.add(ResetFormStatus());
                 Future<void>.microtask(
                   () => showSnackBar(
                     const SnackBar(

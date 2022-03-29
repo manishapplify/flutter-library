@@ -1,6 +1,6 @@
 enum Screen {
   registerUser,
-  editProfile,
+  updateProfile,
   signup,
 }
 
@@ -9,7 +9,7 @@ extension Ex on Screen {
     switch (this) {
       case Screen.registerUser:
        return 'Setup Profile';
-      case Screen.editProfile:
+      case Screen.updateProfile:
        return 'Edit Profile';
       case Screen.signup:
        return 'Signup';

@@ -34,6 +34,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         _profileNotificationStatusChangedHandler);
     on<ExistingUserProfileFetched>(_existingUserProfileFetchedHandler);
     on<ProfileSubmitted>(_profileSubmittedHandler);
+    on<ResetFormStatus>(_resetFormStatusHandler);
   }
 
   final ProfileRepository _profileRepository;
@@ -206,6 +207,37 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       } on Exception catch (e) {
         emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
       }
+    } else if (state.screenType == Screen.updateProfile) {
+      emit(state.copyWith(formStatus: FormSubmitting()));
+      try {
+        await _profileRepository.updateProfile(
+          firstName: state.firstname,
+          lastName: state.lastname,
+          countryCode: state.countryCode,
+          phoneNumber: state.phoneNumber,
+          email: state.email,
+          gender: state.gender?.name,
+          profilePicFile: state.profilePicFile,
+          age: state.age,
+          address: state.address,
+          city: state.city,
+          notificationEnabled:
+              state.isNotificationEnabled ? 1.toString() : 0.toString(),
+        );
+        emit(state.copyWith(formStatus: SubmissionSuccess()));
+      } on Exception catch (e) {
+        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
+      }
+    } else {
+      throw ('Unsupported request');
     }
   }
+
+  void _resetFormStatusHandler(
+          ResetFormStatus event, Emitter<ProfileState> emit) =>
+      emit(
+        state.copyWith(
+          formStatus: const InitialFormStatus(),
+        ),
+      );
 }
