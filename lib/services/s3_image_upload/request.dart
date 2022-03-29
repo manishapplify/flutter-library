@@ -1,12 +1,12 @@
-class S3ImageUploadRequest {
-  S3ImageUploadRequest({
+class S3SignedUrlRequest {
+  S3SignedUrlRequest({
     required this.directory,
     required this.fileName,
     this.contentType,
   });
 
-  factory S3ImageUploadRequest.fromMap(Map<String, dynamic> map) {
-    return S3ImageUploadRequest(
+  factory S3SignedUrlRequest.fromMap(Map<String, dynamic> map) {
+    return S3SignedUrlRequest(
       directory: map['directory'] ?? '',
       fileName: map['fileName'] ?? '',
       contentType: map['contentType'],

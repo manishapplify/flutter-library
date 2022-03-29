@@ -8,6 +8,7 @@ import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/api.dart';
 import 'package:components/services/persistence.dart';
+import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -48,6 +49,7 @@ Future<CompositionRoot> configureDependencies() async {
         "baseUrl",
         defaultValue: 'https://api-lib.applifyapps.com',
       ),
+      contentType: "application/json",
     ),
     interceptorsWrapper: InterceptorsWrapper(
       onRequest: _requestInterceptor,
@@ -73,11 +75,26 @@ Future<CompositionRoot> configureDependencies() async {
     authCubit: authCubit,
     passwordAuthCubit: passwordAuthCubit,
   );
+
+  final S3ImageUpload s3imageUpload = S3ImageUpload(
+    baseOptions: BaseOptions(
+      baseUrl: const String.fromEnvironment(
+        "baseUrl",
+        defaultValue: 'https://api-lib.applifyapps.com',
+      ),
+    ),
+    interceptorsWrapper: InterceptorsWrapper(
+      onRequest: _requestInterceptor,
+      onResponse: _responseInterceptor,
+      onError: _errorInterceptor,
+    ),
+  );
   final ProfileRepository profileRepository = ProfileRepository(
     api: api,
     config: config,
     persistence: persistence,
     authCubit: authCubit,
+    s3imageUpload: s3imageUpload,
   );
 
   return CompositionRoot(

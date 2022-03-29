@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:components/common_models/s3_image_upload/request.dart';
 import 'package:components/pages/change_password/model/request.dart';
 import 'package:components/pages/delete_account/model/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
@@ -10,6 +9,7 @@ import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
+import 'package:components/services/s3_image_upload/request.dart';
 import 'package:dio/dio.dart';
 
 class Api {
@@ -24,6 +24,7 @@ class Api {
             baseUrl: _baseUrl,
             connectTimeout: 60000,
             receiveTimeout: 60000,
+            contentType: "application/json",
           ),
     );
 
@@ -44,7 +45,6 @@ class Api {
   void addAuthorizationHeader(String authorization) {
     dio.options.headers = <String, dynamic>{
       'authorization': authorization,
-      "Content-Type": "application/json",
     };
   }
 
@@ -139,7 +139,7 @@ class Api {
   }
 
   Future<Response<dynamic>> getS3UploadSignedURL(
-      S3ImageUploadRequest request) async {
+      S3SignedUrlRequest request) async {
     final Response<dynamic> response = await dio.post(
       _getS3UploadSignedURL,
       data: request.toJson(),
