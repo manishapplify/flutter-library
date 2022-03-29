@@ -221,13 +221,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   if (screen == Screen.registerUser)
                     TextFormField(
                       autofocus: screen == Screen.registerUser,
-                      textAlignVertical: TextAlignVertical.top,
                       decoration: const InputDecoration(
                         prefixIcon: Icon(
                           Icons.qr_code_rounded,
                         ),
                         hintText: 'Enter a referral code',
-                        labelText: 'Referral code',
                       ),
                       keyboardType: TextInputType.text,
                       onFieldSubmitted: (_) =>
@@ -247,13 +245,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     controller: firstNameTextEditingController,
                     focusNode: firstNameFocusNode,
                     autofocus: screen != Screen.registerUser,
-                    textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
                         Icons.account_circle_outlined,
                       ),
                       hintText: 'Enter your first name',
-                      labelText: 'First name',
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => lastNameFocusNode.requestFocus(),
@@ -271,13 +267,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     controller: lastNameTextEditingController,
                     focusNode: lastNameFocusNode,
                     autofocus: true,
-                    textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
                         Icons.account_circle_outlined,
                       ),
                       hintText: 'Enter your last name',
-                      labelText: 'Last name',
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => emailFocusNode.requestFocus(),
@@ -295,13 +289,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     controller: emailTextEditingController,
                     focusNode: emailFocusNode,
                     autofocus: true,
-                    textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
                         Icons.email,
                       ),
                       hintText: 'Enter your email',
-                      labelText: 'Email',
                     ),
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (_) => phoneFocusNode.requestFocus(),
@@ -318,7 +310,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   Row(
                     children: <Widget>[
                       CountryCodePicker(
-                        initialSelection: 'IN',
+                        initialSelection: state.countryCode,
                         flagDecoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(7),
                         ),
@@ -335,13 +327,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                           controller: phoneTextEditingController,
                           focusNode: phoneFocusNode,
                           autofocus: true,
-                          textAlignVertical: TextAlignVertical.top,
                           decoration: const InputDecoration(
                             prefixIcon: Icon(
                               Icons.phone,
                             ),
                             hintText: 'Enter your phone number',
-                            labelText: 'Phone number',
                           ),
                           keyboardType: TextInputType.phone,
                           onFieldSubmitted: (_) => ageFocusNode.requestFocus(),
@@ -368,7 +358,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     },
                     decoration: const InputDecoration(
                       hintText: 'Select your gender',
-                      labelText: 'Gender',
+                      prefixIcon: Icon(Icons.account_circle_outlined),
                     ),
                     value: state.gender,
                   ),
@@ -376,11 +366,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   TextFormField(
                     controller: ageTextEditingController,
                     focusNode: ageFocusNode,
-                    textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.home_work_outlined),
                       hintText: 'Enter your age',
-                      labelText: 'Age',
                     ),
                     keyboardType: TextInputType.number,
                     onFieldSubmitted: (_) => addressFocusNode.requestFocus(),
@@ -398,11 +386,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   TextFormField(
                     controller: addressTextEditingController,
                     focusNode: addressFocusNode,
-                    textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.home),
                       hintText: 'Enter your address',
-                      labelText: 'Address',
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => cityFocusNode.requestFocus(),
@@ -420,13 +406,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   TextFormField(
                     controller: cityTextEditingController,
                     focusNode: cityFocusNode,
-                    textAlignVertical: TextAlignVertical.top,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
                         Icons.home,
                       ),
                       hintText: 'Enter your city',
-                      labelText: 'City',
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => onFormSubmitted(),
