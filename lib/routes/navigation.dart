@@ -55,12 +55,11 @@ class Navigation {
         if (!event.isAuthorized) {
           Navigator.popUntil(
             navigatorKey.currentContext!,
-            (_) => true,
+            (_) => false,
           );
-          Navigator.pushNamedAndRemoveUntil(
+          Navigator.pushNamed(
             navigatorKey.currentContext!,
             Routes.login,
-            (Route<dynamic> route) => false,
           );
         }
       },

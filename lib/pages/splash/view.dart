@@ -47,7 +47,7 @@ class _SplashState extends BasePageState<SplashPage> {
                       onPressed: () {
                         navigator
                           ..popUntil(
-                            (_) => true,
+                            (_) => false,
                           )
                           ..pushNamed(Routes.login);
                       },
