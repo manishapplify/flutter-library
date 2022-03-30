@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:components/pages/change_password/model/request.dart';
+import 'package:components/pages/feedback/feedback/models/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/Authentication/models/logout_request.dart';
@@ -183,6 +184,15 @@ class Api {
     );
     return response;
   }
+
+  Future<Response<dynamic>> reportFeedback(
+      FeedbackRequest request) async {
+    final Response<dynamic> response = await dio.post(
+      _reportFeedback,
+      data: request.toJson(),
+    );
+    return response;
+  }
 }
 
 const String _appVersion = '/api/v1/common/appVersion';
@@ -198,3 +208,4 @@ const String _deleteAccount = '/api/v1/user';
 const String _registerUser = '/api/v1/user/registerUser';
 const String _user = '/api/v1/user';
 const String _getS3UploadSignedURL = '/api/v1/common/getSignedURL';
+const String _reportFeedback = '/api/v1/reportedFeedback/create';

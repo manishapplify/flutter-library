@@ -6,8 +6,8 @@ import 'package:components/enums/screen.dart';
 import 'package:components/pages/feedback/feedback_fourth.dart';
 import 'package:components/pages/feedback/feedback_one.dart';
 import 'package:components/pages/feedback/feedback_one/bloc/bloc.dart';
-import 'package:components/pages/feedback/feedback_second.dart';
-import 'package:components/pages/feedback/feedback_second/bloc/bloc.dart';
+import 'package:components/pages/feedback/feedback/view.dart';
+import 'package:components/pages/feedback/feedback/bloc/bloc.dart';
 import 'package:components/pages/feedback/feedback_third.dart';
 import 'package:components/pages/feedback/list.dart';
 import 'package:components/pages/forgot_password/bloc/bloc.dart';
@@ -201,11 +201,9 @@ class Navigation {
       case Routes.feedbackSecond:
         return MaterialPageRoute<FeedbackScreenSecond>(
           settings: settings,
-          builder: (_) => BlocProvider<FeedbackSecondBloc>(
-            create: (BuildContext context) => FeedbackSecondBloc(
+          builder: (_) => BlocProvider<FeedbackBloc>(
+            create: (BuildContext context) => FeedbackBloc(
               api: _api,
-              authRepository: _authRepository,
-              authCubit: _authCubit,
             ),
             child: const FeedbackScreenSecond(),
           ),

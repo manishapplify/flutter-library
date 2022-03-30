@@ -184,12 +184,4 @@ class AuthRepository {
     await Future<dynamic>.delayed(const Duration(seconds: 5));
     throw Exception('failed feedbackSubmission');
   }
-
-  Future<dynamic> feedback2Submit(
-      {required String? feedbackissue,
-      required String? feedbackreason,
-      required double? feedbackRating}) async {
-    await Future<dynamic>.delayed(const Duration(seconds: 5));
-    throw Exception('failed feedbackSubmission');
-  }
 }

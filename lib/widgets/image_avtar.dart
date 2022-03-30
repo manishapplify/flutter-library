@@ -7,12 +7,12 @@ class UserProfileImage extends StatelessWidget {
     Key? key,
     this.imagePath,
     this.imageUrl,
-    required this.edit,
+    this.edit,
   }) : super(key: key);
 
   final String? imagePath;
   final String? imageUrl;
-  final Function() edit;
+  final VoidCallback? edit;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,11 @@ class UserProfileImage extends StatelessWidget {
         height: 100,
         width: 100,
         alignment: Alignment.bottomRight,
-        child: const Icon(
-          Icons.camera_enhance_rounded,
-        ),
+        child: edit is VoidCallback
+            ? const Icon(
+                Icons.camera_enhance_rounded,
+              )
+            : null,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.grey[300],
