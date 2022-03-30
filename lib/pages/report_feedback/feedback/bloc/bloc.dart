@@ -1,5 +1,5 @@
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/pages/feedback/feedback/models/request.dart';
+import 'package:components/pages/report_feedback/feedback/models/request.dart';
 import 'package:components/services/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:components/validators/validators.dart' as validators;
