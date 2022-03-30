@@ -52,7 +52,6 @@ class ProfileRepository {
     if (countryCode is String) {
       _persistence.saveCountryCode(countryCode);
     }
-    Response<dynamic> response;
 
     final RegisterUserRequest request = RegisterUserRequest(
       firstName: firstName,
@@ -74,7 +73,7 @@ class ProfileRepository {
       signupType: signupType.name,
     );
 
-    response = await _api.registerUser(request);
+    final Response<dynamic> response = await _api.registerUser(request);
     final User user =
         _authCubit.state.user!.copyWithJson(response.data['data']);
     _authCubit.signupOrLogin(user);

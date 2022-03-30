@@ -5,37 +5,43 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-dynamic showImagePickerPopup(
-    {required BuildContext context,required  Function(File) onImagePicked}) {
+dynamic showImagePickerPopup({
+  required BuildContext context,
+  required Function(File) onImagePicked,
+  bool galleryAllowed = true,
+  bool cameraAllowed = true,
+}) {
   showCupertinoModalPopup(
     barrierColor: Colors.black45,
     context: context,
     builder: (BuildContext context) => CupertinoActionSheet(
       actions: <Widget>[
-        CupertinoActionSheetAction(
-          child: const Text("Gallery"),
-          onPressed: () async {
-            final XFile? pickedFile = await ImagePicker()
-                .pickImage(source: ImageSource.gallery, imageQuality: 20);
-            imageCropper(
-                imagePath: pickedFile!.path,
-                onCropped: (File croppedImage) {
-                  onImagePicked(croppedImage);
-                });
-          },
-        ),
-        CupertinoActionSheetAction(
-          child: const Text("Camera"),
-          onPressed: () async {
-            final XFile? pickedFile = await ImagePicker()
-                .pickImage(source: ImageSource.camera, imageQuality: 20);
-            imageCropper(
-                imagePath: pickedFile!.path,
-                onCropped: (File croppedImage) {
-                  onImagePicked(croppedImage);
-                });
-          },
-        ),
+        if (galleryAllowed)
+          CupertinoActionSheetAction(
+            child: const Text("Gallery"),
+            onPressed: () async {
+              final XFile? pickedFile = await ImagePicker()
+                  .pickImage(source: ImageSource.gallery, imageQuality: 20);
+              imageCropper(
+                  imagePath: pickedFile!.path,
+                  onCropped: (File croppedImage) {
+                    onImagePicked(croppedImage);
+                  });
+            },
+          ),
+        if (cameraAllowed)
+          CupertinoActionSheetAction(
+            child: const Text("Camera"),
+            onPressed: () async {
+              final XFile? pickedFile = await ImagePicker()
+                  .pickImage(source: ImageSource.camera, imageQuality: 20);
+              imageCropper(
+                  imagePath: pickedFile!.path,
+                  onCropped: (File croppedImage) {
+                    onImagePicked(croppedImage);
+                  });
+            },
+          ),
       ],
       cancelButton: Container(
         decoration: const BoxDecoration(

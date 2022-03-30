@@ -130,7 +130,7 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                           Radius.circular(10.0),
                         ),
                       ),
-                      prefixIcon: Icon(Icons.edit),
+                      prefixIcon: Icon(Icons.description),
                     ),
                     onChanged: (String value) => feedbackBloc.add(
                       FeedbackCommentChanged(comment: value),

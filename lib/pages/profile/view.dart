@@ -9,7 +9,7 @@ import 'package:components/routes/navigation.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/dialogs/dialogs.dart';
-import 'package:components/widgets/image_avtar.dart';
+import 'package:components/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -196,10 +196,10 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   const SizedBox(
                     height: 5,
                   ),
-                  UserProfileImage(
+                  ImageContainer(
                     imagePath: state.profilePicFile?.path,
                     imageUrl: state.profilePicUrlPath,
-                    edit: () {
+                    onContainerTap: () {
                       showImagePickerPopup(
                         context: context,
                         onImagePicked: (File file) {

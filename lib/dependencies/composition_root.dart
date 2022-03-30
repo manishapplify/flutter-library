@@ -108,6 +108,7 @@ Future<CompositionRoot> configureDependencies() async {
       authCubit: authCubit,
       config: config,
       persistence: persistence,
+      s3imageUpload: s3imageUpload,
     ),
   );
 }

@@ -1,7 +1,7 @@
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:components/widgets/image_avtar.dart';
+import 'package:components/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,7 +54,7 @@ class _HomeState extends BasePageState<HomePage> {
         child: ListView(
           children: <Widget>[
             DrawerHeader(
-              child: UserProfileImage(
+              child: ImageContainer(
                 imageUrl: authCubit.state.user!.profilePic,
               ),
               decoration: BoxDecoration(
@@ -65,6 +65,12 @@ class _HomeState extends BasePageState<HomePage> {
               title: const Text('Feedback'),
               onTap: () => navigator.popAndPushNamed(
                 Routes.feedback,
+              ),
+            ),
+            ListTile(
+              title: const Text('Report Bug'),
+              onTap: () => navigator.popAndPushNamed(
+                Routes.reportBug,
               ),
             ),
           ],

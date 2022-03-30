@@ -2,34 +2,36 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-class UserProfileImage extends StatelessWidget {
-  const UserProfileImage({
+class ImageContainer extends StatelessWidget {
+  const ImageContainer({
     Key? key,
     this.imagePath,
     this.imageUrl,
-    this.edit,
+    this.onContainerTap,
+    this.circularDecoration = true,
+    this.overlayIcon = const Icon(
+      Icons.camera_enhance_rounded,
+    ),
   }) : super(key: key);
 
   final String? imagePath;
   final String? imageUrl;
-  final VoidCallback? edit;
+  final VoidCallback? onContainerTap;
+  final bool circularDecoration;
+  final Icon overlayIcon;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: this.edit,
+      onTap: this.onContainerTap,
       borderRadius: const BorderRadius.all(Radius.circular(100)),
       child: Container(
         height: 100,
         width: 100,
         alignment: Alignment.bottomRight,
-        child: edit is VoidCallback
-            ? const Icon(
-                Icons.camera_enhance_rounded,
-              )
-            : null,
+        child: onContainerTap is VoidCallback ? overlayIcon : null,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
+          shape: circularDecoration ? BoxShape.circle : BoxShape.rectangle,
           color: Colors.grey[300],
           image: DecorationImage(
             image:
