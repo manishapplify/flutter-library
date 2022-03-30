@@ -6,8 +6,6 @@ import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/profile/models/update_profile_request.dart';
 import 'package:components/services/api.dart';
 import 'package:components/services/persistence.dart';
-import 'package:components/services/s3_image_upload/request.dart';
-import 'package:components/services/s3_image_upload/response.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
 import 'package:components/enums/signup.dart';
@@ -63,7 +61,10 @@ class ProfileRepository {
       phoneNumber: phoneNumber,
       email: email,
       gender: gender,
-      profilePic: await _getImageUrl(profilePicFile),
+      profilePic: await _s3imageUpload.getS3ImageUrl(
+        s3Directory: _authCubit.state.user!.s3Folders.users,
+        profilePicFile: profilePicFile,
+      ),
       age: age,
       address: address,
       city: city,
@@ -108,7 +109,10 @@ class ProfileRepository {
       phoneNumber: phoneNumber,
       email: email,
       gender: gender,
-      profilePic: await _getImageUrl(profilePicFile),
+      profilePic: await _s3imageUpload.getS3ImageUrl(
+        s3Directory: _authCubit.state.user!.s3Folders.users,
+        profilePicFile: profilePicFile,
+      ),
       age: age,
       address: address,
       city: city,
@@ -119,35 +123,5 @@ class ProfileRepository {
     final User user =
         _authCubit.state.user!.copyWithJson(response.data['data']);
     _authCubit.signupOrLogin(user);
-  }
-
-  Future<String?> _getImageUrl(
-    File? profilePicFile,
-  ) async {
-    if (profilePicFile == null) {
-      return null;
-    }
-
-    Response<dynamic> response;
-    response = await _api.getS3UploadSignedURL(
-      S3SignedUrlRequest(
-        directory: _authCubit.state.user!.s3Folders.users,
-        fileName: profilePicFile.uri.pathSegments.last,
-      ),
-    );
-    final S3SignedUrlResponse s3imageUploadResponse =
-        S3SignedUrlResponse.fromJson(response.data);
-
-    response = await _s3imageUpload.uploadImageToSignedURL(
-      s3SignedURL: s3imageUploadResponse.uploadURL,
-      image: profilePicFile,
-    );
-
-    final Uri? uri = Uri.tryParse(s3imageUploadResponse.uploadURL);
-    if (uri == null) {
-      throw Exception('Could not parse uploadURL');
-    }
-
-    return '${uri.scheme}://${uri.authority}${uri.path}';
   }
 }

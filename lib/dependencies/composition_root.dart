@@ -83,6 +83,7 @@ Future<CompositionRoot> configureDependencies() async {
         defaultValue: 'https://api-lib.applifyapps.com',
       ),
     ),
+    api: api,
     interceptorsWrapper: InterceptorsWrapper(
       onRequest: _requestInterceptor,
       onResponse: _responseInterceptor,
