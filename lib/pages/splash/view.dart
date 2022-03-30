@@ -44,13 +44,7 @@ class _SplashState extends BasePageState<SplashPage> {
                 actions: <Widget>[
                   if (!state.isForceful)
                     TextButton(
-                      onPressed: () {
-                        navigator
-                          ..popUntil(
-                            (_) => false,
-                          )
-                          ..pushNamed(Routes.login);
-                      },
+                      onPressed: navigateToNextScreen,
                       child: const Text('Skip'),
                     ),
                 ],
@@ -59,19 +53,7 @@ class _SplashState extends BasePageState<SplashPage> {
             ),
           );
         } else if (state is LatestApp) {
-          if (authCubit.state.isAuthorized) {
-            Future<void>.microtask(
-              () => navigator.popAndPushNamed(
-                Routes.home,
-              ),
-            );
-          } else {
-            Future<void>.microtask(
-              () => navigator.popAndPushNamed(
-                Routes.login,
-              ),
-            );
-          }
+          navigateToNextScreen();
         }
 
         return Center(
@@ -85,5 +67,29 @@ class _SplashState extends BasePageState<SplashPage> {
         );
       },
     );
+  }
+
+  void navigateToNextScreen() {
+    // TODO: Check if user left during registration and move to `Routes.profile` with `Screen.registerUser` as argument.
+
+    Future<void>.microtask(
+      () => navigator.popUntil(
+        (_) => false,
+      ),
+    );
+
+    if (authCubit.state.isAuthorized) {
+      Future<void>.microtask(
+        () => navigator.pushNamed(
+          Routes.home,
+        ),
+      );
+    } else {
+      Future<void>.microtask(
+        () => navigator.pushNamed(
+          Routes.login,
+        ),
+      );
+    }
   }
 }
