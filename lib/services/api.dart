@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:components/pages/change_password/model/request.dart';
-import 'package:components/pages/delete_account/model/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/login/models/request.dart';
-import 'package:components/pages/logout/model/request.dart';
+import 'package:components/Authentication/models/logout_request.dart';
 import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/profile/models/update_profile_request.dart';
@@ -107,7 +106,7 @@ class Api {
     return response;
   }
 
-  Future<Response<dynamic>> deleteAccount(DeleteAccountRequest request) async {
+  Future<Response<dynamic>> deleteAccount() async {
     final Response<dynamic> response = await dio.delete(
       _deleteAccount,
     );

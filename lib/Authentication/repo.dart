@@ -1,14 +1,11 @@
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/change_password/model/request.dart';
-import 'package:components/pages/delete_account/model/request.dart';
-import 'package:components/pages/delete_account/model/response.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/forgot_password/models/response.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/login/models/response.dart';
-import 'package:components/pages/logout/model/request.dart';
-import 'package:components/pages/logout/model/response.dart';
+import 'package:components/Authentication/models/logout_request.dart';
 import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
@@ -167,30 +164,17 @@ class AuthRepository {
       deviceToken: _fcm.deviceToken!,
     );
 
-    final Response<dynamic> response = await _api.logout(request);
-    final LogoutResponse logoutResponse =
-        LogoutResponse.fromJson(response.data);
-    if (logoutResponse.message == "success") {
-      _authCubit.logoutOrDeleteAccount();
-    } else {
-      throw Exception('failed Logout');
-    }
+    await _api.logout(request);
+    _authCubit.logoutOrDeleteAccount();
   }
 
   Future<dynamic> deleteAccount() async {
     if (!_authCubit.state.isAuthorized) {
       throw Exception('not signed in');
     }
-    final DeleteAccountRequest request = DeleteAccountRequest();
 
-    final Response<dynamic> response = await _api.deleteAccount(request);
-    final DeleteAccountResponse deleteAccountResponse =
-        DeleteAccountResponse.fromJson(response.data);
-    if (deleteAccountResponse.message == "success") {
-      _authCubit.logoutOrDeleteAccount();
-    } else {
-      throw Exception('failed DeleteAccount');
-    }
+    await _api.deleteAccount();
+    _authCubit.logoutOrDeleteAccount();
   }
 
   Future<dynamic> feedbackSubmit({

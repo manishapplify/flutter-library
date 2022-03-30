@@ -1,3 +1,0 @@
-class DeleteAccountRequest {
-  DeleteAccountRequest();
-}
