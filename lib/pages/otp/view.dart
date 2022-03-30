@@ -123,9 +123,7 @@ class _OTPState extends BasePageState<OtpPage> {
             ),
           ),
         );
-        Future<void>.microtask(
-          () => navigator.pop(),
-        );
+        return const SizedBox();
       }
     }
 
