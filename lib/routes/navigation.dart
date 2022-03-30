@@ -3,7 +3,7 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/pages/change_password/bloc/bloc.dart';
 import 'package:components/pages/change_password/view.dart';
 import 'package:components/enums/screen.dart';
-import 'package:components/pages/report_feedback/feedback_fourth.dart';
+import 'package:components/pages/report_bug/view.dart';
 import 'package:components/pages/report_feedback/feedback_one.dart';
 import 'package:components/pages/report_feedback/feedback_one/bloc/bloc.dart';
 import 'package:components/pages/report_feedback/feedback/view.dart';
@@ -198,14 +198,14 @@ class Navigation {
             child: const FeedbackScreenOne(),
           ),
         );
-      case Routes.feedbackSecond:
-        return MaterialPageRoute<FeedbackScreenSecond>(
+      case Routes.feedback:
+        return MaterialPageRoute<FeedbackPage>(
           settings: settings,
           builder: (_) => BlocProvider<FeedbackBloc>(
             create: (BuildContext context) => FeedbackBloc(
               api: _api,
             ),
-            child: const FeedbackScreenSecond(),
+            child: const FeedbackPage(),
           ),
         );
       case Routes.feedbackThird:
@@ -213,10 +213,10 @@ class Navigation {
           settings: settings,
           builder: (_) => const FeedbackScreenThird(),
         );
-      case Routes.feedbackFourth:
-        return MaterialPageRoute<FeedbackFourthScreen>(
+      case Routes.reportBug:
+        return MaterialPageRoute<ReportBugPage>(
           settings: settings,
-          builder: (_) => const FeedbackFourthScreen(),
+          builder: (_) => const ReportBugPage(),
         );
     }
 
@@ -229,22 +229,20 @@ class Navigation {
 
 class Routes {
   static const String splash = "/";
-
   static const String login = "/login";
-  static const String loginOne = "/loginScreenOne";
   static const String signup = "/signup";
   static const String forgotPassword = "/forgotPassword";
   static const String otp = "/otp";
   static const String resetPassword = "/resetPassword";
   static const String profile = "/profile";
   static const String home = "/home";
-
+  static const String feedback = "/feedback";
+  static const String reportBug = "/reportBug";
   static const String settings = "/settings";
   static const String changePassword = "/changePassword";
 
+  static const String loginOne = "/loginScreenOne";
   static const String feedbackScreens = "/feedbackScreens";
   static const String feedbackOne = "/feedbackOneScreen";
-  static const String feedbackSecond = "/feedbackSecondScreen";
   static const String feedbackThird = "/feedbackThirdScreen";
-  static const String feedbackFourth = "/feedbackFourthScreen";
 }

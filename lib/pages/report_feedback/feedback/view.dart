@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class FeedbackScreenSecond extends BasePage {
-  const FeedbackScreenSecond({Key? key}) : super(key: key);
+class FeedbackPage extends BasePage {
+  const FeedbackPage({Key? key}) : super(key: key);
 
   @override
-  State<FeedbackScreenSecond> createState() => _FeedbackScreenSecondState();
+  State<FeedbackPage> createState() => _FeedbackPageState();
 }
 
-class _FeedbackScreenSecondState extends BasePageState<FeedbackScreenSecond> {
+class _FeedbackPageState extends BasePageState<FeedbackPage> {
   late final FeedbackBloc feedbackBloc;
   final List<String> feedbackTitles = <String>[
     "Suggestions",

@@ -64,7 +64,7 @@ class _HomeState extends BasePageState<HomePage> {
             ListTile(
               title: const Text('Feedback'),
               onTap: () => navigator.popAndPushNamed(
-                Routes.feedbackSecond,
+                Routes.feedback,
               ),
             ),
           ],

@@ -36,7 +36,7 @@ class _LoginScreenState extends BasePageState<FeedbackScreenTypes> {
           onTap: () {
             Future<void>.microtask(
               () => navigator.pushNamed(
-                Routes.feedbackSecond,
+                Routes.feedback,
               ),
             );
           },
@@ -56,7 +56,7 @@ class _LoginScreenState extends BasePageState<FeedbackScreenTypes> {
           onTap: () {
             Future<void>.microtask(
               () => navigator.pushNamed(
-                Routes.feedbackFourth,
+                Routes.reportBug,
               ),
             );
           },

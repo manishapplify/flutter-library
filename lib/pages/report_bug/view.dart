@@ -4,14 +4,14 @@ import 'package:components/base/base_page.dart';
 import 'package:components/dialogs/dialogs.dart';
 import 'package:flutter/material.dart';
 
-class FeedbackFourthScreen extends BasePage {
-  const FeedbackFourthScreen({Key? key}) : super(key: key);
+class ReportBugPage extends BasePage {
+  const ReportBugPage({Key? key}) : super(key: key);
 
   @override
-  State<FeedbackFourthScreen> createState() => _FeedbackFourthScreenState();
+  State<ReportBugPage> createState() => _ReportBugState();
 }
 
-class _FeedbackFourthScreenState extends BasePageState<FeedbackFourthScreen> {
+class _ReportBugState extends BasePageState<ReportBugPage> {
   late final FocusNode emailFocusNode;
   late final FocusNode nameFocusNode;
   late final FocusNode describeFocusNode;
@@ -86,15 +86,18 @@ class _FeedbackFourthScreenState extends BasePageState<FeedbackFourthScreen> {
                 const SizedBox(height: 10.0),
                 OutlinedButton(
                   onPressed: () {
-                    showImagePickerPopup(context: context, onImagePicked: (File selectedImage) {
-                      setState(() {
-                        if (selectedImage.path.isNotEmpty) {
-                          setState(() {
-                            _imageList.add(selectedImage);
-                          });
-                        }
-                      });
-                    });
+                    showImagePickerPopup(
+                      context: context,
+                      onImagePicked: (File selectedImage) {
+                        setState(() {
+                          if (selectedImage.path.isNotEmpty) {
+                            setState(() {
+                              _imageList.add(selectedImage);
+                            });
+                          }
+                        });
+                      },
+                    );
                   },
                   child: const Text(
                     "Include Screenshot",
