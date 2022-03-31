@@ -1,7 +1,7 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/services/api.dart';
+import 'package:components/services/api/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'event.dart';

@@ -6,7 +6,7 @@ import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/profile/repo.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:components/services/api.dart';
+import 'package:components/services/api/api.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';

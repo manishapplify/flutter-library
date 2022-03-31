@@ -4,7 +4,7 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/profile/models/update_profile_request.dart';
-import 'package:components/services/api.dart';
+import 'package:components/services/api/api.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';

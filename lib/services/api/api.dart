@@ -11,6 +11,7 @@ import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/profile/models/update_profile_request.dart';
 import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
+import 'package:components/services/api/models/report_item.dart';
 import 'package:components/services/s3_image_upload/request.dart';
 import 'package:dio/dio.dart';
 
@@ -201,6 +202,14 @@ class Api {
     );
     return response;
   }
+
+  Future<Response<dynamic>> reportItems(ReportItemRequest request) async {
+    final Response<dynamic> response = await dio.post(
+      _reportItems,
+      data: request.toJson(),
+    );
+    return response;
+  }
 }
 
 const String _appVersion = '/api/v1/common/appVersion';
@@ -218,3 +227,4 @@ const String _user = '/api/v1/user';
 const String _getS3UploadSignedURL = '/api/v1/common/getSignedURL';
 const String _reportFeedback = '/api/v1/reportedFeedback/create';
 const String _reportBug = '/api/v1/reportedBugs';
+const String _reportItems = '/api/v1/reportedItems/create';

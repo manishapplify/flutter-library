@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/pages/report_bug/models/request.dart';
-import 'package:components/services/api.dart';
+import 'package:components/services/api/api.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:meta/meta.dart';
 import 'package:components/validators/validators.dart' as validators;

@@ -4,7 +4,7 @@ import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/screen.dart';
-import 'package:components/services/api.dart';
+import 'package:components/services/api/api.dart';
 import 'package:meta/meta.dart';
 
 part 'event.dart';

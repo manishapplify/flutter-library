@@ -10,7 +10,7 @@ import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/reset_password/models/request.dart';
 import 'package:components/pages/signup/models/request.dart';
 import 'package:components/pages/signup/models/response.dart';
-import 'package:components/services/api.dart';
+import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/utils/config.dart';

@@ -1,5 +1,5 @@
 import 'package:components/cubits/models/user.dart';
-import 'package:components/services/api.dart';
+import 'package:components/services/api/api.dart';
 import 'package:components/services/persistence.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

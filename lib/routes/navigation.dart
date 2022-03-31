@@ -30,7 +30,7 @@ import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/pages/splash/view.dart';
 import 'package:components/screens/screens.dart';
-import 'package:components/services/api.dart';
+import 'package:components/services/api/api.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
