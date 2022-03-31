@@ -141,15 +141,6 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                             ),
                             overlayIcon: const Icon(Icons.cancel),
                           ),
-                          //  GridView.builder(
-                          //     shrinkWrap: true,
-                          //     gridDelegate:
-                          //         const SliverGridDelegateWithFixedCrossAxisCount(
-                          //             crossAxisCount: 3, mainAxisSpacing: 8.0),
-                          //     itemCount: _imageList.length,
-                          //     itemBuilder: (BuildContext context, int i) {
-                          //       return Image.file(File(_imageList[i].path));
-                          //     }),
                         )
                     ],
                   ),
