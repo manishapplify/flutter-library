@@ -15,6 +15,7 @@ import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/utils/config.dart';
 import 'package:dio/dio.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthRepository {
   AuthRepository({
@@ -38,11 +39,6 @@ class AuthRepository {
   final AuthCubit _authCubit;
   final PasswordAuthCubit _passwordAuthCubit;
 
-  Future<String> attemptAutoLogin() async {
-    await Future<dynamic>.delayed(const Duration(seconds: 1));
-    throw Exception('not signed in');
-  }
-
   Future<void> login({
     required String username,
     required String password,
@@ -63,6 +59,20 @@ class AuthRepository {
     final LoginResponse loginResponse = LoginResponse.fromJson(response.data);
 
     _authCubit.signupOrLogin(loginResponse.user);
+  }
+
+  Future<void> signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    final GoogleSignInAccount? googleSignInAccount =
+        await googleSignIn.signIn();
+
+    if (googleSignInAccount != null) {
+      final String social_id = googleSignInAccount.id;
+
+      // TODO: Pass this into `/api/v1/user/socialLogin`
+
+    }
   }
 
   Future<void> signUp({

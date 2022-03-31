@@ -148,7 +148,10 @@ class _LoginState extends BasePageState<LoginPage> {
                       Routes.signup,
                     );
                   },
-                )
+                ),
+                ElevatedButton(
+                    onPressed: () => loginBloc.add(GoogleSignInPressed()),
+                    child: const Text('google'))
               ],
             );
           },

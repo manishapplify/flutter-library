@@ -1,34 +1,86 @@
 {
   "project_info": {
-    "project_number": "126290914735",
-    "project_id": "components-37540",
-    "storage_bucket": "components-37540.appspot.com"
+    "project_number": "1069074406208",
+    "firebase_url": "https://demoapplication-f2e12-default-rtdb.firebaseio.com",
+    "project_id": "demoapplication-f2e12",
+    "storage_bucket": "demoapplication-f2e12.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:126290914735:android:791f5f365bf6dfd3c2135a",
+        "mobilesdk_app_id": "1:1069074406208:android:ac04e5ca494c58efc538a5",
         "android_client_info": {
           "package_name": "applify.components.components"
         }
       },
       "oauth_client": [
         {
-          "client_id": "126290914735-ej2k9vvhar3crcnjc5850l1ovir37ug9.apps.googleusercontent.com",
+          "client_id": "1069074406208-48r1vks6hku1g0s162st69cmc25erodc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "applify.components.components",
+            "certificate_hash": "bbe13f111d4560d391d60c697d153d97d75ec1b9"
+          }
+        },
+        {
+          "client_id": "1069074406208-j44a8qa9ljuobcopddo1sd4olrtl48qa.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDV4abq8aaE8nDM34uc3PFEx9Aj-c_4ANg"
+          "current_key": "AIzaSyB03-4_K1hBfa6XG5ZnWpYOYX-3v8jDNuQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "126290914735-ej2k9vvhar3crcnjc5850l1ovir37ug9.apps.googleusercontent.com",
+              "client_id": "1069074406208-j44a8qa9ljuobcopddo1sd4olrtl48qa.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1069074406208-qedortc39jijebuokdc2990h7a7prml1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "applify.components.components"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069074406208:android:cb08ed67e0bbc235c538a5",
+        "android_client_info": {
+          "package_name": "com.app.demoapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069074406208-j44a8qa9ljuobcopddo1sd4olrtl48qa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB03-4_K1hBfa6XG5ZnWpYOYX-3v8jDNuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069074406208-j44a8qa9ljuobcopddo1sd4olrtl48qa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1069074406208-qedortc39jijebuokdc2990h7a7prml1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "applify.components.components"
+              }
             }
           ]
         }
