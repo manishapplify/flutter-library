@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:components/pages/change_password/model/request.dart';
+import 'package:components/pages/feedback/models/request.dart';
 import 'package:components/pages/report_bug/models/request.dart';
-import 'package:components/pages/report_feedback/feedback/models/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/Authentication/models/logout_request.dart';
