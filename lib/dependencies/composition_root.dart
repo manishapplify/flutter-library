@@ -14,7 +14,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:components/enums/platform.dart' as enums;
 
@@ -133,7 +132,21 @@ void _requestInterceptor(
 
 void _errorInterceptor(DioError error, ErrorInterceptorHandler handler) {
   print('Error');
-  print('(${error.requestOptions.uri.path}) $error');
+  print('(${error.requestOptions.uri.path}) ${error.response}');
+
+  final Map<String, dynamic>? response =
+      error.response?.data as Map<String, dynamic>;
+
+  if (response is Map<String, dynamic>) {
+    if (response['statusCode'] == 400) {
+      throw (DioError(
+        error: response['message'] ?? 'Failure',
+        requestOptions: error.requestOptions,
+      ));
+    } else if (response['statusCode'] == 401) {
+      // TODO: Handle 401 response.
+    }
+  }
 
   handler.next(error);
 }

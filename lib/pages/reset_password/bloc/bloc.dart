@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/Authentication/repo.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 part 'event.dart';
@@ -31,8 +32,21 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
       try {
         await _authRepository.resetPassword(state.password);
         emit(state.copyWith(formStatus: SubmissionSuccess()));
-      } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
+      } on DioError catch (e) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(
+              exception: e,
+              message: e.error,
+            ),
+          ),
+        );
+      } on Exception catch (_) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(exception: Exception('Failure')),
+          ),
+        );
       }
     } else {
       emit(state.copyWith(formStatus: SubmissionFailed()));

@@ -99,7 +99,6 @@ class ProfileRepository {
     if (countryCode is String) {
       _persistence.saveCountryCode(countryCode);
     }
-    Response<dynamic> response;
 
     final UpdateProfileRequest request = UpdateProfileRequest(
       firstName: firstName,
@@ -118,7 +117,7 @@ class ProfileRepository {
       notificationEnabled: notificationEnabled,
     );
 
-    response = await _api.updateProfile(request);
+    final Response<dynamic> response = await _api.updateProfile(request);
     final User user =
         _authCubit.state.user!.copyWithJson(response.data['data']);
     _authCubit.signupOrLogin(user);

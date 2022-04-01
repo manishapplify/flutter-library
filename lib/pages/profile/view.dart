@@ -182,10 +182,12 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                 }
               } else if (state.formStatus is SubmissionFailed) {
                 profileBloc.add(ResetFormStatus());
+                final SubmissionFailed failure =
+                    state.formStatus as SubmissionFailed;
                 Future<void>.microtask(
                   () => showSnackBar(
-                    const SnackBar(
-                      content: Text('Failure'),
+                    SnackBar(
+                      content: Text(failure.message ?? 'Failure'),
                     ),
                   ),
                 );

@@ -71,10 +71,12 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                       ),
                     );
                   } else if (state.formStatus is SubmissionFailed) {
+                    final SubmissionFailed failure =
+                        state.formStatus as SubmissionFailed;
                     Future<void>.microtask(
                       () => showSnackBar(
-                        const SnackBar(
-                          content: Text('Failure'),
+                        SnackBar(
+                          content: Text(failure.message ?? 'Failure'),
                         ),
                       ),
                     );

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:components/Authentication/repo.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 part 'state.dart';
@@ -17,6 +18,11 @@ class SettingsCubit extends Cubit<SettingsState> {
     try {
       await _authRepository.logout();
       emit(LogdedOut());
+    } on DioError catch (e) {
+      emit(FailedLoggingOut(
+        exception: e,
+        message: e.error,
+      ));
     } on Exception catch (e) {
       emit(FailedLoggingOut(exception: e));
     }
@@ -27,6 +33,11 @@ class SettingsCubit extends Cubit<SettingsState> {
     try {
       await _authRepository.deleteAccount();
       emit(DeletedAccount());
+    } on DioError catch (e) {
+      emit(FailedDeletingAccount(
+        exception: e,
+        message: e.error,
+      ));
     } on Exception catch (e) {
       emit(FailedDeletingAccount(exception: e));
     }

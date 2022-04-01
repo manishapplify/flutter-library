@@ -18,14 +18,23 @@ class LogdedOut extends CompletedAction {}
 class DeletedAccount extends CompletedAction {}
 
 abstract class FailedAction extends SettingsState {
-  FailedAction({this.exception});
+  FailedAction({this.exception, this.message});
   final Exception? exception;
+  final String? message;
 }
 
 class FailedLoggingOut extends FailedAction {
-  FailedLoggingOut({Exception? exception}) : super(exception: exception);
+  FailedLoggingOut({Exception? exception, String? message})
+      : super(
+          exception: exception,
+          message: message,
+        );
 }
 
 class FailedDeletingAccount extends FailedAction {
-  FailedDeletingAccount({Exception? exception}) : super(exception: exception);
+  FailedDeletingAccount({Exception? exception, String? message})
+      : super(
+          exception: exception,
+          message: message,
+        );
 }

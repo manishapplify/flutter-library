@@ -43,10 +43,11 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
           Future<void>.microtask(() => navigator.pop());
         } else if (state.formStatus is SubmissionFailed) {
           reportBugBloc.add(ResetFormStatus());
+          final SubmissionFailed failure = state.formStatus as SubmissionFailed;
           Future<void>.microtask(
             () => showSnackBar(
-              const SnackBar(
-                content: Text('Failure'),
+              SnackBar(
+                content: Text(failure.message ?? 'Failure'),
               ),
             ),
           );

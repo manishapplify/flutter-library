@@ -5,6 +5,7 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/services/api/api.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 part 'event.dart';
@@ -53,8 +54,21 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
           );
         }
         emit(state.copyWith(formStatus: SubmissionSuccess()));
-      } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
+      } on DioError catch (e) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(
+              exception: e,
+              message: e.error,
+            ),
+          ),
+        );
+      } on Exception catch (_) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(exception: Exception('Failure')),
+          ),
+        );
       }
     } else {
       emit(state.copyWith(formStatus: SubmissionFailed()));

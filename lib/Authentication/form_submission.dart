@@ -11,7 +11,11 @@ class FormSubmitting extends FormSubmissionStatus {}
 class SubmissionSuccess extends FormSubmissionStatus {}
 
 class SubmissionFailed extends FormSubmissionStatus {
-  SubmissionFailed({this.exception});
+  SubmissionFailed({
+    this.exception,
+    this.message,
+  });
 
   final Exception? exception;
+  final String? message;
 }

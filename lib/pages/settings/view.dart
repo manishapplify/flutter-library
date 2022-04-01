@@ -83,18 +83,6 @@ class _SettingsState extends BasePageState<SettingsPage> {
                 color: Colors.black,
               ),
             ),
-            // const Divider(
-            //   color: Colors.black12,
-            // ),
-            // buildHeading("Notification"),
-            // SettingOption(
-            //   "Change Notification",
-            //   () => null,
-            //   const Icon(
-            //     Icons.notification_important_rounded,
-            //     color: Colors.black,
-            //   ),
-            // ),
           ],
         ),
         BlocBuilder<SettingsCubit, SettingsState>(
@@ -118,16 +106,16 @@ class _SettingsState extends BasePageState<SettingsPage> {
             if (state is FailedLoggingOut) {
               Future<void>.microtask(
                 () => showSnackBar(
-                  const SnackBar(
-                    content: Text('Failed to logout'),
+                  SnackBar(
+                    content: Text(state.message ?? 'Failed to logout'),
                   ),
                 ),
               );
             } else if (state is FailedDeletingAccount) {
               Future<void>.microtask(
                 () => showSnackBar(
-                  const SnackBar(
-                    content: Text('Failed to delete account'),
+                  SnackBar(
+                    content: Text(state.message ?? 'Failed to delete account'),
                   ),
                 ),
               );

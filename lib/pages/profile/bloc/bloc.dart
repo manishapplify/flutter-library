@@ -7,6 +7,7 @@ import 'package:components/enums/gender.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/enums/signup.dart';
 import 'package:components/pages/profile/repo.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:components/validators/validators.dart' as validators;
 
@@ -204,8 +205,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           signupType: Signup.EMAIL_OR_PHONE,
         );
         emit(state.copyWith(formStatus: SubmissionSuccess()));
-      } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
+      } on DioError catch (e) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(
+              exception: e,
+              message: e.error,
+            ),
+          ),
+        );
+      } on Exception catch (_) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(exception: Exception('Failure')),
+          ),
+        );
       }
     } else if (state.screenType == Screen.updateProfile) {
       emit(state.copyWith(formStatus: FormSubmitting()));
@@ -225,8 +239,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
               state.isNotificationEnabled ? 1.toString() : 0.toString(),
         );
         emit(state.copyWith(formStatus: SubmissionSuccess()));
-      } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
+      } on DioError catch (e) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(
+              exception: e,
+              message: e.error,
+            ),
+          ),
+        );
+      } on Exception catch (_) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(exception: Exception('Failure')),
+          ),
+        );
       }
     } else {
       throw ('Unsupported request');

@@ -3,6 +3,7 @@ import 'package:components/Authentication/form_submission.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/services/persistence.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 part 'event.dart';
@@ -26,7 +27,8 @@ class ForgotPasswordBloc
   void _onEmailChangedHandler(
           EmailChanged event, Emitter<ForgotPasswordState> emit) =>
       emit(
-        state.copyWith(email: event.email, formStatus: const InitialFormStatus()),
+        state.copyWith(
+            email: event.email, formStatus: const InitialFormStatus()),
       );
 
   void _onForgotPasswordSubmittedHandler(
@@ -42,8 +44,21 @@ class ForgotPasswordBloc
     try {
       await _authRepository.forgotPassword(request);
       emit(state.copyWith(formStatus: SubmissionSuccess()));
-    } on Exception catch (e) {
-      emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
+    } on DioError catch (e) {
+      emit(
+        state.copyWith(
+          formStatus: SubmissionFailed(
+            exception: e,
+            message: e.error,
+          ),
+        ),
+      );
+    } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          formStatus: SubmissionFailed(exception: Exception('Failure')),
+        ),
+      );
     }
   }
 }

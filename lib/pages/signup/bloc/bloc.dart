@@ -1,6 +1,7 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:components/validators/validators.dart' as validators;
 
@@ -71,8 +72,21 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           userType: 1,
         );
         emit(state.copyWith(formStatus: SubmissionSuccess()));
-      } on Exception catch (e) {
-        emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
+      } on DioError catch (e) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(
+              exception: e,
+              message: e.error,
+            ),
+          ),
+        );
+      } on Exception catch (_) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(exception: Exception('Failure')),
+          ),
+        );
       }
     });
   }
