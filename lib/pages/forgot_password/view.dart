@@ -99,8 +99,7 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                           ),
                         ),
                         keyboardType: TextInputType.emailAddress,
-                        validator: (_) =>
-                            state.isValidEmail ? null : "Username is too short",
+                        validator: (_) => state.emailValidator,
                         onChanged: (String value) => forgotPasswordBloc.add(
                           EmailChanged(value),
                         ),

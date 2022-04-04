@@ -299,8 +299,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     ),
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (_) => phoneFocusNode.requestFocus(),
-                    validator: (_) =>
-                        state.isValidEmail ? null : "Username is too short",
+                    validator: (_) => state.emailValidator,
                     textInputAction: TextInputAction.next,
                     onChanged: (String value) => profileBloc.add(
                       ProfileEmailChanged(

@@ -4,6 +4,7 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/services/api/api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:components/validators/validators.dart' as validators;
 
 part 'event.dart';
 part 'state.dart';
@@ -15,11 +16,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required AuthCubit authCubit,
   })  : _authRepository = authRepository,
         super(LoginState()) {
-    on<LoginUsernameChanged>(
-        (LoginUsernameChanged event, Emitter<LoginState> emit) {
+    on<LoginEmailChanged>(
+        (LoginEmailChanged event, Emitter<LoginState> emit) {
       emit(
         state.copyWith(
-            username: event.username, formStatus: const InitialFormStatus()),
+            email: event.email, formStatus: const InitialFormStatus()),
       );
     });
     on<LoginPasswordChanged>(
@@ -37,7 +38,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
       try {
         await _authRepository.login(
-          username: state.username,
+          username: state.email,
           password: state.password,
         );
         emit(

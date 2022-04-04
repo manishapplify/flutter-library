@@ -2,14 +2,15 @@ part of 'bloc.dart';
 
 class LoginState {
   LoginState({
-    this.username = '',
+    this.email = '',
     this.password = '',
     this.formStatus = const InitialFormStatus(),
     this.isLoginSuccessful,
   });
 
-  final String username;
-  bool get isValidUsername => username.length > 3;
+  final String email;
+  String? get emailValidator =>
+      !validators.notEmptyValidator(email) ? 'Email is required' : null;
 
   final String password;
   bool get isValidPassword => password.length > 6;
@@ -18,12 +19,12 @@ class LoginState {
   final bool? isLoginSuccessful;
 
   LoginState copyWith({
-    String? username,
+    String? email,
     String? password,
     FormSubmissionStatus? formStatus,
   }) {
     return LoginState(
-      username: username ?? this.username,
+      email: email ?? this.email,
       password: password ?? this.password,
       formStatus: formStatus ?? this.formStatus,
     );

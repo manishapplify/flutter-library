@@ -80,9 +80,7 @@ class _SignupState extends BasePageState<SignupPage> {
                 onChanged: (String value) => signUpBloc.add(
                   SignUpEmailChanged(email: value),
                 ),
-                validator: (_) => signUpBloc.state.isValidEmail
-                    ? null
-                    : "Enter a valid email",
+                validator: (_) => signUpBloc.state.emailValidator,
               ),
               const SizedBox(height: 15),
               Row(

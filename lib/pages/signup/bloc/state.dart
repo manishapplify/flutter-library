@@ -16,7 +16,11 @@ class SignUpState {
   bool get isValidCountryCode => countryCode is String;
 
   final String email;
-  bool get isValidEmail => validators.isValidEmail(email);
+  String? get emailValidator => !validators.notEmptyValidator(email)
+      ? 'Email is required'
+      : !validators.isValidEmail(email)
+          ? 'Invalid email'
+          : null;
 
   final String password;
   bool get isValidPassword => validators.isValidPassword(password);

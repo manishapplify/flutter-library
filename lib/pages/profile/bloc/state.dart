@@ -24,8 +24,7 @@ class ProfileState {
 
   /// Should not be empty when registering a user.
   bool get isValidProfilePicFilePath =>
-      screenType != Screen.registerUser ||
-      profilePicFile is File;
+      screenType != Screen.registerUser || profilePicFile is File;
 
   /// Initialize from the user object.
   final String? profilePicUrlPath;
@@ -40,7 +39,11 @@ class ProfileState {
       validators.notEmptyValidator(lastname) && lastname!.length > 2;
 
   final String? email;
-  bool get isValidEmail => validators.isValidEmail(email);
+  String? get emailValidator => !validators.notEmptyValidator(email)
+      ? 'Email is required'
+      : !validators.isValidEmail(email)
+          ? 'Invalid email'
+          : null;
 
   final String? countryCode;
   bool get isValidCountryCode => validators.notEmptyValidator(countryCode);

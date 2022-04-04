@@ -15,20 +15,20 @@ class _LoginState extends BasePageState<LoginPage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   late final LoginBloc loginBloc;
-  late final FocusNode userNameFocusNode;
+  late final FocusNode emailFocusNode;
   late final FocusNode passwordFocusNode;
 
   @override
   void initState() {
     loginBloc = BlocProvider.of(context);
-    userNameFocusNode = FocusNode();
+    emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
     super.initState();
   }
 
   @override
   void dispose() {
-    userNameFocusNode.dispose();
+    emailFocusNode.dispose();
     passwordFocusNode.dispose();
     super.dispose();
   }
@@ -67,19 +67,19 @@ class _LoginState extends BasePageState<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 TextFormField(
-                  focusNode: userNameFocusNode,
+                  focusNode: emailFocusNode,
                   keyboardType: TextInputType.emailAddress,
                   style: const TextStyle(color: Colors.black),
                   decoration: const InputDecoration(
-                    hintText: 'UserName',
+                    hintText: 'Email',
                     prefixIcon: Icon(
                       Icons.email,
                     ),
                   ),
                   validator: (_) =>
-                      state.isValidUsername ? null : "Username is too short",
+                      state.emailValidator,
                   onChanged: (String value) => loginBloc.add(
-                    LoginUsernameChanged(username: value),
+                    LoginEmailChanged(email: value),
                   ),
                   onFieldSubmitted: (_) => passwordFocusNode.requestFocus(),
                   textInputAction: TextInputAction.next,
