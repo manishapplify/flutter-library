@@ -64,6 +64,7 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
               BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
                 builder: (BuildContext context, ForgotPasswordState state) {
                   if (state.formStatus is SubmissionSuccess) {
+                    forgotPasswordBloc.add(ResetFormStatus());
                     Future<void>.microtask(
                       () => navigator.pushNamed(
                         Routes.otp,
@@ -71,6 +72,7 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                       ),
                     );
                   } else if (state.formStatus is SubmissionFailed) {
+                    forgotPasswordBloc.add(ResetFormStatus());
                     final SubmissionFailed failure =
                         state.formStatus as SubmissionFailed;
                     Future<void>.microtask(
@@ -93,7 +95,8 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                         autofocus: true,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
-                          hintText: 'Email',
+                          hintText: 'Enter your email',
+                          labelText: 'Email',
                           prefixIcon: Icon(
                             Icons.email,
                           ),

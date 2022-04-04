@@ -9,11 +9,8 @@ class ForgotPasswordState {
   });
 
   final String email;
-  String? get emailValidator => !validators.notEmptyValidator(email)
-      ? 'Email is required'
-      : !validators.isValidEmail(email)
-          ? 'Invalid email'
-          : null;
+  String? get emailValidator =>
+      !validators.notEmptyValidator(email) ? 'Email is required' : null;
 
   final FormSubmissionStatus formStatus;
   final bool? isLoginSuccessful;

@@ -20,6 +20,7 @@ class ForgotPasswordBloc
         super(const ForgotPasswordState()) {
     on<EmailChanged>(_onEmailChangedHandler);
     on<ForgotPasswordSubmitted>(_onForgotPasswordSubmittedHandler);
+    on<ResetFormStatus>(_resetFormStatusHandler);
   }
 
   final Persistence _persistence;
@@ -62,4 +63,12 @@ class ForgotPasswordBloc
       );
     }
   }
+
+  void _resetFormStatusHandler(
+          ResetFormStatus event, Emitter<ForgotPasswordState> emit) =>
+      emit(
+        state.copyWith(
+          formStatus: const InitialFormStatus(),
+        ),
+      );
 }
