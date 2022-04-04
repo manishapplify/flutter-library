@@ -124,6 +124,7 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                     height: 20.0,
                   ),
                   TextFormField(
+                    textCapitalization: TextCapitalization.words,
                     maxLines: 10,
                     decoration: const InputDecoration(
                       hintText: 'Please briefly describe the issue',

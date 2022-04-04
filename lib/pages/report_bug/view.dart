@@ -63,6 +63,7 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       TextFormField(
+                        textCapitalization: TextCapitalization.words,
                         autofocus: true,
                         decoration: const InputDecoration(
                           hintText: 'Enter a title',
@@ -83,6 +84,7 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                       ),
                       const SizedBox(height: 10.0),
                       TextFormField(
+                        textCapitalization: TextCapitalization.words,
                         focusNode: descriptionFocusNode,
                         maxLines: 5,
                         decoration: const InputDecoration(

@@ -225,6 +225,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                       height: 15,
                     ),
                   TextFormField(
+                    textCapitalization: TextCapitalization.words,
                     controller: firstNameTextEditingController,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
@@ -245,6 +246,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
+                    textCapitalization: TextCapitalization.words,
                     controller: lastNameTextEditingController,
                     focusNode: lastNameFocusNode,
                     decoration: const InputDecoration(
@@ -363,6 +365,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
+                    textCapitalization: TextCapitalization.words,
                     controller: addressTextEditingController,
                     focusNode: addressFocusNode,
                     decoration: const InputDecoration(
@@ -383,6 +386,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
+                    textCapitalization: TextCapitalization.words,
                     controller: cityTextEditingController,
                     focusNode: cityFocusNode,
                     decoration: const InputDecoration(
@@ -430,6 +434,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   const SizedBox(height: 15),
                   if (screen == Screen.registerUser)
                     TextFormField(
+                      textCapitalization: TextCapitalization.words,
                       autofocus: screen == Screen.registerUser,
                       decoration: const InputDecoration(
                         prefixIcon: Icon(
