@@ -13,7 +13,8 @@ class LoginState {
       !validators.notEmptyValidator(email) ? 'Email is required' : null;
 
   final String password;
-  bool get isValidPassword => password.length > 6;
+  String? get passwordValidator =>
+      !validators.notEmptyValidator(password) ? 'Password is required' : null;
 
   final FormSubmissionStatus formStatus;
   final bool? isLoginSuccessful;
