@@ -160,7 +160,6 @@ class AuthRepository {
     );
 
     await _api.changePassword(request);
-    throw Exception('failed ChangePasswordSubmission');
   }
 
   Future<dynamic> logout() async {

@@ -14,4 +14,12 @@ class NewPasswordChanged extends ChangePasswordEvent {
   final String newPassword;
 }
 
+class ConfirmNewPasswordChanged extends ChangePasswordEvent {
+  ConfirmNewPasswordChanged({required this.confirmNewPassword});
+
+  final String confirmNewPassword;
+}
+
+class ResetFormState extends ChangePasswordEvent {}
+
 class ChangePasswordSubmitted extends ChangePasswordEvent {}

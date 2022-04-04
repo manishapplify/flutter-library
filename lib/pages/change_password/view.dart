@@ -17,12 +17,20 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
   late final ChangePasswordBloc changePasswordBloc;
   late final FocusNode currentPasswordFocusNode;
   late final FocusNode newPasswordFocusNode;
+  late final FocusNode confirmNewPasswordFocusNode;
+  late final TextEditingController currentPasswordTextController;
+  late final TextEditingController newPasswordTextController;
+  late final TextEditingController confirmNewPasswordTextController;
 
   @override
   void initState() {
     changePasswordBloc = BlocProvider.of(context);
     currentPasswordFocusNode = FocusNode();
     newPasswordFocusNode = FocusNode();
+    confirmNewPasswordFocusNode = FocusNode();
+    currentPasswordTextController = TextEditingController();
+    newPasswordTextController = TextEditingController();
+    confirmNewPasswordTextController = TextEditingController();
     super.initState();
   }
 
@@ -30,6 +38,10 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
   void dispose() {
     currentPasswordFocusNode.dispose();
     newPasswordFocusNode.dispose();
+    confirmNewPasswordFocusNode.dispose();
+    currentPasswordTextController.dispose();
+    newPasswordTextController.dispose();
+    confirmNewPasswordTextController.dispose();
     super.dispose();
   }
 
@@ -45,6 +57,20 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
       key: _formkey,
       child: BlocBuilder<ChangePasswordBloc, ChangePasswordState>(
           builder: (BuildContext context, ChangePasswordState state) {
+        if (state.formStatus is SubmissionSuccess) {
+          changePasswordBloc.add(ResetFormState());
+          currentPasswordTextController.value = TextEditingValue.empty;
+          newPasswordTextController.value = TextEditingValue.empty;
+          confirmNewPasswordTextController.value = TextEditingValue.empty;
+          Future<void>.microtask(
+            () => showSnackBar(
+              const SnackBar(
+                content: Text('Successfully updated password'),
+              ),
+            ),
+          );
+        }
+
         return Column(
           children: <Widget>[
             Text(
@@ -55,6 +81,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               height: 16.0,
             ),
             TextFormField(
+              controller: currentPasswordTextController,
               focusNode: currentPasswordFocusNode,
               obscureText: true,
               style: const TextStyle(color: Colors.black),
@@ -64,16 +91,17 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
                   Icons.lock,
                 ),
               ),
-              validator: (_) =>
-                  state.isValidcurrentPassword ? null : "Password is too short",
+              validator: (_) => state.currentPasswordValidator,
               onChanged: (String value) => changePasswordBloc
                   .add(CurrentPasswordChanged(currentPassword: value)),
               onFieldSubmitted: (_) => newPasswordFocusNode.requestFocus(),
+              textInputAction: TextInputAction.next,
             ),
             const SizedBox(
               height: 16.0,
             ),
             TextFormField(
+              controller: newPasswordTextController,
               focusNode: newPasswordFocusNode,
               obscureText: true,
               style: const TextStyle(color: Colors.black),
@@ -83,10 +111,31 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
                   Icons.lock,
                 ),
               ),
-              validator: (_) =>
-                  state.isValidnewPassword ? null : "Password is too short",
+              validator: (_) => state.newPasswordValidator,
               onChanged: (String value) => changePasswordBloc.add(
                 NewPasswordChanged(newPassword: value),
+              ),
+              onFieldSubmitted: (_) =>
+                  confirmNewPasswordFocusNode.requestFocus(),
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(
+              height: 16.0,
+            ),
+            TextFormField(
+              controller: confirmNewPasswordTextController,
+              focusNode: confirmNewPasswordFocusNode,
+              obscureText: true,
+              style: const TextStyle(color: Colors.black),
+              decoration: const InputDecoration(
+                hintText: 'Confirm New Password',
+                prefixIcon: Icon(
+                  Icons.lock,
+                ),
+              ),
+              validator: (_) => state.confirmNewPasswordValidator,
+              onChanged: (String value) => changePasswordBloc.add(
+                ConfirmNewPasswordChanged(confirmNewPassword: value),
               ),
               onFieldSubmitted: (_) => onFormSubmitted(),
             ),

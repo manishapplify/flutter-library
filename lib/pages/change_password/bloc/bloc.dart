@@ -4,6 +4,7 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/services/api/api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:components/validators/validators.dart' as validators;
 
 part 'event.dart';
 part 'state.dart';
@@ -31,6 +32,18 @@ class ChangePasswordBloc
             newPassword: event.newPassword,
             formStatus: const InitialFormStatus()),
       );
+    });
+    on<ConfirmNewPasswordChanged>(
+        (ConfirmNewPasswordChanged event, Emitter<ChangePasswordState> emit) {
+      emit(
+        state.copyWith(
+            confirmNewPassword: event.confirmNewPassword,
+            formStatus: const InitialFormStatus()),
+      );
+    });
+    on<ResetFormState>(
+        (ResetFormState event, Emitter<ChangePasswordState> emit) {
+      emit(ChangePasswordState());
     });
     on<ChangePasswordSubmitted>((ChangePasswordSubmitted event,
         Emitter<ChangePasswordState> emit) async {
