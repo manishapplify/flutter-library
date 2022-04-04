@@ -47,17 +47,6 @@ class _SettingsState extends BasePageState<SettingsPage> {
               ),
             ),
             SettingOption(
-              title: "Verify email",
-              onOptionTap: () => navigator.pushNamed(
-                Routes.otp,
-                arguments: Screen.verifyEmail,
-              ),
-              leading: const Icon(
-                Icons.mark_email_read,
-                color: Colors.black,
-              ),
-            ),
-            SettingOption(
               title: "Change password",
               onOptionTap: () => navigator.pushNamed(
                 Routes.changePassword,
