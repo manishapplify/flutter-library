@@ -177,10 +177,10 @@ class _SignupState extends BasePageState<SignupPage> {
                 builder: (BuildContext context, SignUpState state) {
                   if (state.formStatus is SubmissionSuccess) {
                     Future<void>.microtask(
-                      () => Navigator.pushReplacementNamed(
+                      () => Navigator.popAndPushNamed(
                         context,
-                        Routes.profile,
-                        arguments: Screen.registerUser,
+                        Routes.otp,
+                        arguments: Screen.verifyEmail,
                       ),
                     );
                   } else if (state.formStatus is SubmissionFailed) {
