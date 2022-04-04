@@ -21,8 +21,8 @@ class ChangePasswordState {
           : null;
 
   final String confirmNewPassword;
-  String? get confirmNewPasswordValidator => newPassword.isEmpty
-      ? 'Confirm new password'
+  String? get confirmNewPasswordValidator => confirmNewPassword.isEmpty
+      ? 'Enter new password once more'
       : confirmNewPassword != newPassword
           ? 'Should match the new password'
           : null;
