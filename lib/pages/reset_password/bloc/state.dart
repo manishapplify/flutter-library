@@ -2,22 +2,36 @@ part of 'bloc.dart';
 
 class ResetPasswordState {
   ResetPasswordState({
-    this.password = '',
+    this.newPassword = '',
+    this.confirmNewPassword = '',
     this.formStatus = const InitialFormStatus(),
   });
 
-  final String password;
-  bool get isValidPassword => password.length > 6;
+  final String newPassword;
+  String? get newPasswordValidator => newPassword.isEmpty
+      ? 'New password is required'
+      : !validators.isValidPassword(newPassword)
+          ? 'New password is too short'
+          : null;
+
+  final String confirmNewPassword;
+  String? get confirmNewPasswordValidator => confirmNewPassword.isEmpty
+      ? 'Enter new password once more'
+      : confirmNewPassword != newPassword
+          ? 'Should match the new password'
+          : null;
 
   final FormSubmissionStatus formStatus;
 
   ResetPasswordState copyWith({
-    String? password,
+    String? newPassword,
+    String? confirmNewPassword,
     FormSubmissionStatus? formStatus,
   }) {
     return ResetPasswordState(
-      password: password ?? this.password,
+      newPassword: newPassword ?? this.newPassword,
       formStatus: formStatus ?? this.formStatus,
+      confirmNewPassword: confirmNewPassword ?? this.confirmNewPassword,
     );
   }
 }

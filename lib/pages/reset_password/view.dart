@@ -19,6 +19,8 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
   late final TextEditingController passwordTextEditingController;
   late final PasswordAuthCubit passwordAuthCubit;
   late final ResetPasswordBloc resetPasswordBloc;
+  late final TextEditingController confirmNewPasswordTextController;
+  late final FocusNode confirmNewPasswordFocusNode;
 
   @override
   void initState() {
@@ -26,6 +28,8 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
     passwordTextEditingController = TextEditingController();
     passwordAuthCubit = BlocProvider.of(context);
     resetPasswordBloc = BlocProvider.of(context);
+    confirmNewPasswordFocusNode = FocusNode();
+    confirmNewPasswordTextController = TextEditingController();
     super.initState();
   }
 
@@ -33,6 +37,8 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
   void dispose() {
     passwordTextEditingController.dispose();
     passwordFocusNode.dispose();
+    confirmNewPasswordFocusNode.dispose();
+    confirmNewPasswordTextController.dispose();
     super.dispose();
   }
 
@@ -54,9 +60,17 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                 builder: (BuildContext context, ResetPasswordState state) {
                   if (state.formStatus is SubmissionSuccess) {
                     passwordAuthCubit.resetToken();
+                    resetPasswordBloc.add(ResetFormState());
+                    passwordTextEditingController.value =
+                        TextEditingValue.empty;
+                    confirmNewPasswordTextController.value =
+                        TextEditingValue.empty;
                     Future<void>.microtask(
-                      () =>
-                          navigator.popUntil(ModalRoute.withName(Routes.login)),
+                      () => showSnackBar(
+                        const SnackBar(
+                          content: Text('Password reset successful'),
+                        ),
+                      ),
                     );
                   } else if (state.formStatus is SubmissionFailed) {
                     final SubmissionFailed failure =
@@ -87,15 +101,35 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                             Icons.lock,
                           ),
                         ),
-                        validator: (_) => state.isValidPassword
-                            ? null
-                            : "Password is too short",
+                        validator: (_) => state.newPasswordValidator,
                         onChanged: (String value) => resetPasswordBloc.add(
-                          ResetPasswordChanged(password: value),
+                          ResetNewPasswordChanged(newPassword: value),
+                        ),
+                        onFieldSubmitted: (_) =>
+                            confirmNewPasswordFocusNode.requestFocus(),
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: 15),
+                      TextFormField(
+                        controller: confirmNewPasswordTextController,
+                        focusNode: confirmNewPasswordFocusNode,
+                        obscureText: true,
+                        style: const TextStyle(color: Colors.black),
+                        decoration: const InputDecoration(
+                          hintText: 'Confirm New Password',
+                          prefixIcon: Icon(
+                            Icons.lock,
+                          ),
+                        ),
+                        validator: (_) => state.confirmNewPasswordValidator,
+                        onChanged: (String value) => resetPasswordBloc.add(
+                          ConfirmNewPasswordChanged(confirmNewPassword: value),
                         ),
                         onFieldSubmitted: (_) => onFormSubmitted(),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(
+                        height: 16.0,
+                      ),
                       state.formStatus is FormSubmitting
                           ? const CircularProgressIndicator()
                           : ElevatedButton(

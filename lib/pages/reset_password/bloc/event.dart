@@ -3,10 +3,18 @@ part of 'bloc.dart';
 @immutable
 abstract class ResetPasswordEvent {}
 
-class ResetPasswordChanged extends ResetPasswordEvent {
-  ResetPasswordChanged({required this.password});
+class ResetNewPasswordChanged extends ResetPasswordEvent {
+  ResetNewPasswordChanged({required this.newPassword});
 
-  final String password;
+  final String newPassword;
 }
+
+class ConfirmNewPasswordChanged extends ResetPasswordEvent {
+  ConfirmNewPasswordChanged({required this.confirmNewPassword});
+
+  final String confirmNewPassword;
+}
+
+class ResetFormState extends ResetPasswordEvent {}
 
 class ResetPasswordSubmitted extends ResetPasswordEvent {}
