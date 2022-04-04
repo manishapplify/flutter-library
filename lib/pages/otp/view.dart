@@ -123,7 +123,18 @@ class _OTPState extends BasePageState<OtpPage> {
             ),
           ),
         );
-        return const SizedBox();
+        return Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const <Widget>[
+              Text('Verified'),
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+              ),
+            ],
+          ),
+        );
       }
     }
 
