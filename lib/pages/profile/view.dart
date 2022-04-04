@@ -436,7 +436,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                         prefixIcon: Icon(
                           Icons.qr_code_rounded,
                         ),
-                        hintText: 'Enter a referral code',
+                        hintText: 'Enter a referral code(optional)',
                       ),
                       keyboardType: TextInputType.text,
                       onFieldSubmitted: (_) => screen == Screen.registerUser
