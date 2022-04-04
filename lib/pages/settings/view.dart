@@ -61,16 +61,17 @@ class _SettingsState extends BasePageState<SettingsPage> {
               onOptionTap: () => showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Are you sure?'),
-                  content: const Text('Your account will be deleted'),
+                  title: const Text('Confirmation'),
+                  content: const Text(
+                      'Are you sure, you want to delete your account?'),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () => settingsCubit.deleteAccount(),
-                      child: const Text('Confirm'),
+                      child: const Text('Yes'),
                     ),
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
+                      child: const Text('No'),
                     ),
                   ],
                 ),
@@ -85,16 +86,16 @@ class _SettingsState extends BasePageState<SettingsPage> {
               onOptionTap: () => showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Are you sure?'),
-                  content: const Text('You will be logged out of your account'),
+                  title: const Text('Confirmation'),
+                  content: const Text('Are you sure, you want to log out?'),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () => settingsCubit.logout(),
-                      child: const Text('Confirm'),
+                      child: const Text('Yes'),
                     ),
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
+                      child: const Text('No'),
                     ),
                   ],
                 ),
