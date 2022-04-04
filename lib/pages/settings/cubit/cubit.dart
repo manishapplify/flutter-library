@@ -21,7 +21,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     } on DioError catch (e) {
       emit(FailedLoggingOut(
         exception: e,
-        message: e.error,
+        message: (e.error is String?) ? e.error : 'Failure',
       ));
     } on Exception catch (e) {
       emit(FailedLoggingOut(exception: e));
@@ -36,7 +36,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     } on DioError catch (e) {
       emit(FailedDeletingAccount(
         exception: e,
-        message: e.error,
+        message: (e.error is String?) ? e.error : 'Failure',
       ));
     } on Exception catch (e) {
       emit(FailedDeletingAccount(exception: e));

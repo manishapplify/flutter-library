@@ -37,7 +37,7 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
           state.copyWith(
             formStatus: SubmissionFailed(
               exception: e,
-              message: e.error,
+              message: (e.error is String?) ? e.error : 'Failure',
             ),
           ),
         );

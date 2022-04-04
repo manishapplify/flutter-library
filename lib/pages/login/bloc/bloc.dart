@@ -16,8 +16,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required AuthCubit authCubit,
   })  : _authRepository = authRepository,
         super(LoginState()) {
-    on<LoginEmailChanged>(
-        (LoginEmailChanged event, Emitter<LoginState> emit) {
+    on<LoginEmailChanged>((LoginEmailChanged event, Emitter<LoginState> emit) {
       emit(
         state.copyWith(
             email: event.email, formStatus: const InitialFormStatus()),
@@ -51,7 +50,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           state.copyWith(
             formStatus: SubmissionFailed(
               exception: e,
-              message: e.error,
+              message: (e.error is String?) ? e.error : 'Failure',
             ),
           ),
         );

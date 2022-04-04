@@ -135,8 +135,7 @@ void _errorInterceptor(DioError error, ErrorInterceptorHandler handler) {
   print('Error');
   print('(${error.requestOptions.uri.path}) ${error.response}');
 
-  final Map<String, dynamic>? response =
-      error.response?.data as Map<String, dynamic>;
+  final dynamic response = error.response?.data;
 
   if (response is Map<String, dynamic>) {
     if (response['statusCode'] == 400) {
