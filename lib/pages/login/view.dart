@@ -51,12 +51,14 @@ class _LoginState extends BasePageState<LoginPage> {
         child: BlocBuilder<LoginBloc, LoginState>(
           builder: (BuildContext context, LoginState state) {
             if (state.formStatus is SubmissionSuccess) {
+              loginBloc.add(ResetFormStatus());
               if (!authCubit.state.isAuthorized) {
                 throw Exception('not signed in');
               }
 
               Navigation.navigateAfterSplashOrLogin(authCubit.state.user!);
             } else if (state.formStatus is SubmissionFailed) {
+              loginBloc.add(ResetFormStatus());
               final SubmissionFailed failure =
                   state.formStatus as SubmissionFailed;
               Future<void>.microtask(
@@ -76,7 +78,8 @@ class _LoginState extends BasePageState<LoginPage> {
                   keyboardType: TextInputType.emailAddress,
                   style: const TextStyle(color: Colors.black),
                   decoration: const InputDecoration(
-                    hintText: 'Email',
+                    hintText: 'Enter your email',
+                    labelText: 'Email',
                     prefixIcon: Icon(
                       Icons.email,
                     ),
@@ -94,7 +97,8 @@ class _LoginState extends BasePageState<LoginPage> {
                   obscureText: true,
                   style: const TextStyle(color: Colors.black),
                   decoration: const InputDecoration(
-                    hintText: 'Password',
+                    hintText: 'Enter your password',
+                    labelText: 'Password',
                     prefixIcon: Icon(
                       Icons.lock,
                     ),

@@ -19,14 +19,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginEmailChanged>((LoginEmailChanged event, Emitter<LoginState> emit) {
       emit(
         state.copyWith(
-            email: event.email, formStatus: const InitialFormStatus()),
+          email: event.email,
+        ),
       );
     });
     on<LoginPasswordChanged>(
         (LoginPasswordChanged event, Emitter<LoginState> emit) {
       emit(
         state.copyWith(
-            password: event.password, formStatus: const InitialFormStatus()),
+          password: event.password,
+        ),
       );
     });
     on<LoginSubmitted>((LoginSubmitted event, Emitter<LoginState> emit) async {
@@ -64,6 +66,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
 
     on<GoogleSignInPressed>(_googleSignInPressedHandler);
+    on<ResetFormStatus>(_resetFormStatusHandler);
   }
 
   final AuthRepository _authRepository;
@@ -72,4 +75,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       GoogleSignInPressed event, Emitter<LoginState> emit) async {
     await _authRepository.signInWithGoogle();
   }
+
+  void _resetFormStatusHandler(
+          ResetFormStatus event, Emitter<LoginState> emit) =>
+      emit(
+        state.copyWith(
+          formStatus: const InitialFormStatus(),
+        ),
+      );
 }

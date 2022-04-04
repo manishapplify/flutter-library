@@ -17,3 +17,5 @@ class LoginPasswordChanged extends LoginEvent {
 class GoogleSignInPressed extends LoginEvent {}
 
 class LoginSubmitted extends LoginEvent {}
+
+class ResetFormStatus extends LoginEvent {}
