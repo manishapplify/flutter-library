@@ -112,13 +112,6 @@ class _OTPState extends BasePageState<OtpPage> {
         throw Exception('not signed in');
       }
       if (authCubit.state.user!.isEmailVerified == 1) {
-        Future<void>.microtask(
-          () => showSnackBar(
-            const SnackBar(
-              content: Text('Email already verified'),
-            ),
-          ),
-        );
         return Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -213,7 +206,10 @@ class _OTPState extends BasePageState<OtpPage> {
                         );
                       } else if (screen == Screen.verifyEmail) {
                         Future<void>.microtask(
-                          () => navigator.pop(),
+                          () => navigator.popAndPushNamed(
+                            Routes.profile,
+                            arguments: Screen.registerUser,
+                          ),
                         );
                       }
                     } else if (state.formStatus is SubmissionFailed) {

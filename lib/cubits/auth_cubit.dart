@@ -20,8 +20,8 @@ class AuthCubit extends Cubit<AuthState> {
         super(AuthState()) {
     final User? user = _persistence.fetchUser();
 
-    emit(AuthState(user: user));
     if (user is User) {
+      emit(AuthState(user: user));
       _api.addAuthorizationHeader(user.accessToken);
     }
   }

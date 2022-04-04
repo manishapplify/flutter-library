@@ -1,4 +1,6 @@
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/cubits/models/user.dart';
+import 'package:components/enums/screen.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/base/base_page.dart';
@@ -70,8 +72,6 @@ class _SplashState extends BasePageState<SplashPage> {
   }
 
   void navigateToNextScreen() {
-    // TODO: Check if user left during registration and move to `Routes.profile` with `Screen.registerUser` as argument.
-
     Future<void>.microtask(
       () => navigator.popUntil(
         (_) => false,
@@ -79,11 +79,29 @@ class _SplashState extends BasePageState<SplashPage> {
     );
 
     if (authCubit.state.isAuthorized) {
-      Future<void>.microtask(
-        () => navigator.pushNamed(
-          Routes.home,
-        ),
-      );
+      final User user = authCubit.state.user!;
+
+      if (user.isEmailVerified == 0) {
+        Future<void>.microtask(
+          () => navigator.pushNamed(
+            Routes.otp,
+            arguments: Screen.verifyEmail,
+          ),
+        );
+      } else if (user.registrationStep == 0) {
+        Future<void>.microtask(
+          () => navigator.pushNamed(
+            Routes.profile,
+            arguments: Screen.registerUser,
+          ),
+        );
+      } else {
+        Future<void>.microtask(
+          () => navigator.pushNamed(
+            Routes.home,
+          ),
+        );
+      }
     } else {
       Future<void>.microtask(
         () => navigator.pushNamed(
