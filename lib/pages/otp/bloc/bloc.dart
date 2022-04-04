@@ -31,47 +31,43 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
   final AuthCubit _authCubit;
 
   void _onOtpChangedHandler(OtpChanged event, Emitter<OtpState> emit) => emit(
-        state.copyWith(otp: event.otp, formStatus: const InitialFormStatus()),
+        state.copyWith(otp: event.otp),
       );
 
   void _onOtpSubmittedHandler(
       OtpSubmitted event, Emitter<OtpState> emit) async {
     emit(state.copyWith(formStatus: FormSubmitting()));
 
-    if (state.isOtpValid) {
-      try {
-        if (state.screenType == Screen.forgotPassword) {
-          await _authRepository.verifyForgetPasswordOtp(state.otp!);
-        } else if (state.screenType == Screen.verifyEmail) {
-          await _api.verifyEmail(state.otp!);
-          final User user = _authCubit.state.user!;
-          _authCubit.signupOrLogin(
-            user.copyWithJson(
-              <String, dynamic>{
-                "isEmailVerified": 1,
-              },
-            ),
-          );
-        }
-        emit(state.copyWith(formStatus: SubmissionSuccess()));
-      } on DioError catch (e) {
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(
-              exception: e,
-              message: (e.error is String?) ? e.error : 'Failure',
-            ),
-          ),
-        );
-      } on Exception catch (_) {
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(exception: Exception('Failure')),
+    try {
+      if (state.screenType == Screen.forgotPassword) {
+        await _authRepository.verifyForgetPasswordOtp(state.otp!);
+      } else if (state.screenType == Screen.verifyEmail) {
+        await _api.verifyEmail(state.otp!);
+        final User user = _authCubit.state.user!;
+        _authCubit.signupOrLogin(
+          user.copyWithJson(
+            <String, dynamic>{
+              "isEmailVerified": 1,
+            },
           ),
         );
       }
-    } else {
-      emit(state.copyWith(formStatus: SubmissionFailed()));
+      emit(state.copyWith(formStatus: SubmissionSuccess()));
+    } on DioError catch (e) {
+      emit(
+        state.copyWith(
+          formStatus: SubmissionFailed(
+            exception: e,
+            message: (e.error is String?) ? e.error : 'Failure',
+          ),
+        ),
+      );
+    } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          formStatus: SubmissionFailed(exception: Exception('Failure')),
+        ),
+      );
     }
   }
 
