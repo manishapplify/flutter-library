@@ -53,8 +53,7 @@ class _OTPState extends BasePageState<OtpPage> {
 
   @override
   PreferredSizeWidget appBar(BuildContext context) {
-    final Screen screen = routeSettings.arguments as Screen;
-    return AppBar(title: Text(screen.screenName()));
+    return AppBar(title: const Text('Verify OTP'));
   }
 
   String get otp {
