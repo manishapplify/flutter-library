@@ -247,7 +247,6 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   TextFormField(
                     controller: lastNameTextEditingController,
                     focusNode: lastNameFocusNode,
-                    autofocus: true,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
                         Icons.account_circle_outlined,
