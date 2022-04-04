@@ -23,10 +23,18 @@ class SignUpState {
           : null;
 
   final String password;
-  bool get isValidPassword => validators.isValidPassword(password);
+  String? get passwordValidator => !validators.notEmptyValidator(password)
+      ? 'Password is required'
+      : validators.isValidPassword(password)
+          ? 'Password is too short'
+          : null;
 
   final String confirmPassword;
-  bool get isValidConfirmPassword => confirmPassword == password;
+  String? get confirmNewPasswordValidator => confirmPassword.isEmpty
+      ? 'Enter password once more'
+      : confirmPassword != password
+          ? 'Should match the password'
+          : null;
 
   final FormSubmissionStatus formStatus;
 

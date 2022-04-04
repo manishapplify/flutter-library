@@ -65,10 +65,12 @@ class _SignupState extends BasePageState<SignupPage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              const SizedBox(
+                height: 5,
+              ),
               TextFormField(
                 focusNode: emailFocusNode,
                 autofocus: true,
-                textAlignVertical: TextAlignVertical.top,
                 decoration: const InputDecoration(
                   hintText: 'Enter your email',
                   labelText: 'Email',
@@ -84,6 +86,7 @@ class _SignupState extends BasePageState<SignupPage> {
               ),
               const SizedBox(height: 15),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CountryCodePicker(
                     initialSelection: 'IN',
@@ -104,7 +107,6 @@ class _SignupState extends BasePageState<SignupPage> {
                     child: TextFormField(
                       focusNode: phoneFocusNode,
                       autofocus: true,
-                      textAlignVertical: TextAlignVertical.top,
                       decoration: const InputDecoration(
                         hintText: 'Enter your phone number',
                         labelText: 'Phone number',
@@ -130,7 +132,6 @@ class _SignupState extends BasePageState<SignupPage> {
                   children: <Widget>[
                     TextFormField(
                       focusNode: passwordFocusNodes[i],
-                      textAlignVertical: TextAlignVertical.top,
                       decoration: InputDecoration(
                         prefixIcon: const Icon(
                           Icons.lock,
@@ -154,16 +155,9 @@ class _SignupState extends BasePageState<SignupPage> {
                               SignUpConfirmPasswordChanged(
                                   confirmPassword: value),
                             ),
-                      validator: (_) {
-                        if (i == 0 && !signUpBloc.state.isValidPassword) {
-                          return 'Increase password length';
-                        } else if (i == 1 &&
-                            !signUpBloc.state.isValidConfirmPassword) {
-                          return 'Passwords do not match';
-                        }
-
-                        return null;
-                      },
+                      validator: (_) => i == 0
+                          ? signUpBloc.state.passwordValidator
+                          : signUpBloc.state.confirmNewPasswordValidator,
                     ),
                     const SizedBox(
                       height: 15,
