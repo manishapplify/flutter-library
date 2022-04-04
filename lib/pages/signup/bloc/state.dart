@@ -25,7 +25,7 @@ class SignUpState {
   final String password;
   String? get passwordValidator => !validators.notEmptyValidator(password)
       ? 'Password is required'
-      : validators.isValidPassword(password)
+      : !validators.isValidPassword(password)
           ? 'Password is too short'
           : null;
 
