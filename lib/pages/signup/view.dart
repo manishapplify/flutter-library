@@ -132,7 +132,9 @@ class _SignupState extends BasePageState<SignupPage> {
                       focusNode: passwordFocusNodes[i],
                       textAlignVertical: TextAlignVertical.top,
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.password),
+                        prefixIcon: const Icon(
+                          Icons.lock,
+                        ),
                         hintText: i == 0
                             ? 'Enter your password'
                             : 'Confirm your password',

@@ -58,17 +58,17 @@ class _SettingsState extends BasePageState<SettingsPage> {
               ),
             ),
             SettingOption(
-              title: "Change Password",
+              title: "Change password",
               onOptionTap: () => navigator.pushNamed(
                 Routes.changePassword,
               ),
               leading: const Icon(
-                Icons.password_sharp,
+                Icons.lock,
                 color: Colors.black,
               ),
             ),
             SettingOption(
-              title: "Delete Account",
+              title: "Delete account",
               onOptionTap: () => showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
