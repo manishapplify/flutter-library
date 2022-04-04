@@ -31,7 +31,7 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
     // Token is already present, no need to regenerate.
     if (passwordAuthCubit.state.isTokenGenerated) {
       Future<void>.microtask(
-        () => navigator.popAndPushNamed(
+        () => navigator.pushNamed(
           Routes.otp,
           arguments: Screen.forgotPassword,
         ),
@@ -65,7 +65,7 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                 builder: (BuildContext context, ForgotPasswordState state) {
                   if (state.formStatus is SubmissionSuccess) {
                     Future<void>.microtask(
-                      () => navigator.popAndPushNamed(
+                      () => navigator.pushNamed(
                         Routes.otp,
                         arguments: Screen.forgotPassword,
                       ),

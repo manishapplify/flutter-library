@@ -105,11 +105,7 @@ class _OTPState extends BasePageState<OtpPage> {
     if (screen == Screen.forgotPassword &&
         !passwordAuthCubit.state.isTokenGenerated) {
       Future<void>.microtask(
-        () => navigator.popUntil(
-          ModalRoute.withName(
-            Routes.login,
-          ),
-        ),
+        () => navigator.pop(),
       );
     } else if (screen == Screen.verifyEmail) {
       if (!authCubit.state.isAuthorized) {
