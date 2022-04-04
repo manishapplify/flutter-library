@@ -54,7 +54,7 @@ class ProfileState {
   bool get isValidGender => gender is Gender;
 
   final int? age;
-  bool get isValidAge => age is int && age! > 18;
+  bool get isValidAge => age is int && age! > 18 && age! < 200;
   final String? address;
   bool get isValidAddress => validators.notEmptyValidator(address);
   final String? city;
