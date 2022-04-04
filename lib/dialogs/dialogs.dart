@@ -18,7 +18,12 @@ dynamic showImagePickerPopup({
       actions: <Widget>[
         if (galleryAllowed)
           CupertinoActionSheetAction(
-            child: const Text("Gallery"),
+            child: const Text(
+              "Gallery",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
             onPressed: () async {
               final XFile? pickedFile = await ImagePicker()
                   .pickImage(source: ImageSource.gallery, imageQuality: 20);
@@ -31,7 +36,12 @@ dynamic showImagePickerPopup({
           ),
         if (cameraAllowed)
           CupertinoActionSheetAction(
-            child: const Text("Camera"),
+            child: const Text(
+              "Camera",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
             onPressed: () async {
               final XFile? pickedFile = await ImagePicker()
                   .pickImage(source: ImageSource.camera, imageQuality: 20);
