@@ -40,6 +40,8 @@ class RegisterUserRequest extends UpdateProfileRequest {
       ..addAll(<String, dynamic>{
         'platformType': platformType,
         'signupType': signupType,
+        // TODO: Remove once backend code is updated.
+        'registrationStep': 1,
       });
 
     if (referralCode is String) {
