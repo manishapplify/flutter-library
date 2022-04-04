@@ -79,29 +79,7 @@ class _SplashState extends BasePageState<SplashPage> {
     );
 
     if (authCubit.state.isAuthorized) {
-      final User user = authCubit.state.user!;
-
-      if (user.isEmailVerified == 0) {
-        Future<void>.microtask(
-          () => navigator.pushNamed(
-            Routes.otp,
-            arguments: Screen.verifyEmail,
-          ),
-        );
-      } else if (user.registrationStep == 0) {
-        Future<void>.microtask(
-          () => navigator.pushNamed(
-            Routes.profile,
-            arguments: Screen.registerUser,
-          ),
-        );
-      } else {
-        Future<void>.microtask(
-          () => navigator.pushNamed(
-            Routes.home,
-          ),
-        );
-      }
+      Navigation.navigateAfterSplashOrLogin(authCubit.state.user!);
     } else {
       Future<void>.microtask(
         () => navigator.pushNamed(

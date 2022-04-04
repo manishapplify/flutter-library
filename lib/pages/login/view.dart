@@ -1,5 +1,6 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
+import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,14 @@ class _LoginState extends BasePageState<LoginPage> {
   late final LoginBloc loginBloc;
   late final FocusNode emailFocusNode;
   late final FocusNode passwordFocusNode;
+  late final AuthCubit authCubit;
 
   @override
   void initState() {
     loginBloc = BlocProvider.of(context);
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
+    authCubit = BlocProvider.of(context);
     super.initState();
   }
 
@@ -48,9 +51,11 @@ class _LoginState extends BasePageState<LoginPage> {
         child: BlocBuilder<LoginBloc, LoginState>(
           builder: (BuildContext context, LoginState state) {
             if (state.formStatus is SubmissionSuccess) {
-              Future<void>.microtask(
-                () => navigator.popAndPushNamed(Routes.home),
-              );
+              if (!authCubit.state.isAuthorized) {
+                throw Exception('not signed in');
+              }
+
+              Navigation.navigateAfterSplashOrLogin(authCubit.state.user!);
             } else if (state.formStatus is SubmissionFailed) {
               final SubmissionFailed failure =
                   state.formStatus as SubmissionFailed;
@@ -76,8 +81,7 @@ class _LoginState extends BasePageState<LoginPage> {
                       Icons.email,
                     ),
                   ),
-                  validator: (_) =>
-                      state.emailValidator,
+                  validator: (_) => state.emailValidator,
                   onChanged: (String value) => loginBloc.add(
                     LoginEmailChanged(email: value),
                   ),

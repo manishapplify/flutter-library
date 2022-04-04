@@ -1,5 +1,6 @@
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/pages/change_password/bloc/bloc.dart';
 import 'package:components/pages/change_password/view.dart';
@@ -237,6 +238,32 @@ class Navigation {
       settings: settings,
       builder: (_) => const LoginScreenTypes(),
     );
+  }
+
+  static void navigateAfterSplashOrLogin(User user) {
+    final NavigatorState navigator = Navigator.of(navigatorKey.currentContext!);
+
+    if (user.isEmailVerified == 0) {
+      Future<void>.microtask(
+        () => navigator.pushNamed(
+          Routes.otp,
+          arguments: Screen.verifyEmail,
+        ),
+      );
+    } else if (user.registrationStep == 0) {
+      Future<void>.microtask(
+        () => navigator.pushNamed(
+          Routes.profile,
+          arguments: Screen.registerUser,
+        ),
+      );
+    } else {
+      Future<void>.microtask(
+        () => navigator.pushNamed(
+          Routes.home,
+        ),
+      );
+    }
   }
 }
 
