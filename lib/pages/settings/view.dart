@@ -69,7 +69,23 @@ class _SettingsState extends BasePageState<SettingsPage> {
             ),
             SettingOption(
               title: "Delete Account",
-              onOptionTap: () => settingsCubit.deleteAccount(),
+              onOptionTap: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Are you sure?'),
+                  content: const Text('Your account will be deleted'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => settingsCubit.deleteAccount(),
+                      child: const Text('Confirm'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Cancel'),
+                    ),
+                  ],
+                ),
+              ),
               leading: const Icon(
                 Icons.delete,
                 color: Colors.black,
@@ -77,7 +93,23 @@ class _SettingsState extends BasePageState<SettingsPage> {
             ),
             SettingOption(
               title: "Logout",
-              onOptionTap: () => settingsCubit.logout(),
+              onOptionTap: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Are you sure?'),
+                  content: const Text('You will be logged out of your account'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => settingsCubit.logout(),
+                      child: const Text('Confirm'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Cancel'),
+                    ),
+                  ],
+                ),
+              ),
               leading: const Icon(
                 Icons.logout_rounded,
                 color: Colors.black,
