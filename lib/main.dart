@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter library',
         theme: appTheme,
         onGenerateRoute: compositionRoot.navigation.onGenerateRoute,
-        navigatorKey: compositionRoot.navigation.navigatorKey,
+        navigatorKey: Navigation.navigatorKey,
         initialRoute: Routes.splash,
       ),
     );

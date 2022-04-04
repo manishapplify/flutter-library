@@ -12,6 +12,7 @@ import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -144,7 +145,35 @@ void _errorInterceptor(DioError error, ErrorInterceptorHandler handler) {
         requestOptions: error.requestOptions,
       ));
     } else if (response['statusCode'] == 401) {
-      // TODO: Handle 401 response.
+      final BuildContext context = Navigation.navigatorKey.currentContext!;
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: const Text('Unauthorized'),
+            content: const Text(
+                'Your access token has been revoked, please log in again.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context)
+                  ..popUntil((_) => false)
+                  ..pushNamed(Routes.login),
+                child: const Text(
+                  'Okay',
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 

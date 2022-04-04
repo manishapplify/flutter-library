@@ -77,7 +77,7 @@ class Navigation {
   final Persistence _persistence;
   final S3ImageUpload _s3imageUpload;
 
-  GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.splash:
