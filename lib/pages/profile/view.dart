@@ -22,7 +22,7 @@ class ProfilePage extends BasePage {
 
 class _UserProfileState extends BasePageState<ProfilePage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  late final FocusNode firstNameFocusNode;
+  late final FocusNode referralFocusNode;
   late final FocusNode lastNameFocusNode;
   late final FocusNode emailFocusNode;
   late final FocusNode phoneFocusNode;
@@ -53,7 +53,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
 
   @override
   void initState() {
-    firstNameFocusNode = FocusNode();
+    referralFocusNode = FocusNode();
     lastNameFocusNode = FocusNode();
     emailFocusNode = FocusNode();
     phoneFocusNode = FocusNode();
@@ -122,7 +122,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
 
   @override
   void dispose() {
-    firstNameFocusNode.dispose();
+    referralFocusNode.dispose();
     lastNameFocusNode.dispose();
     emailFocusNode.dispose();
     phoneFocusNode.dispose();
@@ -221,32 +221,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   ),
                   const SizedBox(height: 32),
                   if (screen == Screen.registerUser)
-                    TextFormField(
-                      autofocus: screen == Screen.registerUser,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.qr_code_rounded,
-                        ),
-                        hintText: 'Enter a referral code',
-                      ),
-                      keyboardType: TextInputType.text,
-                      onFieldSubmitted: (_) =>
-                          firstNameFocusNode.requestFocus(),
-                      textInputAction: TextInputAction.next,
-                      onChanged: (String value) => profileBloc.add(
-                        ProfileRefferalCodeChanged(
-                          refferalCode: value,
-                        ),
-                      ),
-                    ),
-                  if (screen == Screen.registerUser)
                     const SizedBox(
                       height: 15,
                     ),
                   TextFormField(
                     controller: firstNameTextEditingController,
-                    focusNode: firstNameFocusNode,
-                    autofocus: screen != Screen.registerUser,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
                         Icons.account_circle_outlined,
@@ -414,9 +393,14 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                       hintText: 'Enter your city',
                     ),
                     keyboardType: TextInputType.text,
-                    onFieldSubmitted: (_) => onFormSubmitted(),
+                    onFieldSubmitted: (_) => screen == Screen.registerUser
+                        ? referralFocusNode.requestFocus()
+                        : onFormSubmitted(),
                     validator: (_) =>
                         state.isValidCity ? null : 'City must not be empty',
+                    textInputAction: screen == Screen.registerUser
+                        ? TextInputAction.next
+                        : TextInputAction.done,
                     onChanged: (String value) => profileBloc.add(
                       ProfileCityChanged(
                         city: value,
@@ -444,6 +428,27 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 15),
+                  if (screen == Screen.registerUser)
+                    TextFormField(
+                      autofocus: screen == Screen.registerUser,
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.qr_code_rounded,
+                        ),
+                        hintText: 'Enter a referral code',
+                      ),
+                      keyboardType: TextInputType.text,
+                      onFieldSubmitted: (_) => screen == Screen.registerUser
+                          ? onFormSubmitted()
+                          : null,
+                      onChanged: (String value) => profileBloc.add(
+                        ProfileRefferalCodeChanged(
+                          refferalCode: value,
+                        ),
+                      ),
+                      focusNode: referralFocusNode,
+                    ),
                   const SizedBox(
                     height: 10,
                   ),
