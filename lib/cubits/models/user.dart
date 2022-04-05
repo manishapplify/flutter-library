@@ -63,7 +63,8 @@ class User {
       countryCode: json['countryCode'] ?? this.countryCode,
       phoneNumber: json['phoneNumber'] ?? this.phoneNumber,
       registrationStep: json['registrationStep'] ?? this.registrationStep,
-      notificationEnabled: json['notificationEnabled'] ?? this.notificationEnabled,
+      notificationEnabled:
+          json['notificationEnabled'] ?? this.notificationEnabled,
       address: json['address'] ?? this.address,
       city: json['city'] ?? this.city,
       isPhoneVerified: json['isPhoneVerified'] ?? this.isPhoneVerified,
@@ -94,6 +95,18 @@ class User {
   final String createdAt;
   final String accessToken;
   final S3Folders s3Folders;
+
+  String? get fullName {
+    if (firstName is String && lastName is String) {
+      return firstName! + ' ' + lastName!;
+    } else if (firstName is String) {
+      return firstName!;
+    } else if (lastName is String) {
+      return lastName!;
+    } else {
+      return null;
+    }
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
