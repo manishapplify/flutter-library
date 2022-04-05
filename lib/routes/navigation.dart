@@ -250,7 +250,7 @@ class Navigation {
           arguments: Screen.verifyEmail,
         ),
       );
-    } else if (user.registrationStep == 0) {
+    } else if (user.registrationStep == 1) {
       Future<void>.microtask(
         () => navigator.pushNamed(
           Routes.profile,
