@@ -14,7 +14,7 @@ class LoginPasswordChanged extends LoginEvent {
   final String password;
 }
 
-class GoogleSignInPressed extends LoginEvent {}
+class SocialSignInSummitted extends LoginEvent {}
 
 class LoginSubmitted extends LoginEvent {}
 

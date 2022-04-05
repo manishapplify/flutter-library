@@ -57,6 +57,13 @@ class _LoginState extends BasePageState<LoginPage> {
               }
 
               Navigation.navigateAfterSplashOrLogin(authCubit.state.user!);
+            } else if (state.formStatus is SocialSiginSubmissionSuccess) {
+              if (authCubit.state.isAuthorized) {
+                Navigation.navigateAfterSocialLogin(authCubit.state.user!);
+              }
+              if (!authCubit.state.isAuthorized) {
+                throw Exception('not signed in');
+              }
             } else if (state.formStatus is SubmissionFailed) {
               loginBloc.add(ResetFormStatus());
               final SubmissionFailed failure =
@@ -158,9 +165,51 @@ class _LoginState extends BasePageState<LoginPage> {
                     );
                   },
                 ),
-                ElevatedButton(
-                    onPressed: () => loginBloc.add(GoogleSignInPressed()),
-                    child: const Text('google'))
+                const SizedBox(height: 15.0),
+                InkWell(
+                  onTap: () => loginBloc.add(
+                    SocialSignInSummitted(),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Material(
+                      elevation: 3.0,
+                      child: Container(
+                        color: Colors.white,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              width: 40.0,
+                              height: 35.0,
+                              child: const Image(
+                                image: AssetImage(
+                                  "assets/images/googlelogo.png",
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 8.0,
+                            ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(3.0)),
+                              child: const Text('Sign in with Google',
+                                  style: TextStyle(color: Colors.black54)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             );
           },

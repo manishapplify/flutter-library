@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:components/pages/change_password/model/request.dart';
 import 'package:components/pages/feedback/models/request.dart';
+import 'package:components/pages/login/google_signin/models/request.dart';
 import 'package:components/pages/report_bug/models/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/login/models/request.dart';
@@ -78,6 +79,14 @@ class Api {
   Future<Response<dynamic>> login(LoginRequest request) async {
     final Response<dynamic> response = await dio.post(
       _login,
+      data: request.toJson(),
+    );
+    return response;
+  }
+
+  Future<Response<dynamic>> socialLogin(SocialSigninRequest request) async {
+    final Response<dynamic> response = await dio.post(
+      _socialLogin,
       data: request.toJson(),
     );
     return response;
@@ -228,3 +237,4 @@ const String _getS3UploadSignedURL = '/api/v1/common/getSignedURL';
 const String _reportFeedback = '/api/v1/reportedFeedback/create';
 const String _reportBug = '/api/v1/reportedBugs';
 const String _reportItems = '/api/v1/reportedItems/create';
+const String _socialLogin = '/api/v1/user/socialLogin';

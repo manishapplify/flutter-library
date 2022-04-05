@@ -265,6 +265,25 @@ class Navigation {
       );
     }
   }
+
+  static void navigateAfterSocialLogin(User user) {
+    final NavigatorState navigator = Navigator.of(navigatorKey.currentContext!);
+
+    if (user.registrationStep == 0) {
+      Future<void>.microtask(
+        () => navigator.pushNamed(
+          Routes.profile,
+          arguments: Screen.registerUser,
+        ),
+      );
+    } else {
+      Future<void>.microtask(
+        () => navigator.pushNamed(
+          Routes.home,
+        ),
+      );
+    }
+  }
 }
 
 class Routes {

@@ -3,6 +3,8 @@ import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/change_password/model/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/forgot_password/models/response.dart';
+import 'package:components/pages/login/google_signin/models/request.dart';
+import 'package:components/pages/login/google_signin/models/response.dart';
 import 'package:components/pages/login/models/request.dart';
 import 'package:components/pages/login/models/response.dart';
 import 'package:components/Authentication/models/logout_request.dart';
@@ -61,19 +63,51 @@ class AuthRepository {
     _authCubit.signupOrLogin(loginResponse.user);
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<void> signInWithSocialId() async {
+    print("googleLogin method Called");
+    if (_fcm.deviceToken == null) {
+      await _fcm.getToken();
+    }
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
-    final GoogleSignInAccount? googleSignInAccount =
-        await googleSignIn.signIn();
-
-    if (googleSignInAccount != null) {
-      final String social_id = googleSignInAccount.id;
-
-      // TODO: Pass this into `/api/v1/user/socialLogin`
-
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
+      if (googleSignInAccount != null) {
+        final String socialId = googleSignInAccount.id;
+        final String socialEmail = googleSignInAccount.email;
+        print(socialId);
+        final SocialSigninRequest request = SocialSigninRequest(
+            platformType: _config.platform.name,
+            deviceToken: _fcm.deviceToken!,
+            loginType: 3,
+            socialId: socialId,
+            emailOrPhoneNumber: socialEmail,
+            countryCode: _persistence.fetchCountryCode() ?? '+91',
+            password: '');
+        final Response<dynamic> response = await _api.socialLogin(request);
+        final SocialSigninResponse socialSigninResponse =
+            SocialSigninResponse.fromJson(response.data);
+        print(response.data);
+        _authCubit.signupOrLogin(socialSigninResponse.user);
+      }
+    } on Exception catch (error) {
+      print(error);
     }
   }
+  // Future<void> signInWithGoogle() async {
+  //   final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  //   final GoogleSignInAccount? googleSignInAccount =
+  //       await googleSignIn.signIn();
+
+  //   if (googleSignInAccount != null) {
+  //     final String social_id = googleSignInAccount.id;
+
+  //     // TODO: Pass this into `/api/v1/user/socialLogin`
+
+  //   }
+  // }
 
   Future<void> signUp({
     String? countryCode,
