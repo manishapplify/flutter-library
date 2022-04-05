@@ -8,9 +8,12 @@ class FeedbackState {
     this.formStatus = const InitialFormStatus(),
   });
   final String? title;
-  bool get isValidTitle => validators.notEmptyValidator(title) && title!.length > 9;
+  bool get isValidTitle =>
+      validators.notEmptyValidator(title) && title!.length > 9;
   final int rating;
   final String? comment;
+  String? get commentValidator =>
+      !validators.notEmptyValidator(comment) ? 'Description is required' : null;
 
   final FormSubmissionStatus formStatus;
 

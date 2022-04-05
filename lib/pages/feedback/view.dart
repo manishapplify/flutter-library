@@ -22,16 +22,40 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
     "Personal Profile",
     "Other Issues"
   ];
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  late final TextEditingController descriptionTextEditingController;
 
   @override
   void initState() {
     feedbackBloc = BlocProvider.of(context);
+    descriptionTextEditingController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    descriptionTextEditingController.dispose();
+    super.dispose();
   }
 
   @override
   PreferredSizeWidget appBar(BuildContext context) {
     return AppBar(title: const Text("Feedback"));
+  }
+
+  void onFormSubmitted() {
+    if (!feedbackBloc.state.isValidTitle) {
+      showSnackBar(
+        const SnackBar(
+          content: Text('Select a topic'),
+        ),
+      );
+      return;
+    }
+
+    if (_formkey.currentState!.validate()) {
+      feedbackBloc.add(FeedbackSubmitted());
+    }
   }
 
   @override
@@ -43,12 +67,18 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
             child: BlocBuilder<FeedbackBloc, FeedbackState>(
                 builder: (BuildContext context, FeedbackState state) {
               if (state.formStatus is SubmissionSuccess) {
-                feedbackBloc.add(ResetFormStatus());
+                feedbackBloc.add(ResetFormState());
+                descriptionTextEditingController.value = TextEditingValue.empty;
                 Future<void>.microtask(
-                  () => navigator.pop(),
+                  () => showSnackBar(
+                    const SnackBar(
+                      content: Text('Feeback submitted successfully'),
+                    ),
+                  ),
                 );
               } else if (state.formStatus is SubmissionFailed) {
                 feedbackBloc.add(ResetFormStatus());
+
                 final SubmissionFailed failure =
                     state.formStatus as SubmissionFailed;
                 Future<void>.microtask(
@@ -123,20 +153,26 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                   const SizedBox(
                     height: 20.0,
                   ),
-                  TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    maxLines: 10,
-                    decoration: const InputDecoration(
-                      hintText: 'Please briefly describe the issue',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
+                  Form(
+                    key: _formkey,
+                    child: TextFormField(
+                      controller: descriptionTextEditingController,
+                      textCapitalization: TextCapitalization.words,
+                      maxLines: 10,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      decoration: const InputDecoration(
+                        hintText: 'Please briefly describe the issue',
+                        labelText: 'Description',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
                         ),
                       ),
-                      prefixIcon: Icon(Icons.description),
-                    ),
-                    onChanged: (String value) => feedbackBloc.add(
-                      FeedbackCommentChanged(comment: value),
+                      onChanged: (String value) => feedbackBloc.add(
+                        FeedbackCommentChanged(comment: value),
+                      ),
+                      validator: (_) => state.commentValidator,
                     ),
                   ),
                   const SizedBox(height: 20.0),
@@ -156,17 +192,7 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 )),
-                            onPressed: () {
-                              if (state.isValidTitle) {
-                                feedbackBloc.add(FeedbackSubmitted());
-                              } else {
-                                showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Select a topic'),
-                                  ),
-                                );
-                              }
-                            },
+                            onPressed: onFormSubmitted,
                           ),
                   )
                 ],

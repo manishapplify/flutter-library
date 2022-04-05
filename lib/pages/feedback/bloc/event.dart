@@ -20,3 +20,5 @@ class FeedbackRatingChanged extends FeedbackEvent {
 class FeedbackSubmitted extends FeedbackEvent {}
 
 class ResetFormStatus extends FeedbackEvent {}
+
+class ResetFormState extends FeedbackEvent {}

@@ -42,6 +42,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
       }
     });
     on<ResetFormStatus>(_resetFormStatusHandler);
+    on<ResetFormState>(_resetFormStateHandler);
   }
 
   final Api _api;
@@ -53,4 +54,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
           formStatus: const InitialFormStatus(),
         ),
       );
+
+  void _resetFormStateHandler(
+          ResetFormState event, Emitter<FeedbackState> emit) =>
+      emit(FeedbackState());
 }
