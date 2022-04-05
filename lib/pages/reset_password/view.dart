@@ -2,7 +2,6 @@ import 'package:components/Authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/reset_password/bloc/bloc.dart';
-import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -96,7 +95,8 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                         obscureText: true,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
-                          hintText: 'New Password',
+                          labelText: 'New Password',
+                          hintText: 'Enter new password',
                           prefixIcon: Icon(
                             Icons.lock,
                           ),
@@ -116,7 +116,8 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                         obscureText: true,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
-                          hintText: 'Confirm New Password',
+                          labelText: 'Confirm New Password',
+                          hintText: 'Enter new password again',
                           prefixIcon: Icon(
                             Icons.lock,
                           ),

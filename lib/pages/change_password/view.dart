@@ -106,7 +106,8 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               obscureText: true,
               style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
-                hintText: 'New Password',
+                labelText: 'New Password',
+                hintText: 'Enter new password',
                 prefixIcon: Icon(
                   Icons.lock,
                 ),
@@ -128,7 +129,8 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               obscureText: true,
               style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
-                hintText: 'Confirm New Password',
+                labelText: 'Confirm New Password',
+                hintText: 'Enter new password again',
                 prefixIcon: Icon(
                   Icons.lock,
                 ),
