@@ -1,5 +1,6 @@
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/cubits/models/user.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/widgets/image_container.dart';
 import 'package:flutter/material.dart';
@@ -50,32 +51,42 @@ class _HomeState extends BasePageState<HomePage> {
       );
 
   @override
-  Widget? drawer(BuildContext context) => Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              child: ImageContainer(
-                imageUrl: authCubit.state.user!.profilePic,
-              ),
-              decoration: BoxDecoration(
-                color: colorScheme.primary,
-              ),
+  Widget? drawer(BuildContext context) {
+    final User user = authCubit.state.user!;
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          DrawerHeader(
+            child: ImageContainer(
+              imageUrl: user.profilePic,
             ),
-            ListTile(
-              title: const Text('Feedback'),
-              onTap: () => navigator.popAndPushNamed(
-                Routes.feedback,
-              ),
+            decoration: BoxDecoration(
+              color: colorScheme.primary,
             ),
-            ListTile(
-              title: const Text('Report Bug'),
-              onTap: () => navigator.popAndPushNamed(
-                Routes.reportBug,
-              ),
+          ),
+          Center(
+            child: Text(
+              'Hello, ${user.fullName}',
+              style: textTheme.headline1,
             ),
-          ],
-        ),
-      );
+          ),
+          const Divider(),
+          ListTile(
+            title: const Text('Feedback'),
+            onTap: () => navigator.popAndPushNamed(
+              Routes.feedback,
+            ),
+          ),
+          ListTile(
+            title: const Text('Report Bug'),
+            onTap: () => navigator.popAndPushNamed(
+              Routes.reportBug,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget body(BuildContext context) {
