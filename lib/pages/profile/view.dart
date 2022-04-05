@@ -42,7 +42,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
     Gender.values.length,
     (int index) => DropdownMenuItem<Gender>(
       child: SizedBox(
-        width: 120,
+        width: 80,
         child: Text(Gender.values[index].name),
       ),
       value: Gender.values[index],
@@ -153,6 +153,24 @@ class _UserProfileState extends BasePageState<ProfilePage> {
         profileState.isValidProfilePicFilePath) {
       FocusScope.of(context).unfocus();
       profileBloc.add(ProfileSubmitted());
+    } else if (!profileState.isValidCountryCode) {
+      showSnackBar(
+        const SnackBar(
+          content: Text('Select a valid country code'),
+        ),
+      );
+    } else if (!profileState.isValidGender) {
+      showSnackBar(
+        const SnackBar(
+          content: Text('Select a valid gender'),
+        ),
+      );
+    } else if (!profileState.isValidProfilePicFilePath) {
+      showSnackBar(
+        const SnackBar(
+          content: Text('Select a profile picture'),
+        ),
+      );
     }
   }
 
@@ -178,7 +196,13 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                       ),
                   );
                 } else {
-                  Future<void>.microtask(() => navigator.pop());
+                  Future<void>.microtask(
+                    () => showSnackBar(
+                      const SnackBar(
+                        content: Text('Profile successfully updated'),
+                      ),
+                    ),
+                  );
                 }
               } else if (state.formStatus is SubmissionFailed) {
                 profileBloc.add(ResetFormStatus());
@@ -225,6 +249,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                       height: 15,
                     ),
                   TextFormField(
+                    autofocus: true,
                     textCapitalization: TextCapitalization.words,
                     controller: firstNameTextEditingController,
                     decoration: const InputDecoration(
@@ -232,11 +257,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                         Icons.account_circle_outlined,
                       ),
                       hintText: 'Enter your first name',
+                      labelText: 'First name',
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => lastNameFocusNode.requestFocus(),
-                    validator: (_) =>
-                        state.isValidFirstname ? null : "First name too short",
+                    validator: (_) => state.firstnameValidator,
                     textInputAction: TextInputAction.next,
                     onChanged: (String value) => profileBloc.add(
                       ProfileFirstnameChanged(
@@ -254,11 +279,11 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                         Icons.account_circle_outlined,
                       ),
                       hintText: 'Enter your last name',
+                      labelText: 'Last name',
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => emailFocusNode.requestFocus(),
-                    validator: (_) =>
-                        state.isValidLastname ? null : "Last name too short",
+                    validator: (_) => state.lastnameValidator,
                     textInputAction: TextInputAction.next,
                     onChanged: (String value) => profileBloc.add(
                       ProfileLastnameChanged(
@@ -270,12 +295,12 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   TextFormField(
                     controller: emailTextEditingController,
                     focusNode: emailFocusNode,
-                    autofocus: true,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
                         Icons.email,
                       ),
                       hintText: 'Enter your email',
+                      labelText: 'Email',
                     ),
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (_) => phoneFocusNode.requestFocus(),
@@ -307,18 +332,16 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                         child: TextFormField(
                           controller: phoneTextEditingController,
                           focusNode: phoneFocusNode,
-                          autofocus: true,
                           decoration: const InputDecoration(
                             prefixIcon: Icon(
                               Icons.phone,
                             ),
                             hintText: 'Enter your phone number',
+                            labelText: 'Phone number',
                           ),
                           keyboardType: TextInputType.phone,
                           onFieldSubmitted: (_) => ageFocusNode.requestFocus(),
-                          validator: (_) => state.isValidPhoneNumber
-                              ? null
-                              : 'Enter a valid phone number',
+                          validator: (_) => state.phoneNumberValidator,
                           textInputAction: TextInputAction.next,
                           onChanged: (String value) => profileBloc.add(
                             ProfilePhoneNumberChanged(
@@ -339,6 +362,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     },
                     decoration: const InputDecoration(
                       hintText: 'Select your gender',
+                      labelText: 'Gender',
                       prefixIcon: Icon(Icons.account_circle_outlined),
                     ),
                     value: state.gender,
@@ -348,14 +372,13 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     controller: ageTextEditingController,
                     focusNode: ageFocusNode,
                     decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.home_work_outlined),
+                      prefixIcon: Icon(Icons.account_circle_outlined),
                       hintText: 'Enter your age',
+                      labelText: 'Age',
                     ),
                     keyboardType: TextInputType.number,
                     onFieldSubmitted: (_) => addressFocusNode.requestFocus(),
-                    validator: (_) => state.isValidAge
-                        ? null
-                        : 'Must be above 18 to use the app',
+                    validator: (_) => state.ageValidator,
                     textInputAction: TextInputAction.next,
                     onChanged: (String value) => profileBloc.add(
                       ProfileAgeChanged(
@@ -371,12 +394,12 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.home),
                       hintText: 'Enter your address',
+                      labelText: 'Address',
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => cityFocusNode.requestFocus(),
-                    validator: (_) => state.isValidAddress
-                        ? null
-                        : 'Address must not be empty',
+                    validator: (_) =>
+                        state.isValidAddress ? null : 'Address is required',
                     textInputAction: TextInputAction.next,
                     onChanged: (String value) => profileBloc.add(
                       ProfileAddressChanged(
@@ -394,13 +417,14 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                         Icons.home,
                       ),
                       hintText: 'Enter your city',
+                      labelText: 'City',
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => screen == Screen.registerUser
                         ? referralFocusNode.requestFocus()
                         : onFormSubmitted(),
                     validator: (_) =>
-                        state.isValidCity ? null : 'City must not be empty',
+                        state.isValidCity ? null : 'City is required',
                     textInputAction: screen == Screen.registerUser
                         ? TextInputAction.next
                         : TextInputAction.done,
@@ -435,20 +459,20 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   if (screen == Screen.registerUser)
                     TextFormField(
                       textCapitalization: TextCapitalization.words,
-                      autofocus: screen == Screen.registerUser,
                       decoration: const InputDecoration(
                         prefixIcon: Icon(
                           Icons.qr_code_rounded,
                         ),
                         hintText: 'Enter a referral code(optional)',
+                        labelText: 'Referral code',
                       ),
                       keyboardType: TextInputType.text,
                       onFieldSubmitted: (_) => screen == Screen.registerUser
                           ? onFormSubmitted()
                           : null,
                       onChanged: (String value) => profileBloc.add(
-                        ProfileRefferalCodeChanged(
-                          refferalCode: value,
+                        ProfileReferralCodeChanged(
+                          referralCode: value,
                         ),
                       ),
                       focusNode: referralFocusNode,

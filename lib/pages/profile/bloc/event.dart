@@ -3,9 +3,9 @@ part of 'bloc.dart';
 @immutable
 abstract class ProfileEvent {}
 
-class ProfileRefferalCodeChanged extends ProfileEvent {
-  ProfileRefferalCodeChanged({required this.refferalCode});
-  final String refferalCode;
+class ProfileReferralCodeChanged extends ProfileEvent {
+  ProfileReferralCodeChanged({required this.referralCode});
+  final String referralCode;
 }
 
 class ProfileFirstnameChanged extends ProfileEvent {

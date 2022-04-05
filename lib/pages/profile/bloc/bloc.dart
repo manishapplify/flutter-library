@@ -20,7 +20,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     required ProfileRepository profileRepository,
   })  : _profileRepository = profileRepository,
         super(ProfileState(screenType: screenType)) {
-    on<ProfileRefferalCodeChanged>(_profileRefferalCodeChangedHandler);
+    on<ProfileReferralCodeChanged>(_profileReferralCodeChangedHandler);
     on<ProfileFirstnameChanged>(_profileFirstnameChangedHandler);
     on<ProfileLastnameChanged>(_profileLastnameChangedHandler);
     on<ProfileCountryCodeChanged>(_profileCountryCodeChangedHandler);
@@ -40,123 +40,87 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   final ProfileRepository _profileRepository;
 
-  void _profileRefferalCodeChangedHandler(
-      ProfileRefferalCodeChanged event, Emitter<ProfileState> emit) {
+  void _profileReferralCodeChangedHandler(
+      ProfileReferralCodeChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        referralCode: event.refferalCode,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(referralCode: event.referralCode),
     );
   }
 
   void _profileFirstnameChangedHandler(
       ProfileFirstnameChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        firstname: event.firstname,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(firstname: event.firstname),
     );
   }
 
   void _profileLastnameChangedHandler(
       ProfileLastnameChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        lastname: event.lastname,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(lastname: event.lastname),
     );
   }
 
   void _profileCountryCodeChangedHandler(
       ProfileCountryCodeChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        countryCode: event.countryCode,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(countryCode: event.countryCode),
     );
   }
 
   void _profilePhoneNumberChangedHandler(
       ProfilePhoneNumberChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        phoneNumber: event.phoneNumber,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(phoneNumber: event.phoneNumber),
     );
   }
 
   void _profileEmailChangedHandler(
       ProfileEmailChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        email: event.email,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(email: event.email),
     );
   }
 
   void _profileGenderChangedHandler(
       ProfileGenderChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        gender: event.gender,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(gender: event.gender),
     );
   }
 
   void _profileProfileImageChangedHandler(
       ProfileImageChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        profilePicFile: event.profilePic,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(profilePicFile: event.profilePic),
     );
   }
 
   void _profileAgeChangedHandler(
       ProfileAgeChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        age: event.age,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(age: event.age),
     );
   }
 
   void _profileAddressChangedHandler(
       ProfileAddressChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        address: event.address,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(address: event.address),
     );
   }
 
   void _profileCityChangedHandler(
       ProfileCityChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        city: event.city,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(city: event.city),
     );
   }
 
   void _profileNotificationStatusChangedHandler(
       ProfileNotificationStatusChanged event, Emitter<ProfileState> emit) {
     emit(
-      state.copyWith(
-        isNotificationEnabled: event.enableNotifications,
-        formStatus: const InitialFormStatus(),
-      ),
+      state.copyWith(isNotificationEnabled: event.enableNotifications),
     );
   }
 
@@ -167,19 +131,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     final User user = event.user;
     emit(
       state.copyWith(
-        profilePicUrlPath: event.user.profilePic,
-        firstname: user.firstName,
-        lastname: user.lastName,
-        address: user.address,
-        age: user.age,
-        city: user.city,
-        countryCode: user.countryCode,
-        email: user.email,
-        gender: user.gender is String ? genderFromString(user.gender!) : null,
-        isNotificationEnabled: user.notificationEnabled == 1,
-        phoneNumber: user.phoneNumber,
-        formStatus: const InitialFormStatus(),
-      ),
+          profilePicUrlPath: event.user.profilePic,
+          firstname: user.firstName,
+          lastname: user.lastName,
+          address: user.address,
+          age: user.age,
+          city: user.city,
+          countryCode: user.countryCode,
+          email: user.email,
+          gender: user.gender is String ? genderFromString(user.gender!) : null,
+          isNotificationEnabled: user.notificationEnabled == 1,
+          phoneNumber: user.phoneNumber),
     );
   }
 

@@ -12,7 +12,7 @@ extension Ex on Screen {
       case Screen.registerUser:
         return 'Setup Profile';
       case Screen.updateProfile:
-        return 'Edit Profile';
+        return 'Update Profile';
       case Screen.signup:
         return 'Signup';
       case Screen.forgotPassword:

@@ -32,11 +32,13 @@ class ProfileState {
   final String? referralCode;
 
   final String? firstname;
-  bool get isValidFirstname =>
-      validators.notEmptyValidator(firstname) && firstname!.length > 2;
+  String? get firstnameValidator => !validators.notEmptyValidator(firstname)
+      ? 'First name is required'
+      : null;
+
   final String? lastname;
-  bool get isValidLastname =>
-      validators.notEmptyValidator(lastname) && lastname!.length > 2;
+  String? get lastnameValidator =>
+      !validators.notEmptyValidator(lastname) ? 'Last name is required' : null;
 
   final String? email;
   String? get emailValidator => !validators.notEmptyValidator(email)
@@ -47,16 +49,29 @@ class ProfileState {
 
   final String? countryCode;
   bool get isValidCountryCode => validators.notEmptyValidator(countryCode);
+
   final String? phoneNumber;
-  bool get isValidPhoneNumber => validators.isValidPhoneNumber(phoneNumber);
+  String? get phoneNumberValidator => !validators.notEmptyValidator(phoneNumber)
+      ? 'Phone number is required'
+      : !validators.isValidPhoneNumber(phoneNumber)
+          ? 'Invalid phone number'
+          : null;
 
   final Gender? gender;
   bool get isValidGender => gender is Gender;
 
   final int? age;
-  bool get isValidAge => age is int && age! > 18 && age! < 200;
+  String? get ageValidator => age is! int
+      ? 'Age is required'
+      : age! < 18
+          ? 'Must be above 18 to use the app'
+          : age! > 200
+              ? 'Invalid age'
+              : null;
+
   final String? address;
   bool get isValidAddress => validators.notEmptyValidator(address);
+
   final String? city;
   bool get isValidCity => validators.notEmptyValidator(city);
 

@@ -98,7 +98,7 @@ class _LoginState extends BasePageState<LoginPage> {
                   onFieldSubmitted: (_) => passwordFocusNode.requestFocus(),
                   textInputAction: TextInputAction.next,
                 ),
-                const SizedBox(height: 5.0),
+                const SizedBox(height: 15.0),
                 TextFormField(
                   focusNode: passwordFocusNode,
                   obscureText: true,
@@ -116,7 +116,7 @@ class _LoginState extends BasePageState<LoginPage> {
                   ),
                   onFieldSubmitted: (_) => onFormSubmitted(),
                 ),
-                const SizedBox(height: 10.0),
+                const SizedBox(height: 25.0),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
