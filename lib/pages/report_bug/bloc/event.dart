@@ -23,3 +23,5 @@ class ReportBugScreenShotRemoved extends ReportBugEvent {}
 class ReportBugSubmitted extends ReportBugEvent {}
 
 class ResetFormStatus extends ReportBugEvent {}
+
+class ResetFormState extends ReportBugEvent {}

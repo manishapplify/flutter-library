@@ -27,6 +27,7 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
     on<ReportBugScreenShotRemoved>(_reportBugScreenShotRemovedHandler);
     on<ReportBugSubmitted>(_reportBugSubmittedHandler);
     on<ResetFormStatus>(_resetFormStatusHandler);
+    on<ResetFormState>(_resetFormStateHandler);
   }
 
   final Api _api;
@@ -91,4 +92,8 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
       ResetFormStatus event, Emitter<ReportBugState> emit) {
     emit(state.copyWith(formStatus: const InitialFormStatus()));
   }
+
+  void _resetFormStateHandler(
+          ResetFormState event, Emitter<ReportBugState> emit) =>
+      emit(ReportBugState());
 }

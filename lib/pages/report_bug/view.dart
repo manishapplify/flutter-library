@@ -19,12 +19,23 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   late final FocusNode descriptionFocusNode;
   late final ReportBugBloc reportBugBloc;
+  late final TextEditingController titleTextEditingController;
+  late final TextEditingController descriptionTextEditingController;
 
   @override
   void initState() {
     descriptionFocusNode = FocusNode();
     reportBugBloc = BlocProvider.of(context);
+    titleTextEditingController = TextEditingController();
+    descriptionTextEditingController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    titleTextEditingController.dispose();
+    descriptionTextEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,8 +50,16 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
     return BlocBuilder<ReportBugBloc, ReportBugState>(
       builder: (BuildContext context, ReportBugState state) {
         if (state.formStatus is SubmissionSuccess) {
-          reportBugBloc.add(ResetFormStatus());
-          Future<void>.microtask(() => navigator.pop());
+          reportBugBloc.add(ResetFormState());
+          titleTextEditingController.value = TextEditingValue.empty;
+          descriptionTextEditingController.value = TextEditingValue.empty;
+          Future<void>.microtask(
+            () => showSnackBar(
+              const SnackBar(
+                content: Text('Bug reported successfully'),
+              ),
+            ),
+          );
         } else if (state.formStatus is SubmissionFailed) {
           reportBugBloc.add(ResetFormStatus());
           final SubmissionFailed failure = state.formStatus as SubmissionFailed;
@@ -63,19 +82,19 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       TextFormField(
+                        controller: titleTextEditingController,
                         textCapitalization: TextCapitalization.words,
                         autofocus: true,
                         decoration: const InputDecoration(
                           hintText: 'Enter a title',
+                          labelText: 'Title',
                           prefixIcon: Icon(Icons.edit),
                         ),
                         keyboardType: TextInputType.emailAddress,
                         onFieldSubmitted: (_) =>
                             descriptionFocusNode.requestFocus(),
                         textInputAction: TextInputAction.next,
-                        validator: (_) => state.isValidTitle
-                            ? null
-                            : "Title length too short",
+                        validator: (_) => state.titleValidator,
                         onChanged: (String value) => reportBugBloc.add(
                           ReportBugTitleChanged(
                             title: value,
@@ -84,21 +103,20 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                       ),
                       const SizedBox(height: 10.0),
                       TextFormField(
+                        controller: descriptionTextEditingController,
                         textCapitalization: TextCapitalization.words,
                         focusNode: descriptionFocusNode,
                         maxLines: 5,
                         decoration: const InputDecoration(
                           hintText: 'Please briefly describe the issue',
-                          prefixIcon: Icon(Icons.description),
+                          labelText: 'Description',
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)),
                           ),
                         ),
                         onFieldSubmitted: (_) => onFormSubmitted(),
-                        validator: (_) => state.isValidTitle
-                            ? null
-                            : "Description length too short",
+                        validator: (_) => state.descriptionValidator,
                         onChanged: (String value) => reportBugBloc.add(
                           ReportBugDescriptionChanged(
                             description: value,

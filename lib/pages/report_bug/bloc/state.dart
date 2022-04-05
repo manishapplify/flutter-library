@@ -9,12 +9,14 @@ class ReportBugState {
   });
 
   final String? title;
-  bool get isValidTitle =>
-      validators.notEmptyValidator(title) && title!.length > 9;
+  String? get titleValidator =>
+      !validators.notEmptyValidator(description) ? 'Title is required' : null;
 
   final String? description;
-  bool get isValidDescription =>
-      validators.notEmptyValidator(title) && title!.length > 9;
+  String? get descriptionValidator => !validators.notEmptyValidator(description)
+      ? 'Description is required'
+      : null;
+
   final File? screenShot;
   bool get isValidScreenShot => screenShot is File;
   final FormSubmissionStatus formStatus;
