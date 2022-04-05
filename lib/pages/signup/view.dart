@@ -69,7 +69,6 @@ class _SignupState extends BasePageState<SignupPage> {
                 height: 5,
               ),
               TextFormField(
-                textCapitalization: TextCapitalization.words,
                 focusNode: emailFocusNode,
                 autofocus: true,
                 decoration: const InputDecoration(
