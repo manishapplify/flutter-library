@@ -48,7 +48,6 @@ class _UserProfileState extends BasePageState<ProfilePage> {
       value: Gender.values[index],
     ),
   );
-  late final String initialCountrySelection;
   late final User user;
 
   @override
@@ -90,9 +89,10 @@ class _UserProfileState extends BasePageState<ProfilePage> {
       emailTextEditingController.value = TextEditingValue(text: user.email!);
     }
     if (user.countryCode is String) {
-      initialCountrySelection = user.countryCode!;
+      profileBloc
+          .add(ProfileCountryCodeChanged(countryCode: user.countryCode!));
     } else {
-      initialCountrySelection = '+91';
+      profileBloc.add(ProfileCountryCodeChanged(countryCode: '+91'));
     }
     if (user.phoneNumber is String) {
       phoneTextEditingController.value =
