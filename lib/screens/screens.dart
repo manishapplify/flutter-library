@@ -41,6 +41,26 @@ class _LoginScreenState extends BaseScreenState<LoginScreenTypes> {
             );
           },
         ),
+        ListTile(
+          title: const Text("Comment"),
+          onTap: () {
+            Future<void>.microtask(
+              () => navigator.pushNamed(
+                Routes.comments,
+              ),
+            );
+          },
+        ),
+        ListTile(
+          title: const Text("One-One Chat"),
+          onTap: () {
+            Future<void>.microtask(
+              () => navigator.pushNamed(
+                Routes.chat,
+              ),
+            );
+          },
+        ),
       ],
     );
   }

@@ -5,6 +5,8 @@ import 'package:components/feedback/feedback_third.dart';
 import 'package:components/feedback/list.dart';
 import 'package:components/login/login_one.dart';
 import 'package:components/otp/view.dart';
+import 'package:components/pages/chat/chatUi.dart';
+import 'package:components/pages/comments/commentUI.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/password/forgot/forgot_password.dart';
 import 'package:components/screens/screens.dart';
@@ -66,6 +68,18 @@ class Navigation {
           settings: settings,
           builder: (_) => const FeedbackFourthScreen(),
         );
+
+      case Routes.chat:
+        return MaterialPageRoute<ChatScreen>(
+          settings: settings,
+          builder: (_) => const ChatScreen(),
+        );
+
+      case Routes.comments:
+        return MaterialPageRoute<CommentScreen>(
+          settings: settings,
+          builder: (_) => const CommentScreen(),
+        );
     }
 
     return MaterialPageRoute<LoginScreenTypes>(
@@ -89,4 +103,7 @@ class Routes {
   static const String feedbackSecond = "feedbackSecondScreen";
   static const String feedbackThird = "feedbackThirdScreen";
   static const String feedbackFourth = "feedbackFourthScreen";
+
+  static const String chat = "chatScreen";
+  static const String comments = "commentsScreen";
 }
