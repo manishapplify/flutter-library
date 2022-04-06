@@ -61,7 +61,12 @@ dynamic showImagePickerPopup({
           ),
         ),
         child: CupertinoActionSheetAction(
-          child: const Text("Cancel"),
+          child: const Text(
+            "Cancel",
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
           isDefaultAction: true,
           onPressed: () {
             Navigator.pop(context);

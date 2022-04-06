@@ -3,7 +3,7 @@ part of 'bloc.dart';
 class LoginState {
   LoginState({
     this.email = '',
-    this.password = '',
+    this.password,
     this.formStatus = const InitialFormStatus(),
     this.isLoginSuccessful,
   });
@@ -12,9 +12,7 @@ class LoginState {
   String? get emailValidator =>
       !validators.notEmptyValidator(email) ? 'Email is required' : null;
 
-  final String password;
-  String? get passwordValidator =>
-      !validators.notEmptyValidator(password) ? 'Password is required' : null;
+  final String? password;
 
   final FormSubmissionStatus formStatus;
   final bool? isLoginSuccessful;

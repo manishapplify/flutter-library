@@ -14,6 +14,7 @@ import 'package:components/pages/signup/models/request.dart';
 import 'package:components/pages/signup/models/response.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
+import 'package:components/services/firebase_realtime_database.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/utils/config.dart';
 import 'package:dio/dio.dart';
@@ -27,12 +28,14 @@ class AuthRepository {
     required Persistence persistence,
     required AuthCubit authCubit,
     required PasswordAuthCubit passwordAuthCubit,
+    required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
   })  : _api = api,
         _config = config,
         _fcm = fcm,
         _persistence = persistence,
         _authCubit = authCubit,
-        _passwordAuthCubit = passwordAuthCubit;
+        _passwordAuthCubit = passwordAuthCubit,
+        _firebaseRealtimeDatabase = firebaseRealtimeDatabase;
 
   final Api _api;
   final Config _config;
@@ -40,10 +43,11 @@ class AuthRepository {
   final Persistence _persistence;
   final AuthCubit _authCubit;
   final PasswordAuthCubit _passwordAuthCubit;
+  final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
 
   Future<void> login({
     required String username,
-    required String password,
+    required String? password,
   }) async {
     if (_fcm.deviceToken == null) {
       await _fcm.getToken();
@@ -61,6 +65,7 @@ class AuthRepository {
     final LoginResponse loginResponse = LoginResponse.fromJson(response.data);
 
     _authCubit.signupOrLogin(loginResponse.user);
+    _firebaseRealtimeDatabase.addUser(loginResponse.user);
   }
 
   Future<void> signInWithSocialId() async {
@@ -75,19 +80,18 @@ class AuthRepository {
       final String socialId = googleSignInAccount.id;
       final String socialEmail = googleSignInAccount.email;
       final SocialSigninRequest request = SocialSigninRequest(
-          platformType: _config.platform.name,
-          deviceToken: _fcm.deviceToken!,
-          loginType: 3,
-          socialId: socialId,
-          emailOrPhoneNumber: socialEmail,
-          countryCode: _persistence.fetchCountryCode() ?? '+91',
-          password: '');
+        platformType: _config.platform.name,
+        deviceToken: _fcm.deviceToken!,
+        loginType: 3,
+        socialId: socialId,
+        emailOrPhoneNumber: socialEmail,
+        countryCode: _persistence.fetchCountryCode() ?? '+91',
+      );
       final Response<dynamic> response = await _api.socialLogin(request);
       final SocialSigninResponse socialSigninResponse =
           SocialSigninResponse.fromJson(response.data);
       _authCubit.signupOrLogin(socialSigninResponse.user);
-    }
-    if (googleSignInAccount == null) {
+    } else {
       throw Exception('GoogleSigin Failed');
     }
   }
@@ -200,6 +204,7 @@ class AuthRepository {
     }
 
     await _api.deleteAccount();
+    _firebaseRealtimeDatabase.removeUser(_authCubit.state.user!);
     _authCubit.logoutOrDeleteAccount();
   }
 

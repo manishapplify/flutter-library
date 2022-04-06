@@ -1,5 +1,6 @@
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/cubits/models/user.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/widgets/image_container.dart';
 import 'package:flutter/material.dart';
@@ -50,32 +51,50 @@ class _HomeState extends BasePageState<HomePage> {
       );
 
   @override
-  Widget? drawer(BuildContext context) => Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              child: ImageContainer(
-                imageUrl: authCubit.state.user!.profilePic,
+  Widget? drawer(BuildContext context) {
+    return Drawer(
+      child: BlocBuilder<AuthCubit, AuthState>(
+        builder: (BuildContext context, AuthState state) {
+          if (!state.isAuthorized) {
+            throw Exception('not signed in');
+          }
+
+          final User user = authCubit.state.user!;
+          return ListView(
+            children: <Widget>[
+              DrawerHeader(
+                child: ImageContainer(
+                  imageUrl: user.profilePic,
+                ),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                ),
               ),
-              decoration: BoxDecoration(
-                color: colorScheme.primary,
+              Center(
+                child: Text(
+                  'Hello, ${user.fullName}',
+                  style: textTheme.headline1,
+                ),
               ),
-            ),
-            ListTile(
-              title: const Text('Feedback'),
-              onTap: () => navigator.popAndPushNamed(
-                Routes.feedback,
+              const Divider(),
+              ListTile(
+                title: const Text('Feedback'),
+                onTap: () => navigator.popAndPushNamed(
+                  Routes.feedback,
+                ),
               ),
-            ),
-            ListTile(
-              title: const Text('Report Bug'),
-              onTap: () => navigator.popAndPushNamed(
-                Routes.reportBug,
+              ListTile(
+                title: const Text('Report Bug'),
+                onTap: () => navigator.popAndPushNamed(
+                  Routes.reportBug,
+                ),
               ),
-            ),
-          ],
-        ),
-      );
+            ],
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget body(BuildContext context) {
