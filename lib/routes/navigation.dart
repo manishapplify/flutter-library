@@ -234,9 +234,16 @@ class Navigation {
         );
     }
 
-    return MaterialPageRoute<LoginScreenTypes>(
+    return MaterialPageRoute<LoginPage>(
       settings: settings,
-      builder: (_) => const LoginScreenTypes(),
+      builder: (_) => BlocProvider<LoginBloc>(
+        create: (BuildContext context) => LoginBloc(
+          api: _api,
+          authRepository: _authRepository,
+          authCubit: _authCubit,
+        ),
+        child: const LoginPage(),
+      ),
     );
   }
 
