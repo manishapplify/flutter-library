@@ -75,28 +75,31 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         await _authRepository.signInWithSocialId();
         emit(
           state.copyWith(
-            formStatus: SocialSiginSubmissionSuccess(),
+            formStatus: SubmissionSuccess(),
           ),
         );
-      } on Exception catch (e) {
+      } on DioError catch (e) {
         emit(
           state.copyWith(
-            formStatus: SubmissionFailed(exception: e),
+            formStatus: SubmissionFailed(
+              exception: e,
+              message: (e.error is String?) ? e.error : 'Failure',
+            ),
+          ),
+        );
+      } on Exception catch (_) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(exception: Exception('Failure')),
           ),
         );
       }
     });
 
-    //on<GoogleSignInPressed>(_googleSignInPressedHandler);
     on<ResetFormStatus>(_resetFormStatusHandler);
   }
 
   final AuthRepository _authRepository;
-
-  // void _googleSignInPressedHandler(
-  //     SocialSignInSummitted event, Emitter<LoginState> emit) async {
-  //   await _authRepository.signInWithGoogle();
-  // }
 
   void _resetFormStatusHandler(
           ResetFormStatus event, Emitter<LoginState> emit) =>
