@@ -52,38 +52,46 @@ class _HomeState extends BasePageState<HomePage> {
 
   @override
   Widget? drawer(BuildContext context) {
-    final User user = authCubit.state.user!;
     return Drawer(
-      child: ListView(
-        children: <Widget>[
-          DrawerHeader(
-            child: ImageContainer(
-              imageUrl: user.profilePic,
-            ),
-            decoration: BoxDecoration(
-              color: colorScheme.primary,
-            ),
-          ),
-          Center(
-            child: Text(
-              'Hello, ${user.fullName}',
-              style: textTheme.headline1,
-            ),
-          ),
-          const Divider(),
-          ListTile(
-            title: const Text('Feedback'),
-            onTap: () => navigator.popAndPushNamed(
-              Routes.feedback,
-            ),
-          ),
-          ListTile(
-            title: const Text('Report Bug'),
-            onTap: () => navigator.popAndPushNamed(
-              Routes.reportBug,
-            ),
-          ),
-        ],
+      child: BlocBuilder<AuthCubit, AuthState>(
+        builder: (BuildContext context, AuthState state) {
+          if (!state.isAuthorized) {
+            throw Exception('not signed in');
+          }
+
+          final User user = authCubit.state.user!;
+          return ListView(
+            children: <Widget>[
+              DrawerHeader(
+                child: ImageContainer(
+                  imageUrl: user.profilePic,
+                ),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                ),
+              ),
+              Center(
+                child: Text(
+                  'Hello, ${user.fullName}',
+                  style: textTheme.headline1,
+                ),
+              ),
+              const Divider(),
+              ListTile(
+                title: const Text('Feedback'),
+                onTap: () => navigator.popAndPushNamed(
+                  Routes.feedback,
+                ),
+              ),
+              ListTile(
+                title: const Text('Report Bug'),
+                onTap: () => navigator.popAndPushNamed(
+                  Routes.reportBug,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
