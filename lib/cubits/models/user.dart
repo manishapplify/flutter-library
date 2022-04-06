@@ -26,18 +26,18 @@ class User {
 
     return User(
       id: json['id'],
-      firstName: json['firstName'] ?? '',
-      lastName: json['lastName'] ?? '',
+      firstName: json['firstName'],
+      lastName: json['lastName'],
       gender: json['gender'],
       profilePic: json['profilePic'],
       age: json['age'],
       email: json['email'],
       countryCode: json['countryCode'],
-      phoneNumber: json['phoneNumber'] ?? '',
+      phoneNumber: json['phoneNumber'],
       registrationStep: json['registrationStep'],
       notificationEnabled: json['notificationEnabled'],
-      address: json['address'] ?? '',
-      city: json['city'] ?? '',
+      address: json['address'],
+      city: json['city'],
       isPhoneVerified: json['isPhoneVerified'],
       isEmailVerified: json['isEmailVerified'],
       referralCode: json['referralCode'],
@@ -109,26 +109,50 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = this.id;
-    data['firstName'] = this.firstName;
-    data['lastName'] = this.lastName;
-    data['gender'] = this.gender;
-    data['profilePic'] = this.profilePic;
-    data['age'] = this.age;
-    data['email'] = this.email;
-    data['countryCode'] = this.countryCode;
-    data['phoneNumber'] = this.phoneNumber;
-    data['registrationStep'] = this.registrationStep;
-    data['notificationEnabled'] = this.notificationEnabled;
-    data['address'] = this.address;
-    data['city'] = this.city;
-    data['isPhoneVerified'] = this.isPhoneVerified;
-    data['isEmailVerified'] = this.isEmailVerified;
-    data['referralCode'] = this.referralCode;
-    data['createdAt'] = this.createdAt;
-    data['accessToken'] = this.accessToken;
-    data['s3Folders'] = this.s3Folders.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{
+      'id': this.id,
+      'registrationStep': this.registrationStep,
+      'notificationEnabled': this.notificationEnabled,
+      'isPhoneVerified': this.isPhoneVerified,
+      'isEmailVerified': this.isEmailVerified,
+      'createdAt': this.createdAt,
+      'accessToken': this.accessToken,
+      's3Folders': this.s3Folders.toJson(),
+    };
+
+    if (firstName is String) {
+      data['firstName'] = this.firstName;
+    }
+    if (lastName is String) {
+      data['lastName'] = this.lastName;
+    }
+    if (gender is String) {
+      data['gender'] = this.gender;
+    }
+    if (profilePic is String) {
+      data['profilePic'] = this.profilePic;
+    }
+    if (age is int) {
+      data['age'] = this.age;
+    }
+    if (email is String) {
+      data['email'] = this.email;
+    }
+    if (countryCode is String) {
+      data['countryCode'] = this.countryCode;
+    }
+    if (phoneNumber is String) {
+      data['phoneNumber'] = this.phoneNumber;
+    }
+    if (address is String) {
+      data['address'] = this.address;
+    }
+    if (city is String) {
+      data['city'] = this.city;
+    }
+    if (referralCode is String) {
+      data['referralCode'] = this.referralCode;
+    }
     return data;
   }
 }
