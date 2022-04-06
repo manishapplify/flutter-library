@@ -155,6 +155,21 @@ class User {
     }
     return data;
   }
+
+  Map<String, dynamic> toFirebaseMap() {
+    final Map<String, dynamic> data = <String, dynamic>{
+      'user_id': 'ID_' + this.id,
+    };
+
+    if (fullName is String) {
+      data['user_name'] = fullName;
+    }
+    if (profilePic is String) {
+      final String fileName = profilePic!.split('/').last;
+      data['user_pic'] = fileName;
+    }
+    return data;
+  }
 }
 
 class S3Folders {
