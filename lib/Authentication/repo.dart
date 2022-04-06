@@ -43,7 +43,7 @@ class AuthRepository {
 
   Future<void> login({
     required String username,
-    required String password,
+    required String? password,
   }) async {
     if (_fcm.deviceToken == null) {
       await _fcm.getToken();

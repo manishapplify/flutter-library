@@ -110,7 +110,6 @@ class _LoginState extends BasePageState<LoginPage> {
                       Icons.lock,
                     ),
                   ),
-                  validator: (_) => state.passwordValidator,
                   onChanged: (String value) => loginBloc.add(
                     LoginPasswordChanged(password: value),
                   ),

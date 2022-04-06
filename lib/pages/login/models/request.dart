@@ -11,13 +11,20 @@ class LoginRequest {
   final String deviceToken;
   final String countryCode;
   final String emailOrPhoneNumber;
-  final String password;
+  final String? password;
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'platformType': platformType,
-        'deviceToken': deviceToken,
-        'countryCode': countryCode,
-        'emailOrPhoneNumber': emailOrPhoneNumber,
-        'password': password,
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> map = <String, dynamic>{
+      'platformType': platformType,
+      'deviceToken': deviceToken,
+      'countryCode': countryCode,
+      'emailOrPhoneNumber': emailOrPhoneNumber,
+    };
+
+    if (password is String) {
+      map['password'] = password;
+    }
+
+    return map;
+  }
 }
