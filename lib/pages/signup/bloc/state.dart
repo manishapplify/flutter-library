@@ -1,56 +1,57 @@
-import 'package:components/Authentication/form_submission.dart';
+part of 'bloc.dart';
 
 class SignUpState {
   SignUpState({
-    this.profilePic = '',
-    this.firstname = '',
-    this.lastname = '',
-    this.referralCode = '',
     this.email = '',
     this.password = '',
     this.phoneNumber = '',
-    this.code = '+91',
+    this.confirmPassword = '',
+    this.countryCode = '+91',
     this.formStatus = const InitialFormStatus(),
   });
-  final String firstname;
-  bool get isValidFirstname => firstname.length > 2;
-  final String lastname;
-  bool get isValidLastname => lastname.length > 2;
-  final String referralCode;
 
   final String phoneNumber;
-  bool get isValidphoneNumber => phoneNumber.length > 9;
-  final String code;
+  bool get isValidphoneNumber => validators.isValidPhoneNumber(phoneNumber);
+  final String? countryCode;
+  bool get isValidCountryCode => countryCode is String;
 
-  final String profilePic;
   final String email;
-  bool get isValidEmail => email.contains('@');
+  String? get emailValidator => !validators.notEmptyValidator(email)
+      ? 'Email is required'
+      : !validators.isValidEmail(email)
+          ? 'Invalid email'
+          : null;
 
   final String password;
-  bool get isValidPassword => password.length > 6;
+  String? get passwordValidator => !validators.notEmptyValidator(password)
+      ? 'Password is required'
+      : !validators.isValidPassword(password)
+          ? 'Password is too short'
+          : null;
+
+  final String confirmPassword;
+  String? get confirmNewPasswordValidator => confirmPassword.isEmpty
+      ? 'Enter password once more'
+      : confirmPassword != password
+          ? 'Should match the password'
+          : null;
 
   final FormSubmissionStatus formStatus;
 
   SignUpState copyWith({
-    String? profilePic,
-    String? firstname,
-    String? lastname,
-    String? referralCode,
     String? phoneNumber,
-    String? code,
+    String? countryCode,
     String? email,
     String? password,
+    String? confirmPassword,
     FormSubmissionStatus? formStatus,
   }) {
     return SignUpState(
-      profilePic: profilePic ?? this.profilePic,
-      firstname: firstname ?? this.firstname,
-      lastname: lastname ?? this.lastname,
-      referralCode: referralCode ?? this.referralCode,
       phoneNumber: phoneNumber ?? this.phoneNumber,
-      code: code ?? this.code,
+      countryCode: countryCode ?? this.countryCode,
       email: email ?? this.email,
       password: password ?? this.password,
+      confirmPassword: confirmPassword ?? this.confirmPassword,
       formStatus: formStatus ?? this.formStatus,
     );
   }

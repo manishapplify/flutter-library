@@ -1,32 +1,39 @@
 class SignupRequest {
   SignupRequest({
-    required this.profilePic,
-    required this.firstName,
-    required this.lastName,
-    required this.countryCode,
-    required this.phoneNumber,
-    required this.email,
+    required this.platformType,
+    required this.deviceToken,
+    this.countryCode,
+    this.phoneNumber,
+    this.email,
     required this.password,
-    this.referralCode,
+    required this.userType,
   });
 
-  final String profilePic;
-  final String firstName;
-  final String lastName;
-  final String countryCode;
-  final String phoneNumber;
-  final String email;
+  final String platformType;
+  final String deviceToken;
+  final String? countryCode;
+  final String? phoneNumber;
+  final String? email;
   final String password;
-  String? referralCode;
+  final int userType;
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'profilePic': profilePic,
-        'firstName': firstName,
-        'lastName': lastName,
-        'countryCode': countryCode,
-        'phoneNumber': phoneNumber,
-        'email': email,
-        'password': password,
-        'referralCode': referralCode,
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> map = <String, dynamic>{
+      'platformType': platformType,
+      'deviceToken': deviceToken,
+      'password': password,
+      'userType': userType,
+    };
+
+    if (phoneNumber is String && phoneNumber!.isNotEmpty) {
+      map['countryCode'] = countryCode;
+      map['phoneNumber'] = phoneNumber;
+    }
+
+    if (email is String) {
+      map['email'] = email;
+    }
+
+    return map;
+  }
 }

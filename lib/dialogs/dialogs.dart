@@ -5,35 +5,53 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-dynamic showImagePickerPopup(
-    BuildContext context, Function(File) onImagePicked) {
+dynamic showImagePickerPopup({
+  required BuildContext context,
+  required Function(File) onImagePicked,
+  bool galleryAllowed = true,
+  bool cameraAllowed = true,
+}) {
   showCupertinoModalPopup(
     barrierColor: Colors.black45,
     context: context,
     builder: (BuildContext context) => CupertinoActionSheet(
       actions: <Widget>[
-        CupertinoActionSheetAction(
-          child: const Text("Gallery"),
-          onPressed: () async {
-            final XFile? pickedFile = await ImagePicker()
-                .pickImage(source: ImageSource.gallery, imageQuality: 20);
-            imageCropper(context, pickedFile!.path, (File croppedImage) {
-              onImagePicked(croppedImage);
-            });
-            Navigator.pop(context);
-          },
-        ),
-        CupertinoActionSheetAction(
-          child: const Text("Camera"),
-          onPressed: () async {
-            final XFile? pickedFile = await ImagePicker()
-                .pickImage(source: ImageSource.camera, imageQuality: 20);
-            imageCropper(context, pickedFile!.path, (File croppedImage) {
-              onImagePicked(croppedImage);
-            });
-            Navigator.pop(context);
-          },
-        ),
+        if (galleryAllowed)
+          CupertinoActionSheetAction(
+            child: const Text(
+              "Gallery",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+            onPressed: () async {
+              final XFile? pickedFile = await ImagePicker()
+                  .pickImage(source: ImageSource.gallery, imageQuality: 20);
+              imageCropper(
+                  imagePath: pickedFile!.path,
+                  onCropped: (File croppedImage) {
+                    onImagePicked(croppedImage);
+                  });
+            },
+          ),
+        if (cameraAllowed)
+          CupertinoActionSheetAction(
+            child: const Text(
+              "Camera",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+            onPressed: () async {
+              final XFile? pickedFile = await ImagePicker()
+                  .pickImage(source: ImageSource.camera, imageQuality: 20);
+              imageCropper(
+                  imagePath: pickedFile!.path,
+                  onCropped: (File croppedImage) {
+                    onImagePicked(croppedImage);
+                  });
+            },
+          ),
       ],
       cancelButton: Container(
         decoration: const BoxDecoration(
@@ -43,7 +61,12 @@ dynamic showImagePickerPopup(
           ),
         ),
         child: CupertinoActionSheetAction(
-          child: const Text("Cancel"),
+          child: const Text(
+            "Cancel",
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
           isDefaultAction: true,
           onPressed: () {
             Navigator.pop(context);
@@ -54,8 +77,10 @@ dynamic showImagePickerPopup(
   );
 }
 
-dynamic imageCropper(
-    BuildContext context, String imagePath, Function(File) onCropped) async {
+dynamic imageCropper({
+  required String imagePath,
+  required Function(File) onCropped,
+}) async {
   final File? croppedFile = await ImageCropper().cropImage(
     sourcePath: imagePath,
     compressQuality: 20,
