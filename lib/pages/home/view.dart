@@ -1,6 +1,7 @@
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/widgets/image_container.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _HomeState extends BasePageState<HomePage> {
   void initState() {
     authCubit = BlocProvider.of(context);
     if (!authCubit.state.isAuthorized) {
-      throw Exception('not signed in');
+      throw AppException.authenticationException;
     }
     super.initState();
   }
@@ -56,7 +57,7 @@ class _HomeState extends BasePageState<HomePage> {
       child: BlocBuilder<AuthCubit, AuthState>(
         builder: (BuildContext context, AuthState state) {
           if (!state.isAuthorized) {
-            throw Exception('not signed in');
+            throw AppException.authenticationException;
           }
 
           final User user = authCubit.state.user!;

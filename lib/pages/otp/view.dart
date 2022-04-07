@@ -3,6 +3,7 @@ import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/enums/screen.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/otp/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
@@ -108,7 +109,7 @@ class _OTPState extends BasePageState<OtpPage> {
       );
     } else if (screen == Screen.verifyEmail) {
       if (!authCubit.state.isAuthorized) {
-        throw Exception('not signed in');
+        throw AppException.authenticationException;
       }
       if (authCubit.state.user!.isEmailVerified == 1) {
         return Center(

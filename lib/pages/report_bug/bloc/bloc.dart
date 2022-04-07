@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/report_bug/models/request.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
-import 'package:meta/meta.dart';
 import 'package:components/validators/validators.dart' as validators;
+import 'package:meta/meta.dart';
 
 part 'event.dart';
 part 'state.dart';
@@ -61,7 +62,7 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
   void _reportBugSubmittedHandler(
       ReportBugSubmitted event, Emitter<ReportBugState> emit) async {
     if (!_authCubit.state.isAuthorized) {
-      throw Exception('not signed in');
+      throw AppException.authenticationException;
     }
     emit(state.copyWith(formStatus: FormSubmitting()));
 
@@ -72,7 +73,7 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
       );
 
       if (screenShotUrl == null) {
-        throw Exception('could not upload image to s3');
+        throw AppException.s3ImageUploadException;
       }
 
       final ReportBugRequest request = ReportBugRequest(

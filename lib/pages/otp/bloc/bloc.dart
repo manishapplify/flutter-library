@@ -4,6 +4,7 @@ import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/screen.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/api/api.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
@@ -54,11 +55,19 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
       }
       emit(state.copyWith(formStatus: SubmissionSuccess()));
     } on DioError catch (e) {
+      late final AppException exception;
+
+      if (e.type == DioErrorType.other && e.error is AppException) {
+        exception = e.error;
+      } else {
+        exception = AppException.api400Exception();
+      }
+
       emit(
         state.copyWith(
           formStatus: SubmissionFailed(
-            exception: e,
-            message: (e.error is String?) ? e.error : 'Failure',
+            exception: exception,
+            message: exception.message,
           ),
         ),
       );

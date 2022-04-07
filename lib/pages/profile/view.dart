@@ -1,15 +1,17 @@
 import 'dart:io';
+
 import 'package:components/Authentication/form_submission.dart';
+import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
+import 'package:components/dialogs/dialogs.dart';
 import 'package:components/enums/gender.dart';
 import 'package:components/enums/screen.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/profile/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:components/base/base_page.dart';
-import 'package:components/dialogs/dialogs.dart';
 import 'package:components/widgets/image_container.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -71,7 +73,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
     final AuthCubit authCubit = BlocProvider.of(context);
 
     if (!authCubit.state.isAuthorized) {
-      throw Exception('not signed in');
+      throw AppException.authenticationException;
     }
     user = authCubit.state.user!;
 

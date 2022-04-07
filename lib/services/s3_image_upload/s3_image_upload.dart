@@ -1,4 +1,6 @@
 import 'dart:io';
+
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/s3_image_upload/request.dart';
 import 'package:components/services/s3_image_upload/response.dart';
@@ -50,7 +52,7 @@ class S3ImageUpload {
 
     final Uri? uri = Uri.tryParse(s3imageUploadResponse.uploadURL);
     if (uri == null) {
-      throw Exception('Could not parse uploadURL');
+      throw AppException.s3UrlParseException;
     }
 
     return '${uri.scheme}://${uri.authority}${uri.path}';

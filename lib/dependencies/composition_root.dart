@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/profile/repo.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/routes/navigation.dart';
@@ -141,10 +142,7 @@ void _errorInterceptor(DioError error, ErrorInterceptorHandler handler) {
 
   if (response is Map<String, dynamic>) {
     if (response['statusCode'] == 400) {
-      throw (DioError(
-        error: response['message'] ?? 'Failure',
-        requestOptions: error.requestOptions,
-      ));
+      throw AppException.api400Exception(message: response['message']);
     } else if (response['statusCode'] == 401) {
       final BuildContext context = Navigation.navigatorKey.currentContext!;
 

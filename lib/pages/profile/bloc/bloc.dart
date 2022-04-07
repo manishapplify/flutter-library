@@ -6,6 +6,7 @@ import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/gender.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/enums/signup.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/profile/repo.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
@@ -168,11 +169,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         );
         emit(state.copyWith(formStatus: SubmissionSuccess()));
       } on DioError catch (e) {
+        late final AppException exception;
+
+        if (e.type == DioErrorType.other && e.error is AppException) {
+          exception = e.error;
+        } else {
+          exception = AppException.api400Exception();
+        }
+
         emit(
           state.copyWith(
             formStatus: SubmissionFailed(
-              exception: e,
-              message: (e.error is String?) ? e.error : 'Failure',
+              exception: exception,
+              message: exception.message,
             ),
           ),
         );
@@ -202,11 +211,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         );
         emit(state.copyWith(formStatus: SubmissionSuccess()));
       } on DioError catch (e) {
+        late final AppException exception;
+
+        if (e.type == DioErrorType.other && e.error is AppException) {
+          exception = e.error;
+        } else {
+          exception = AppException.api400Exception();
+        }
+
         emit(
           state.copyWith(
             formStatus: SubmissionFailed(
-              exception: e,
-              message: (e.error is String?) ? e.error : 'Failure',
+              exception: exception,
+              message: exception.message,
             ),
           ),
         );
@@ -218,7 +235,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         );
       }
     } else {
-      throw ('Unsupported request');
+      throw AppException.unsupportedActionException;
     }
   }
 

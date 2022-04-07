@@ -1,11 +1,12 @@
+import 'package:components/Authentication/models/logout_request.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/change_password/model/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/forgot_password/models/response.dart';
 import 'package:components/pages/login/models/login_request.dart';
 import 'package:components/pages/login/models/login_response.dart';
-import 'package:components/Authentication/models/logout_request.dart';
 import 'package:components/pages/login/models/social_signin_request.dart';
 import 'package:components/pages/login/models/social_signin_response.dart';
 import 'package:components/pages/otp/models/request.dart';
@@ -92,7 +93,7 @@ class AuthRepository {
           SocialSigninResponse.fromJson(response.data);
       _authCubit.signupOrLogin(socialSigninResponse.user);
     } else {
-      throw Exception('GoogleSigin Failed');
+      throw AppException.googleSignInException;
     }
   }
 
@@ -142,7 +143,7 @@ class AuthRepository {
 
   Future<void> verifyForgetPasswordOtp(String otp) async {
     if (!_passwordAuthCubit.state.isTokenGenerated) {
-      throw Exception('No token present');
+      throw AppException.passwordResetTokenAbsentException;
     }
 
     final VerifyForgetPasswordOtpRequest request =
@@ -156,7 +157,7 @@ class AuthRepository {
 
   Future<void> resetPassword(String password) async {
     if (!_passwordAuthCubit.state.isTokenGenerated) {
-      throw Exception('No token present');
+      throw AppException.passwordResetTokenAbsentException;
     }
 
     final ResetPasswordRequest request = ResetPasswordRequest(
@@ -172,7 +173,7 @@ class AuthRepository {
     required String newPassword,
   }) async {
     if (!_authCubit.state.isAuthorized) {
-      throw Exception('not signed in');
+      throw AppException.authenticationException;
     }
     await Future<dynamic>.delayed(const Duration(seconds: 5));
     final ChangePasswordRequest request = ChangePasswordRequest(
@@ -188,7 +189,7 @@ class AuthRepository {
       await _fcm.getToken();
     }
     if (!_authCubit.state.isAuthorized) {
-      throw Exception('not signed in');
+      throw AppException.authenticationException;
     }
     final LogoutRequest request = LogoutRequest(
       deviceToken: _fcm.deviceToken!,
@@ -200,7 +201,7 @@ class AuthRepository {
 
   Future<dynamic> deleteAccount() async {
     if (!_authCubit.state.isAuthorized) {
-      throw Exception('not signed in');
+      throw AppException.authenticationException;
     }
 
     await _api.deleteAccount();
@@ -213,6 +214,5 @@ class AuthRepository {
     List<String>? feedbackreasons,
   }) async {
     await Future<dynamic>.delayed(const Duration(seconds: 5));
-    throw Exception('failed feedbackSubmission');
   }
 }

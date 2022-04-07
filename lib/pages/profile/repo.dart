@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
+import 'package:components/enums/signup.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/profile/models/update_profile_request.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
-import 'package:components/enums/signup.dart';
 import 'package:dio/dio.dart';
 
 class ProfileRepository {
@@ -46,7 +47,7 @@ class ProfileRepository {
     required Signup signupType,
   }) async {
     if (!_authCubit.state.isAuthorized) {
-      throw Exception('not signed in');
+      throw AppException.authenticationException;
     }
 
     if (countryCode is String) {
@@ -93,7 +94,7 @@ class ProfileRepository {
     required String notificationEnabled,
   }) async {
     if (!_authCubit.state.isAuthorized) {
-      throw Exception('not signed in');
+      throw AppException.authenticationException;
     }
 
     if (countryCode is String) {
