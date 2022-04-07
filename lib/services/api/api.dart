@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:components/pages/change_password/model/request.dart';
 import 'package:components/pages/feedback/models/request.dart';
-import 'package:components/pages/login/google_signin/models/request.dart';
+import 'package:components/pages/login/models/social_signin_request.dart';
 import 'package:components/pages/report_bug/models/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
-import 'package:components/pages/login/models/request.dart';
+import 'package:components/pages/login/models/login_request.dart';
 import 'package:components/Authentication/models/logout_request.dart';
 import 'package:components/pages/otp/models/request.dart';
 import 'package:components/pages/profile/models/register_user_request.dart';
