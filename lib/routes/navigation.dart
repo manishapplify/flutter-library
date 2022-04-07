@@ -247,29 +247,37 @@ class Navigation {
     );
   }
 
-  static void navigateAfterSplashOrLogin(User user) {
+  static void navigateAfterSplashOrLogin(User? user) {
     final NavigatorState navigator = Navigator.of(navigatorKey.currentContext!);
 
-    if (user.isEmailVerified == 0) {
+    if (user == null) {
       Future<void>.microtask(
         () => navigator.pushNamed(
-          Routes.otp,
-          arguments: Screen.verifyEmail,
-        ),
-      );
-    } else if (user.registrationStep == 1) {
-      Future<void>.microtask(
-        () => navigator.pushNamed(
-          Routes.profile,
-          arguments: Screen.registerUser,
+          Routes.login,
         ),
       );
     } else {
-      Future<void>.microtask(
-        () => navigator.pushNamed(
-          Routes.home,
-        ),
-      );
+      if (user.isEmailVerified == 0) {
+        Future<void>.microtask(
+          () => navigator.pushNamed(
+            Routes.otp,
+            arguments: Screen.verifyEmail,
+          ),
+        );
+      } else if (user.registrationStep == 1) {
+        Future<void>.microtask(
+          () => navigator.pushNamed(
+            Routes.profile,
+            arguments: Screen.registerUser,
+          ),
+        );
+      } else {
+        Future<void>.microtask(
+          () => navigator.pushNamed(
+            Routes.home,
+          ),
+        );
+      }
     }
   }
 }

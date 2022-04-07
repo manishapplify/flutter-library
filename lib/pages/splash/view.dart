@@ -77,15 +77,6 @@ class _SplashState extends BasePageState<SplashPage> {
         (_) => false,
       ),
     );
-
-    if (authCubit.state.isAuthorized) {
-      Navigation.navigateAfterSplashOrLogin(authCubit.state.user!);
-    } else {
-      Future<void>.microtask(
-        () => navigator.pushNamed(
-          Routes.login,
-        ),
-      );
-    }
+    Navigation.navigateAfterSplashOrLogin(authCubit.state.user);
   }
 }

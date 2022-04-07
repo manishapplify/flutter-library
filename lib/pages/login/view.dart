@@ -58,7 +58,7 @@ class _LoginState extends BasePageState<LoginPage> {
                   throw Exception('not signed in');
                 }
 
-                Navigation.navigateAfterSplashOrLogin(authCubit.state.user!);
+                Navigation.navigateAfterSplashOrLogin(authCubit.state.user);
               } else if (state.formStatus is SubmissionFailed) {
                 loginBloc.add(ResetFormStatus());
                 final SubmissionFailed failure =
