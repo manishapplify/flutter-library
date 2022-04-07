@@ -30,8 +30,10 @@ import 'package:components/pages/signup/bloc/bloc.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/pages/splash/view.dart';
-import 'package:components/screens/screens.dart';
+import 'package:components/pages/users/bloc/bloc.dart';
+import 'package:components/pages/users/view.dart';
 import 'package:components/services/api/api.dart';
+import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
@@ -47,13 +49,15 @@ class Navigation {
     required Config config,
     required Persistence persistence,
     required S3ImageUpload s3imageUpload,
+    required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
   })  : _api = api,
         _authRepository = authRepository,
         _profileRepository = profileRepository,
         _authCubit = authCubit,
         _config = config,
         _persistence = persistence,
-        _s3imageUpload = s3imageUpload {
+        _s3imageUpload = s3imageUpload,
+        _firebaseRealtimeDatabase = firebaseRealtimeDatabase {
     _authCubit.stream.listen(
       (AuthState event) {
         if (!event.isAuthorized) {
@@ -77,6 +81,7 @@ class Navigation {
   final Config _config;
   final Persistence _persistence;
   final S3ImageUpload _s3imageUpload;
+  final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
 
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -209,6 +214,17 @@ class Navigation {
             child: const ReportBugPage(),
           ),
         );
+      case Routes.users:
+        return MaterialPageRoute<UsersPage>(
+          settings: settings,
+          builder: (_) => BlocProvider<UsersBloc>(
+            create: (_) => UsersBloc(
+              firebaseRealtimeDatabase: _firebaseRealtimeDatabase,
+              authCubit: _authCubit,
+            ),
+            child: const UsersPage(),
+          ),
+        );
 
       case Routes.feedbackScreens:
         return MaterialPageRoute<FeedbackScreenTypes>(
@@ -295,6 +311,7 @@ class Routes {
   static const String reportBug = "/reportBug";
   static const String settings = "/settings";
   static const String changePassword = "/changePassword";
+  static const String users = "/users";
 
   static const String loginOne = "/loginScreenOne";
   static const String feedbackScreens = "/feedbackScreens";
