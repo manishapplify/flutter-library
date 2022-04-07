@@ -1,6 +1,4 @@
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/cubits/models/user.dart';
-import 'package:components/enums/screen.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/base/base_page.dart';

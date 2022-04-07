@@ -8,7 +8,7 @@ import 'package:components/pages/profile/repo.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/api/api.dart';
-import 'package:components/services/firebase_realtime_database.dart';
+import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
@@ -70,6 +70,8 @@ Future<CompositionRoot> configureDependencies() async {
   final PasswordAuthCubit passwordAuthCubit = PasswordAuthCubit(
     persistence,
   );
+  final FirebaseRealtimeDatabase firebaseRealtimeDatabase =
+      FirebaseRealtimeDatabase();
   final AuthRepository authRepository = AuthRepository(
     api: api,
     config: config,
@@ -77,7 +79,7 @@ Future<CompositionRoot> configureDependencies() async {
     persistence: persistence,
     authCubit: authCubit,
     passwordAuthCubit: passwordAuthCubit,
-    firebaseRealtimeDatabase: FirebaseRealtimeDatabase(),
+    firebaseRealtimeDatabase: firebaseRealtimeDatabase,
   );
 
   final S3ImageUpload s3imageUpload = S3ImageUpload(

@@ -15,7 +15,7 @@ import 'package:components/pages/signup/models/request.dart';
 import 'package:components/pages/signup/models/response.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
-import 'package:components/services/firebase_realtime_database.dart';
+import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/utils/config.dart';
 import 'package:dio/dio.dart';
