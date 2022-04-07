@@ -1,4 +1,4 @@
-import 'package:components/pages/comments/customUserAvatar.dart';
+import 'package:components/pages/comments/custom_user_avatar.dart';
 import 'package:flutter/material.dart';
 
 class CommentTile extends StatelessWidget {

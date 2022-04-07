@@ -1,5 +1,5 @@
-import 'package:components/pages/chat/messageModel.dart';
-import 'package:components/pages/chat/messageTile.dart';
+import 'package:components/pages/chat/message_model.dart';
+import 'package:components/pages/chat/message_tile.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {

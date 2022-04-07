@@ -1,5 +1,5 @@
-import 'package:components/pages/comments/commentModel.dart';
-import 'package:components/pages/comments/commentTile.dart';
+import 'package:components/pages/comments/comment_model.dart';
+import 'package:components/pages/comments/comment_tile.dart';
 import 'package:flutter/material.dart';
 
 class CommentScreen extends StatefulWidget {
