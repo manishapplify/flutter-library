@@ -15,15 +15,26 @@ class SocialSigninRequest {
   final String? countryCode;
   final int loginType;
   final String? emailOrPhoneNumber;
- String? password;
+  String? password;
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'platformType': platformType,
-        'deviceToken': deviceToken,
-        'social_id': socialId,
-        'loginType': loginType,
-        'password': password,
-        'emailOrPhoneNumber': emailOrPhoneNumber,
-        'countryCode': countryCode
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> map = <String, dynamic>{
+      'platformType': platformType,
+      'deviceToken': deviceToken,
+      'social_id': socialId,
+      'loginType': loginType,
+    };
+
+    if (countryCode is String) {
+      map['countryCode'] = countryCode;
+    }
+    if (emailOrPhoneNumber is String) {
+      map['emailOrPhoneNumber'] = emailOrPhoneNumber;
+    }
+    if (password is String) {
+      map['password'] = password;
+    }
+
+    return map;
+  }
 }

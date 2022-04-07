@@ -85,8 +85,7 @@ class AuthRepository {
         loginType: 3,
         socialId: socialId,
         emailOrPhoneNumber: socialEmail,
-        countryCode: _persistence.fetchCountryCode() ?? '+91',
-        password: ''
+        countryCode: _persistence.fetchCountryCode(),
       );
       final Response<dynamic> response = await _api.socialLogin(request);
       final SocialSigninResponse socialSigninResponse =
