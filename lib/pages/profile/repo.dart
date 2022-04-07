@@ -7,6 +7,7 @@ import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/profile/models/update_profile_request.dart';
 import 'package:components/services/api/api.dart';
+import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
@@ -19,17 +20,20 @@ class ProfileRepository {
     required Persistence persistence,
     required AuthCubit authCubit,
     required S3ImageUpload s3imageUpload,
+    required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
   })  : _api = api,
         _config = config,
         _persistence = persistence,
         _authCubit = authCubit,
-        _s3imageUpload = s3imageUpload;
+        _s3imageUpload = s3imageUpload,
+        _firebaseRealtimeDatabase = firebaseRealtimeDatabase;
 
   final Api _api;
   final Config _config;
   final Persistence _persistence;
   final AuthCubit _authCubit;
   final S3ImageUpload _s3imageUpload;
+  final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
 
   Future<void> registerUser({
     required String? firstName,
@@ -78,6 +82,7 @@ class ProfileRepository {
     final User user =
         _authCubit.state.user!.copyWithJson(response.data['data']);
     _authCubit.signupOrLogin(user);
+    _firebaseRealtimeDatabase.addUser(user);
   }
 
   Future<void> updateProfile({
@@ -122,5 +127,6 @@ class ProfileRepository {
     final User user =
         _authCubit.state.user!.copyWithJson(response.data['data']);
     _authCubit.signupOrLogin(user);
+    _firebaseRealtimeDatabase.addUser(user);
   }
 }

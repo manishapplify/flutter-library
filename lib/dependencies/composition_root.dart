@@ -102,6 +102,7 @@ Future<CompositionRoot> configureDependencies() async {
     persistence: persistence,
     authCubit: authCubit,
     s3imageUpload: s3imageUpload,
+    firebaseRealtimeDatabase: firebaseRealtimeDatabase,
   );
 
   return CompositionRoot(
@@ -115,6 +116,7 @@ Future<CompositionRoot> configureDependencies() async {
       config: config,
       persistence: persistence,
       s3imageUpload: s3imageUpload,
+      firebaseRealtimeDatabase: firebaseRealtimeDatabase,
     ),
   );
 }

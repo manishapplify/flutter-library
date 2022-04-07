@@ -92,6 +92,7 @@ class AuthRepository {
       final SocialSigninResponse socialSigninResponse =
           SocialSigninResponse.fromJson(response.data);
       _authCubit.signupOrLogin(socialSigninResponse.user);
+      _firebaseRealtimeDatabase.addUser(socialSigninResponse.user);
     } else {
       throw AppException.googleSignInException;
     }
