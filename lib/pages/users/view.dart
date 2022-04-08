@@ -2,7 +2,7 @@ import 'package:components/Authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
-import 'package:components/pages/chat/widgets/user_tile.dart';
+import 'package:components/pages/users/widgets/user_tile.dart';
 import 'package:components/pages/users/bloc/bloc.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
 import 'package:flutter/material.dart';
