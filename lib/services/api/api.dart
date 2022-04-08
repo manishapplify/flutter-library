@@ -43,7 +43,7 @@ class Api {
     }
   }
 
-  final String _baseUrl = const String.fromEnvironment("baseUrl");
+  final String _baseUrl = const String.fromEnvironment('baseUrl');
   late final Dio dio;
 
   void addAuthorizationHeader(String authorization) {

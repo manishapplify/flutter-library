@@ -108,6 +108,8 @@ class User {
     }
   }
 
+  String get firebaseId => 'ID_' + id;
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{
       'id': this.id,
@@ -158,7 +160,7 @@ class User {
 
   Map<String, dynamic> toFirebaseMap() {
     final Map<String, dynamic> data = <String, dynamic>{
-      'user_id': 'ID_' + this.id,
+      'user_id': firebaseId,
     };
 
     if (fullName is String) {

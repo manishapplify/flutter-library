@@ -12,6 +12,7 @@ class S3ImageUpload {
     InterceptorsWrapper? interceptorsWrapper,
     List<Interceptor>? interceptors,
     required Api api,
+    required this.s3BaseUrl,
   }) : _api = api {
     _dio = Dio(
       baseOptions ??
@@ -24,8 +25,9 @@ class S3ImageUpload {
   }
 
   late final Dio _dio;
-  final String _baseUrl = const String.fromEnvironment("baseUrl");
+  final String _baseUrl = const String.fromEnvironment('baseUrl');
   late final Api _api;
+  final String s3BaseUrl;
 
   Future<String?> getS3ImageUrl({
     required String s3Directory,

@@ -49,7 +49,7 @@ Future<CompositionRoot> configureDependencies() async {
   final Api api = Api(
     baseOptions: BaseOptions(
       baseUrl: const String.fromEnvironment(
-        "baseUrl",
+        'baseUrl',
         defaultValue: 'https://api-lib.applifyapps.com',
       ),
       contentType: "application/json",
@@ -85,7 +85,7 @@ Future<CompositionRoot> configureDependencies() async {
   final S3ImageUpload s3imageUpload = S3ImageUpload(
     baseOptions: BaseOptions(
       baseUrl: const String.fromEnvironment(
-        "baseUrl",
+        'baseUrl',
         defaultValue: 'https://api-lib.applifyapps.com',
       ),
     ),
@@ -94,6 +94,10 @@ Future<CompositionRoot> configureDependencies() async {
       onRequest: _requestInterceptor,
       onResponse: _responseInterceptor,
       onError: _errorInterceptor,
+    ),
+    s3BaseUrl: const String.fromEnvironment(
+      's3BaseUrl',
+      defaultValue: 'https://applify-library.s3.ap-southeast-1.amazonaws.com/',
     ),
   );
   final ProfileRepository profileRepository = ProfileRepository(

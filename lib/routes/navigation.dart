@@ -221,6 +221,7 @@ class Navigation {
             create: (_) => UsersBloc(
               firebaseRealtimeDatabase: _firebaseRealtimeDatabase,
               authCubit: _authCubit,
+              imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
             ),
             child: const UsersPage(),
           ),
