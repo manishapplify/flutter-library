@@ -7,12 +7,12 @@ class FirebaseRealtimeDatabase {
     _database = FirebaseDatabase.instance;
   }
 
-  final String _userCollection = 'Users';
+  final String _userCollection = 'Users/';
   late final FirebaseDatabase _database;
 
   Future<void> addUser(User user) async {
     final DatabaseReference userReference =
-        _database.ref(_userCollection + '/ID_${user.id}');
+        _database.ref(_userCollection + user.firebaseId);
 
     await userReference.set(
       user.toFirebaseMap(),
@@ -21,9 +21,22 @@ class FirebaseRealtimeDatabase {
 
   Future<void> removeUser(User user) async {
     final DatabaseReference userReference =
-        _database.ref(_userCollection + '/ID_${user.id}');
+        _database.ref(_userCollection + user.firebaseId);
 
     await userReference.remove();
+  }
+
+  Future<FirebaseUser?> getFirebaseUser(User user) async {
+    final DatabaseReference userReference =
+        _database.ref(_userCollection + user.firebaseId);
+    final DatabaseEvent event = await userReference.once();
+
+    if (event.snapshot.value != null) {
+      return FirebaseUser.fromMap(
+          event.snapshot.value as Map<dynamic, dynamic>);
+    }
+
+    return null;
   }
 
   Future<List<FirebaseUser>> getUsers() async {
