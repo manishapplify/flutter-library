@@ -81,7 +81,46 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         ),
       );
       try {
-        await _authRepository.signInWithSocialId();
+        await _authRepository.signInWithGoogle();
+        emit(
+          state.copyWith(
+            formStatus: SubmissionSuccess(),
+          ),
+        );
+      } on DioError catch (e) {
+        late final AppException exception;
+
+        if (e.type == DioErrorType.other && e.error is AppException) {
+          exception = e.error;
+        } else {
+          exception = AppException.api400Exception();
+        }
+
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(
+              exception: exception,
+              message: exception.message,
+            ),
+          ),
+        );
+      } on Exception catch (_) {
+        emit(
+          state.copyWith(
+            formStatus: SubmissionFailed(exception: Exception('Failure')),
+          ),
+        );
+      }
+    });
+    on<FacebookSignInSummitted>(
+        (FacebookSignInSummitted event, Emitter<LoginState> emit) async {
+      emit(
+        state.copyWith(
+          formStatus: FormSubmitting(),
+        ),
+      );
+      try {
+        await _authRepository.signInWithFacebook();
         emit(
           state.copyWith(
             formStatus: SubmissionSuccess(),

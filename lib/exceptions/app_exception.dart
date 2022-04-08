@@ -15,6 +15,9 @@ class AppException implements Exception {
   factory AppException.googleSignInException() {
     return AppException(message: 'GoogleSigin failed');
   }
+  factory AppException.facebookSignInException(String? message) {
+    return AppException(message: message ?? 'FacebookSigin failed');
+  }
   factory AppException.passwordResetTokenAbsentException() {
     return AppException(message: 'No password reset token present');
   }

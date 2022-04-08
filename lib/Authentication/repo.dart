@@ -19,6 +19,7 @@ import 'package:components/services/firebase_realtime_database/firebase_realtime
 import 'package:components/services/persistence.dart';
 import 'package:components/utils/config.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthRepository {
@@ -69,10 +70,7 @@ class AuthRepository {
     _firebaseRealtimeDatabase.addUser(loginResponse.user);
   }
 
-  Future<void> signInWithSocialId() async {
-    if (_fcm.deviceToken == null) {
-      await _fcm.getToken();
-    }
+  Future<void> signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     final GoogleSignInAccount? googleSignInAccount =
@@ -80,22 +78,47 @@ class AuthRepository {
     if (googleSignInAccount != null) {
       final String socialId = googleSignInAccount.id;
       final String socialEmail = googleSignInAccount.email;
-      final SocialSigninRequest request = SocialSigninRequest(
-        platformType: _config.platform.name,
-        deviceToken: _fcm.deviceToken!,
-        loginType: 3,
-        socialId: socialId,
-        emailOrPhoneNumber: socialEmail,
-        countryCode: _persistence.fetchCountryCode(),
-      );
-      final Response<dynamic> response = await _api.socialLogin(request);
-      final SocialSigninResponse socialSigninResponse =
-          SocialSigninResponse.fromJson(response.data);
-      _authCubit.signupOrLogin(socialSigninResponse.user);
-      _firebaseRealtimeDatabase.addUser(socialSigninResponse.user);
+      await signInWithSocialId(
+          socialId: socialId, socialEmail: socialEmail, loginType: 3);
     } else {
       throw AppException.googleSignInException;
     }
+  }
+
+  Future<void> signInWithFacebook() async {
+    final LoginResult result = await FacebookAuth.instance.login();
+    if (result.status == LoginStatus.success) {
+      final Map<String, dynamic> requestData =
+          await FacebookAuth.i.getUserData(fields: "email");
+      final String socialId = requestData['id'];
+      final String socialEmail = requestData['email'];
+      await signInWithSocialId(
+          socialId: socialId, socialEmail: socialEmail, loginType: 2);
+    } else {
+      throw AppException.facebookSignInException(result.message);
+    }
+  }
+
+  Future<void> signInWithSocialId(
+      {required String? socialId,
+      required String? socialEmail,
+      required int? loginType}) async {
+    if (_fcm.deviceToken == null) {
+      await _fcm.getToken();
+    }
+    final SocialSigninRequest request = SocialSigninRequest(
+      platformType: _config.platform.name,
+      deviceToken: _fcm.deviceToken!,
+      loginType: loginType!,
+      socialId: socialId!,
+      emailOrPhoneNumber: socialEmail,
+      countryCode: _persistence.fetchCountryCode(),
+    );
+    final Response<dynamic> response = await _api.socialLogin(request);
+    final SocialSigninResponse socialSigninResponse =
+        SocialSigninResponse.fromJson(response.data);
+    _authCubit.signupOrLogin(socialSigninResponse.user);
+    _firebaseRealtimeDatabase.addUser(socialSigninResponse.user);
   }
 
   Future<void> signUp({

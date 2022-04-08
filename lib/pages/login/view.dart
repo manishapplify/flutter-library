@@ -6,7 +6,6 @@ import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class LoginPage extends BasePage {
   const LoginPage({Key? key}) : super(key: key);
@@ -226,18 +225,9 @@ class _LoginState extends BasePageState<LoginPage> {
                     ),
                   ),
                   InkWell(
-                    onTap: () async {
-                      final LoginResult result =
-                          await FacebookAuth.instance.login();
-                      if (result.status == LoginStatus.success) {
-                        final Map<String, dynamic> requestData =
-                            await FacebookAuth.i.getUserData(fields: "email");
-                        print(requestData);
-                      } else {
-                        print(result.status);
-                        print(result.message);
-                      }
-                    },
+                    onTap: () => loginBloc.add(
+                      FacebookSignInSummitted(),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10.0),

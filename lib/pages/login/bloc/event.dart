@@ -15,6 +15,7 @@ class LoginPasswordChanged extends LoginEvent {
 }
 
 class SocialSignInSummitted extends LoginEvent {}
+class FacebookSignInSummitted extends LoginEvent {}
 
 class LoginSubmitted extends LoginEvent {}
 
