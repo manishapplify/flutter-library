@@ -1,4 +1,5 @@
 import 'package:components/cubits/models/user.dart';
+import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -8,6 +9,7 @@ class FirebaseRealtimeDatabase {
   }
 
   final String _userCollection = 'Users/';
+  final String _chatsCollection = 'Chats/';
   late final FirebaseDatabase _database;
 
   Future<void> addUser(User user) async {
@@ -56,5 +58,22 @@ class FirebaseRealtimeDatabase {
     }
 
     return users;
+  }
+
+  Future<List<FirebaseChat>> getChats(List<String> chatIds) async {
+    final List<FirebaseChat> chats = <FirebaseChat>[];
+
+    for (final String chatId in chatIds) {
+      final DatabaseReference chatReference =
+          _database.ref(_chatsCollection + chatId);
+      final DatabaseEvent event = await chatReference.once();
+
+      if (event.snapshot.value != null) {
+        final Map<dynamic, dynamic> map =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        chats.add(FirebaseChat.fromMap(map));
+      }
+    }
+    return chats;
   }
 }

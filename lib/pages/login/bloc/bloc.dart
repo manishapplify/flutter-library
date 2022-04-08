@@ -1,6 +1,5 @@
 import 'package:components/Authentication/repo.dart';
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/api/api.dart';
 import 'package:dio/dio.dart';
@@ -14,7 +13,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({
     required Api api,
     required AuthRepository authRepository,
-    required AuthCubit authCubit,
   })  : _authRepository = authRepository,
         super(LoginState()) {
     on<LoginEmailChanged>((LoginEmailChanged event, Emitter<LoginState> emit) {

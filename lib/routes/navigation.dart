@@ -4,6 +4,8 @@ import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/pages/change_password/bloc/bloc.dart';
 import 'package:components/pages/change_password/view.dart';
+import 'package:components/pages/chat/bloc/bloc.dart';
+import 'package:components/pages/chat/chats.dart';
 import 'package:components/pages/feedback/bloc/bloc.dart';
 import 'package:components/pages/feedback/view.dart';
 import 'package:components/pages/forgot_password/bloc/bloc.dart';
@@ -104,7 +106,6 @@ class Navigation {
             create: (BuildContext context) => LoginBloc(
               api: _api,
               authRepository: _authRepository,
-              authCubit: _authCubit,
             ),
             child: const LoginPage(),
           ),
@@ -227,6 +228,18 @@ class Navigation {
             child: const UsersPage(),
           ),
         );
+      case Routes.chats:
+        return MaterialPageRoute<ChatsPage>(
+          settings: settings,
+          builder: (_) => BlocProvider<ChatBloc>(
+            create: (_) => ChatBloc(
+              authCubit: _authCubit,
+              firebaseRealtimeDatabase: _firebaseRealtimeDatabase,
+              imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
+            ),
+            child: const ChatsPage(),
+          ),
+        );
 
       case Routes.feedbackScreens:
         return MaterialPageRoute<FeedbackScreenTypes>(
@@ -258,7 +271,6 @@ class Navigation {
         create: (BuildContext context) => LoginBloc(
           api: _api,
           authRepository: _authRepository,
-          authCubit: _authCubit,
         ),
         child: const LoginPage(),
       ),
@@ -301,19 +313,20 @@ class Navigation {
 }
 
 class Routes {
-  static const String splash = "/";
-  static const String login = "/login";
-  static const String signup = "/signup";
-  static const String forgotPassword = "/forgotPassword";
-  static const String otp = "/otp";
-  static const String resetPassword = "/resetPassword";
-  static const String profile = "/profile";
-  static const String home = "/home";
-  static const String feedback = "/feedback";
-  static const String reportBug = "/reportBug";
-  static const String settings = "/settings";
-  static const String changePassword = "/changePassword";
-  static const String users = "/users";
+  static const String splash = '/';
+  static const String login = '/login';
+  static const String signup = '/signup';
+  static const String forgotPassword = '/forgotPassword';
+  static const String otp = '/otp';
+  static const String resetPassword = '/resetPassword';
+  static const String profile = '/profile';
+  static const String home = '/home';
+  static const String feedback = '/feedback';
+  static const String reportBug = '/reportBug';
+  static const String settings = '/settings';
+  static const String changePassword = '/changePassword';
+  static const String users = '/users';
+  static const String chats = '/chats';
 
   static const String loginOne = "/loginScreenOne";
   static const String feedbackScreens = "/feedbackScreens";
