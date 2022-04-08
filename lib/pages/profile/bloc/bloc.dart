@@ -19,6 +19,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc({
     required Screen screenType,
     required ProfileRepository profileRepository,
+    required this.imageBaseUrl,
   })  : _profileRepository = profileRepository,
         super(ProfileState(screenType: screenType)) {
     on<ProfileReferralCodeChanged>(_profileReferralCodeChangedHandler);
@@ -40,6 +41,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   final ProfileRepository _profileRepository;
+  final String imageBaseUrl;
 
   void _profileReferralCodeChangedHandler(
       ProfileReferralCodeChanged event, Emitter<ProfileState> emit) {
@@ -132,7 +134,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     final User user = event.user;
     emit(
       state.copyWith(
-          profilePicUrlPath: event.user.profilePic,
+          profilePicUrlPath: (event.user.profilePic is String)
+              ? (imageBaseUrl + event.user.profilePic!)
+              : null,
           firstname: user.firstName,
           lastname: user.lastName,
           address: user.address,

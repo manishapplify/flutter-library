@@ -65,7 +65,11 @@ class _HomeState extends BasePageState<HomePage> {
             children: <Widget>[
               DrawerHeader(
                 child: ImageContainer(
-                  imageUrl: user.profilePic,
+                  // TODO: Refactor this while implementing HomeBloc.
+                  imageUrl: (user.profilePic is String)
+                      ? 'https://applify-library.s3.ap-southeast-1.amazonaws.com/users/' +
+                          user.profilePic!
+                      : null,
                 ),
                 decoration: BoxDecoration(
                   color: colorScheme.primary,

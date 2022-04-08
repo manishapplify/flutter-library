@@ -161,6 +161,7 @@ class Navigation {
             create: (_) => ProfileBloc(
               screenType: settings.arguments as Screen,
               profileRepository: _profileRepository,
+              imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
             ),
             child: const ProfilePage(),
           ),

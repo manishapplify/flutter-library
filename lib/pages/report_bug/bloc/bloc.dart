@@ -67,7 +67,7 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
     emit(state.copyWith(formStatus: FormSubmitting()));
 
     try {
-      final String? screenShotUrl = await _s3imageUpload.getS3ImageUrl(
+      final String? screenShotUrl = await _s3imageUpload.uploadImage(
         s3Directory: _authCubit.state.user!.s3Folders.users,
         profilePicFile: state.screenShot,
       );

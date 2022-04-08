@@ -29,7 +29,8 @@ class S3ImageUpload {
   late final Api _api;
   final String s3BaseUrl;
 
-  Future<String?> getS3ImageUrl({
+  /// Returns the filename of the image uploaded to [s3Directory].
+  Future<String?> uploadImage({
     required String s3Directory,
     File? profilePicFile,
   }) async {
@@ -57,7 +58,7 @@ class S3ImageUpload {
       throw AppException.s3UrlParseException;
     }
 
-    return '${uri.scheme}://${uri.authority}${uri.path}';
+    return uri.pathSegments.last; 
   }
 
   Future<Response<dynamic>> _uploadImageToSignedURL({

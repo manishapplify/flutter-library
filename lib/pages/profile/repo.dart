@@ -65,7 +65,7 @@ class ProfileRepository {
       phoneNumber: phoneNumber,
       email: email,
       gender: gender,
-      profilePic: await _s3imageUpload.getS3ImageUrl(
+      profilePic: await _s3imageUpload.uploadImage(
         s3Directory: _authCubit.state.user!.s3Folders.users,
         profilePicFile: profilePicFile,
       ),
@@ -113,7 +113,7 @@ class ProfileRepository {
       phoneNumber: phoneNumber,
       email: email,
       gender: gender,
-      profilePic: await _s3imageUpload.getS3ImageUrl(
+      profilePic: await _s3imageUpload.uploadImage(
         s3Directory: _authCubit.state.user!.s3Folders.users,
         profilePicFile: profilePicFile,
       ),
