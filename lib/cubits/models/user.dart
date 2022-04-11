@@ -167,8 +167,7 @@ class User {
       data['user_name'] = fullName;
     }
     if (profilePic is String) {
-      final String fileName = profilePic!.split('/').last;
-      data['user_pic'] = fileName;
+      data['user_pic'] = profilePic;
     }
     return data;
   }
