@@ -1,9 +1,11 @@
 import 'package:components/Authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/cubits/models/user.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/users/widgets/user_tile.dart';
 import 'package:components/pages/users/bloc/bloc.dart';
+import 'package:components/routes/navigation.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +19,7 @@ class UsersPage extends BasePage {
 
 class _UsersState extends BasePageState<UsersPage> {
   late final UsersBloc usersBloc;
-  late final AuthCubit authCubit;
+  late final User user;
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) => AppBar(
@@ -27,10 +29,12 @@ class _UsersState extends BasePageState<UsersPage> {
   @override
   void initState() {
     usersBloc = BlocProvider.of(context)..add(GetUsersEvent());
-    authCubit = BlocProvider.of(context);
+    final AuthCubit authCubit = BlocProvider.of(context);
     if (!authCubit.state.isAuthorized) {
       throw AppException.authenticationException;
     }
+    user = authCubit.state.user!;
+
     super.initState();
   }
 
@@ -38,7 +42,21 @@ class _UsersState extends BasePageState<UsersPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<UsersBloc, UsersState>(
       builder: (BuildContext context, UsersState state) {
-        // TODO: Redirect to chat screen when chatStatus is SubmissionSuccess.
+        if (state.chatStatus is SubmissionSuccess) {
+          // TODO: Redirect to chat screen when chatStatus is SubmissionSuccess.
+          // Future<void>.microtask(() => navigator.popAndPushNamed(Routes.));
+          usersBloc.add(ResetChatState());
+        } else if (state.chatStatus is SubmissionFailed) {
+          final SubmissionFailed failure = state.chatStatus as SubmissionFailed;
+          Future<void>.microtask(
+            () => showSnackBar(
+              SnackBar(
+                content: Text(failure.message ?? 'Failure'),
+              ),
+            ),
+          );
+          usersBloc.add(ResetChatState());
+        }
 
         final List<FirebaseUser> users = state.users;
         return Stack(
@@ -54,12 +72,13 @@ class _UsersState extends BasePageState<UsersPage> {
                   user: otherUser,
                   imageBaseUrl: usersBloc.imageBaseUrl,
                   onMessageIconTap: () {
-                    final List<String> userIds = <String>[
-                      authCubit.state.user!.firebaseId,
-                      otherUser.id,
-                    ]..sort();
                     usersBloc.add(
-                      MessageIconTapEvent(chatID: userIds.join(',')),
+                      MessageIconTapEvent(
+                        firebaseUserA: FirebaseUser.fromMap(
+                          user.toFirebaseMap(),
+                        ),
+                        firebaseUserB: otherUser,
+                      ),
                     );
                   },
                 );
@@ -70,8 +89,9 @@ class _UsersState extends BasePageState<UsersPage> {
               child: const Center(
                 child: CircularProgressIndicator(),
               ),
-              visible: state.blocStatus is FormSubmitting,
-            )
+              visible: state.blocStatus is FormSubmitting ||
+                  state.chatStatus is FormSubmitting,
+            ),
           ],
         );
       },

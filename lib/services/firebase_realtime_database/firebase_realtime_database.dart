@@ -76,4 +76,59 @@ class FirebaseRealtimeDatabase {
     }
     return chats;
   }
+
+  /// Creates a new chat between [firebaseUserA] and [firebaseUserB], if not
+  /// present already.
+  Future<FirebaseChat> addChatIfNotExists({
+    required FirebaseUser firebaseUserA,
+    required FirebaseUser firebaseUserB,
+  }) async {
+    // Sort users.
+    if (firebaseUserA.id.compareTo(firebaseUserB.id) > 0) {
+      final FirebaseUser temp = firebaseUserA;
+      firebaseUserA = firebaseUserB;
+      firebaseUserB = temp;
+    }
+
+    final String chaId = '${firebaseUserA.id},${firebaseUserB.id}';
+
+    final DatabaseReference chatReference =
+        _database.ref(_chatsCollection + chaId);
+    final DatabaseEvent event = await chatReference.once();
+
+    if (event.snapshot.exists) {
+      final FirebaseChat chat =
+          FirebaseChat.fromMap(event.snapshot.value as Map<dynamic, dynamic>);
+      return chat;
+    } else {
+      Map<String, String>? participantProfileImages;
+      if (firebaseUserA.pic != null && firebaseUserB.pic != null) {
+        participantProfileImages = <String, String>{};
+        participantProfileImages[firebaseUserA.id] = firebaseUserA.pic!;
+        participantProfileImages[firebaseUserB.id] = firebaseUserB.pic!;
+      } else if (firebaseUserA.pic != null) {
+        participantProfileImages = <String, String>{};
+        participantProfileImages[firebaseUserA.id] = firebaseUserA.pic!;
+      } else if (firebaseUserB.pic != null) {
+        participantProfileImages = <String, String>{};
+        participantProfileImages[firebaseUserB.id] = firebaseUserB.pic!;
+      }
+
+      final FirebaseChat chat = FirebaseChat(
+        id: chaId,
+        participantIds: <String>{firebaseUserA.id, firebaseUserB.id},
+        participantNames: <String, String>{
+          firebaseUserA.id: firebaseUserA.name ?? 'anonymous',
+          firebaseUserB.id: firebaseUserB.name ?? 'anonymous',
+        },
+        participantProfileImages: participantProfileImages,
+      );
+
+      await chatReference.set(
+        chat.toFirebaseMap(),
+      );
+
+      return chat;
+    }
+  }
 }
