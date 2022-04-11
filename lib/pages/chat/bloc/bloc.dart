@@ -19,6 +19,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
         super(const ChatState()) {
     on<GetChatsEvent>(_getChatsEventHandler);
+    on<RemoveChatEvent>(_removeChatEventHandler);
   }
 
   final String imageBaseUrl;
@@ -40,5 +41,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ),
       );
     }
+  }
+
+  void _removeChatEventHandler(
+      RemoveChatEvent event, Emitter<ChatState> emit) async {
+    await _firebaseRealtimeDatabase.removeChat(
+      chat: event.chat,
+    );
   }
 }

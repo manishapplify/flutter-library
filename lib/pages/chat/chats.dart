@@ -27,7 +27,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
 
   @override
   void initState() {
-   final AuthCubit authCubit = BlocProvider.of(context);
+    final AuthCubit authCubit = BlocProvider.of(context);
     if (!authCubit.state.isAuthorized) {
       throw AppException.authenticationException;
     }
@@ -59,7 +59,43 @@ class _ChatsState extends BasePageState<ChatsPage> {
                     // TODO: Redirect to chat page.
                   },
                   onTileLongPress: () {
-                    // TODO: Option to delete the chat.
+                    showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          title: const Text('Delete chat'),
+                          content: const Text(
+                              'Are you sure? The chat will be deleted for both the users.'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                chatBloc.add(RemoveChatEvent(chat));
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                'Okay',
+                                style: TextStyle(
+                                  color: Colors.blueAccent,
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Colors.blueAccent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 );
               },

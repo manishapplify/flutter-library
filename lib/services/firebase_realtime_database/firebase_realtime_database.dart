@@ -163,4 +163,32 @@ class FirebaseRealtimeDatabase {
       return chat;
     }
   }
+
+  Future<void> removeChat({
+    FirebaseChat? chat,
+    String? chatId,
+  }) async {
+    final String _chatId = (chat?.id ?? chatId!);
+
+    final DatabaseReference chatReference =
+        _database.ref(_chatsCollection + _chatId);
+
+    await chatReference.remove();
+
+    final List<String> userIds = _chatId.split(',');
+
+    for (String userId in userIds) {
+      final FirebaseUser? user = await getFirebaseUser(firebaseId: userId);
+      if (user is FirebaseUser &&
+          user.chatIds is List<String> &&
+          user.chatIds!.isNotEmpty &&
+          user.chatIds!.contains(_chatId)) {
+
+        final List<String> updatedChatList = user.chatIds!..remove(_chatId);
+        await updateUser(user.copyWith(
+          chatIds: updatedChatList,
+        ));
+      }
+    }
+  }
 }

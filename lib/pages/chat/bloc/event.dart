@@ -4,3 +4,9 @@ part of 'bloc.dart';
 abstract class ChatEvent {}
 
 class GetChatsEvent extends ChatEvent {}
+
+class RemoveChatEvent extends ChatEvent {
+  RemoveChatEvent(this.chat);
+
+  final FirebaseChat chat;
+}
