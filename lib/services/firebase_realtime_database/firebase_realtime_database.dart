@@ -21,16 +21,29 @@ class FirebaseRealtimeDatabase {
     );
   }
 
-  Future<void> removeUser(User user) async {
+  Future<void> removeUser({
+    User? user,
+    String? firebaseId,
+  }) async {
     final DatabaseReference userReference =
-        _database.ref(_userCollection + user.firebaseId);
+        _database.ref(_userCollection + (user?.firebaseId ?? firebaseId!));
 
     await userReference.remove();
   }
 
-  Future<FirebaseUser?> getFirebaseUser(User user) async {
+  Future<void> updateUser(FirebaseUser firebaseUser) async {
     final DatabaseReference userReference =
-        _database.ref(_userCollection + user.firebaseId);
+        _database.ref(_userCollection + firebaseUser.id);
+
+    await userReference.set(firebaseUser.toFirebaseMap());
+  }
+
+  Future<FirebaseUser?> getFirebaseUser({
+    User? user,
+    String? firebaseId,
+  }) async {
+    final DatabaseReference userReference =
+        _database.ref(_userCollection + (user?.firebaseId ?? firebaseId!));
     final DatabaseEvent event = await userReference.once();
 
     if (event.snapshot.value != null) {
@@ -124,8 +137,27 @@ class FirebaseRealtimeDatabase {
         participantProfileImages: participantProfileImages,
       );
 
+      // Create new chat.
       await chatReference.set(
         chat.toFirebaseMap(),
+      );
+
+      // Update users.
+      await updateUser(
+        firebaseUserA.copyWith(
+          chatIds: <String>[
+            ...firebaseUserA.chatIds ?? <String>[],
+            chat.id,
+          ],
+        ),
+      );
+      await updateUser(
+        firebaseUserB.copyWith(
+          chatIds: <String>[
+            ...firebaseUserB.chatIds ?? <String>[],
+            chat.id,
+          ],
+        ),
       );
 
       return chat;

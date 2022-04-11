@@ -5,7 +5,7 @@ class FirebaseUser {
     this.pic,
     this.chatIds,
   });
-  
+
   factory FirebaseUser.fromMap(Map<dynamic, dynamic> map) {
     final List<String>? chatIds = map['chat_dialog_ids'] != null
         ? (map['chat_dialog_ids'] as Map<dynamic, dynamic>)
@@ -29,8 +29,44 @@ class FirebaseUser {
   final String? pic;
   final List<String>? chatIds;
 
+  Map<String, dynamic> toFirebaseMap() {
+    final Map<String, dynamic> data = <String, dynamic>{
+      'user_id': id,
+    };
+
+    if (name is String) {
+      data['user_name'] = name;
+    }
+    if (pic is String) {
+      data['user_pic'] = pic;
+    }
+    if (chatIds is List<String> && chatIds!.isNotEmpty) {
+      final Map<String, String> map = <String, String>{};
+      for (String chatId in chatIds!) {
+        map[chatId] = chatId;
+      }
+
+      data['chat_dialog_ids'] = map;
+    }
+    return data;
+  }
+
   @override
   String toString() {
     return 'FirebaseUser(id: $id, name: $name, pic: $pic, chatIds: $chatIds)';
+  }
+
+  FirebaseUser copyWith({
+    String? id,
+    String? name,
+    String? pic,
+    List<String>? chatIds,
+  }) {
+    return FirebaseUser(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      pic: pic ?? this.pic,
+      chatIds: chatIds ?? this.chatIds,
+    );
   }
 }

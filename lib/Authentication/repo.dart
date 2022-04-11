@@ -229,7 +229,7 @@ class AuthRepository {
     }
 
     await _api.deleteAccount();
-    _firebaseRealtimeDatabase.removeUser(_authCubit.state.user!);
+    _firebaseRealtimeDatabase.removeUser(user: _authCubit.state.user);
     _authCubit.logoutOrDeleteAccount();
   }
 

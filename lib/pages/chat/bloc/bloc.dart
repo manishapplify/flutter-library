@@ -27,19 +27,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _getChatsEventHandler(
       GetChatsEvent event, Emitter<ChatState> emit) async {
-    final FirebaseUser? firebaseUser =
-        await _firebaseRealtimeDatabase.getFirebaseUser(
-      User(
-        id: '27ee8b8c-bdc7-4a46-86ba-62463024fe11',
-        registrationStep: 2,
-        notificationEnabled: 2,
-        isPhoneVerified: 1,
-        isEmailVerified: 1,
-        createdAt: 'createdAt',
-        accessToken: 'accessToken',
-        s3Folders: S3Folders(admin: '', users: ''),
-      ),
-    );
+    final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
+        .getFirebaseUser(user: _authCubit.state.user);
 
     if (firebaseUser is FirebaseUser &&
         firebaseUser.chatIds is List<String> &&
