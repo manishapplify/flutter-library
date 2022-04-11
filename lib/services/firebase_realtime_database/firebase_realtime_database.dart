@@ -90,7 +90,7 @@ class FirebaseRealtimeDatabase {
     return chats;
   }
 
-  /// Creates a new chat between [firebaseUserA] and [firebaseUserB], if not
+  /// Creates a new chat between [_firebaseUserA] and [_firebaseUserB], if not
   /// present already.
   Future<FirebaseChat> addChatIfNotExists({
     required FirebaseUser firebaseUserA,
@@ -114,25 +114,30 @@ class FirebaseRealtimeDatabase {
           FirebaseChat.fromMap(event.snapshot.value as Map<dynamic, dynamic>);
       return chat;
     } else {
+      final FirebaseUser _firebaseUserA =
+          (await getFirebaseUser(firebaseId: firebaseUserA.id))!;
+      final FirebaseUser _firebaseUserB =
+          (await getFirebaseUser(firebaseId: firebaseUserB.id))!;
+
       Map<String, String>? participantProfileImages;
-      if (firebaseUserA.pic != null && firebaseUserB.pic != null) {
+      if (_firebaseUserA.pic != null && _firebaseUserB.pic != null) {
         participantProfileImages = <String, String>{};
-        participantProfileImages[firebaseUserA.id] = firebaseUserA.pic!;
-        participantProfileImages[firebaseUserB.id] = firebaseUserB.pic!;
-      } else if (firebaseUserA.pic != null) {
+        participantProfileImages[_firebaseUserA.id] = _firebaseUserA.pic!;
+        participantProfileImages[_firebaseUserB.id] = _firebaseUserB.pic!;
+      } else if (_firebaseUserA.pic != null) {
         participantProfileImages = <String, String>{};
-        participantProfileImages[firebaseUserA.id] = firebaseUserA.pic!;
-      } else if (firebaseUserB.pic != null) {
+        participantProfileImages[_firebaseUserA.id] = _firebaseUserA.pic!;
+      } else if (_firebaseUserB.pic != null) {
         participantProfileImages = <String, String>{};
-        participantProfileImages[firebaseUserB.id] = firebaseUserB.pic!;
+        participantProfileImages[_firebaseUserB.id] = _firebaseUserB.pic!;
       }
 
       final FirebaseChat chat = FirebaseChat(
         id: chaId,
-        participantIds: <String>{firebaseUserA.id, firebaseUserB.id},
+        participantIds: <String>{_firebaseUserA.id, _firebaseUserB.id},
         participantNames: <String, String>{
-          firebaseUserA.id: firebaseUserA.name ?? 'anonymous',
-          firebaseUserB.id: firebaseUserB.name ?? 'anonymous',
+          _firebaseUserA.id: _firebaseUserA.name ?? 'anonymous',
+          _firebaseUserB.id: _firebaseUserB.name ?? 'anonymous',
         },
         participantProfileImages: participantProfileImages,
       );
@@ -144,17 +149,17 @@ class FirebaseRealtimeDatabase {
 
       // Update users.
       await updateUser(
-        firebaseUserA.copyWith(
+        _firebaseUserA.copyWith(
           chatIds: <String>[
-            ...firebaseUserA.chatIds ?? <String>[],
+            ..._firebaseUserA.chatIds ?? <String>[],
             chat.id,
           ],
         ),
       );
       await updateUser(
-        firebaseUserB.copyWith(
+        _firebaseUserB.copyWith(
           chatIds: <String>[
-            ...firebaseUserB.chatIds ?? <String>[],
+            ..._firebaseUserB.chatIds ?? <String>[],
             chat.id,
           ],
         ),
@@ -183,7 +188,6 @@ class FirebaseRealtimeDatabase {
           user.chatIds is List<String> &&
           user.chatIds!.isNotEmpty &&
           user.chatIds!.contains(_chatId)) {
-
         final List<String> updatedChatList = user.chatIds!..remove(_chatId);
         await updateUser(user.copyWith(
           chatIds: updatedChatList,
