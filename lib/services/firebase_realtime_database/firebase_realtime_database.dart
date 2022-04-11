@@ -90,7 +90,7 @@ class FirebaseRealtimeDatabase {
     return chats;
   }
 
-  /// Creates a new chat between [_firebaseUserA] and [_firebaseUserB], if not
+  /// Creates a new chat between [firebaseUserA] and [firebaseUserB], if not
   /// present already.
   Future<FirebaseChat> addChatIfNotExists({
     required FirebaseUser firebaseUserA,
