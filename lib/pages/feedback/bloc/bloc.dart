@@ -1,4 +1,5 @@
 import 'package:components/Authentication/form_submission.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/feedback/models/request.dart';
 import 'package:components/services/api/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,6 +38,9 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
 
         await _api.reportFeedback(request);
         emit(state.copyWith(formStatus: SubmissionSuccess()));
+      } on AppException catch (e) {
+        emit(state.copyWith(
+            formStatus: SubmissionFailed(exception: e, message: e.message)));
       } on Exception catch (e) {
         emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
       }

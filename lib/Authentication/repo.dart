@@ -78,7 +78,7 @@ class AuthRepository {
     if (googleSignInAccount != null) {
       final String socialId = googleSignInAccount.id;
       final String socialEmail = googleSignInAccount.email;
-      await signInWithSocialId(
+      await _signInWithSocialId(
           socialId: socialId, socialEmail: socialEmail, loginType: 3);
     } else {
       throw AppException.googleSignInException;
@@ -92,14 +92,14 @@ class AuthRepository {
           await FacebookAuth.i.getUserData(fields: "email");
       final String socialId = requestData['id'];
       final String socialEmail = requestData['email'];
-      await signInWithSocialId(
+      await _signInWithSocialId(
           socialId: socialId, socialEmail: socialEmail, loginType: 2);
     } else {
       throw AppException.facebookSignInException(result.message);
     }
   }
 
-  Future<void> signInWithSocialId(
+  Future<void> _signInWithSocialId(
       {required String? socialId,
       required String? socialEmail,
       required int? loginType}) async {

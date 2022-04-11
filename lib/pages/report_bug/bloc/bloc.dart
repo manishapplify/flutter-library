@@ -84,6 +84,9 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
 
       await _api.reportBug(request);
       emit(state.copyWith(formStatus: SubmissionSuccess()));
+    } on AppException catch (e) {
+      emit(state.copyWith(
+          formStatus: SubmissionFailed(exception: e, message: e.message)));
     } on Exception catch (e) {
       emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
     }

@@ -34,6 +34,13 @@ class SettingsCubit extends Cubit<SettingsState> {
           message: exception.message,
         ),
       );
+    } on AppException catch (e) {
+      emit(
+        FailedLoggingOut(
+          exception: e,
+          message: e.message,
+        ),
+      );
     } on Exception catch (e) {
       emit(FailedLoggingOut(exception: e));
     }
@@ -57,6 +64,13 @@ class SettingsCubit extends Cubit<SettingsState> {
         FailedDeletingAccount(
           exception: exception,
           message: exception.message,
+        ),
+      );
+    } on AppException catch (e) {
+      emit(
+        FailedDeletingAccount(
+          exception: e,
+          message: e.message,
         ),
       );
     } on Exception catch (e) {

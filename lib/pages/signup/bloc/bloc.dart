@@ -90,6 +90,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             ),
           ),
         );
+      } on AppException catch (e) {
+        emit(state.copyWith(
+            formStatus: SubmissionFailed(exception: e, message: e.message)));
       } on Exception catch (_) {
         emit(
           state.copyWith(

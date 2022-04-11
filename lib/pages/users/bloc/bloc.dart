@@ -44,6 +44,9 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         users: users,
         blocStatus: SubmissionSuccess(),
       ));
+    } on AppException catch (e) {
+      emit(state.copyWith(
+          blocStatus: SubmissionFailed(exception: e, message: e.message)));
     } on Exception catch (e) {
       emit(state.copyWith(
           blocStatus: SubmissionFailed(
@@ -62,6 +65,9 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       emit(state.copyWith(
         chatStatus: SubmissionSuccess(),
       ));
+    } on AppException catch (e) {
+      emit(state.copyWith(
+          blocStatus: SubmissionFailed(exception: e, message: e.message)));
     } on Exception catch (e) {
       emit(state.copyWith(
           chatStatus: SubmissionFailed(
