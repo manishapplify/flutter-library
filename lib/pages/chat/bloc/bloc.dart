@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:components/authentication/form_submission.dart';
 import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message.dart';
@@ -87,10 +88,40 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(state.copyWith(message: ''));
   }
 
-  void _sendTextEventHandler(SendTextEvent event, Emitter<ChatState> emit) {
+  void _sendTextEventHandler(
+      SendTextEvent event, Emitter<ChatState> emit) async {
+    emit(state.copyWith(blocStatus: FormSubmitting()));
+
+    try {
+      if (!_authCubit.state.isAuthorized) {
+        throw AppException.authenticationException;
+      }
+
+      final FirebaseMessage message =
+          await _firebaseRealtimeDatabase.sendMessage(
+        textMessage: state.message,
+        chatId: state.currentChat!.id,
+        senderId: _authCubit.state.user!.firebaseId,
+      );
+
+      emit(
+        state.copyWith(
+          messages: state.messages..add(message),
+          blocStatus: SubmissionSuccess(),
+        ),
+      );
+    } on AppException catch (e) {
+      emit(state.copyWith(
+          blocStatus: SubmissionFailed(exception: e, message: e.message)));
+    } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          blocStatus: SubmissionFailed(exception: Exception('Failure')),
+        ),
+      );
+    }
+
     add(ClearTextMessageEvent());
-    // TODO: Implement handler
-    throw UnimplementedError();
   }
 
   void _sendImageEventHandler(SendImageEvent event, Emitter<ChatState> emit) {

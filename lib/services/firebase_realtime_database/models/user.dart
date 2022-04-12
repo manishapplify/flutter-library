@@ -29,7 +29,7 @@ class FirebaseUser {
   final String? pic;
   final Set<String>? chatIds;
 
-  Map<String, dynamic> toFirebaseMap() {
+  Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = <String, dynamic>{
       'user_id': id,
     };

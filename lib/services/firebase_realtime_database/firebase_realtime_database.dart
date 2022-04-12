@@ -1,4 +1,5 @@
 import 'package:components/cubits/models/user.dart';
+import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
@@ -12,6 +13,7 @@ class FirebaseRealtimeDatabase {
   final String _userCollection = 'Users/';
   final String _chatsCollection = 'Chats/';
   final String _messagesCollection = 'Messages/';
+  final String _notificationsCollection = 'Notifications/';
   late final FirebaseDatabase _database;
 
   Future<void> addUser(User user) async {
@@ -37,7 +39,7 @@ class FirebaseRealtimeDatabase {
     final DatabaseReference userReference =
         _database.ref(_userCollection + firebaseUser.id);
 
-    await userReference.set(firebaseUser.toFirebaseMap());
+    await userReference.set(firebaseUser.toMap());
   }
 
   Future<FirebaseUser?> getFirebaseUser({
@@ -105,10 +107,10 @@ class FirebaseRealtimeDatabase {
       firebaseUserB = temp;
     }
 
-    final String chaId = '${firebaseUserA.id},${firebaseUserB.id}';
+    final String chatId = '${firebaseUserA.id},${firebaseUserB.id}';
 
     final DatabaseReference chatReference =
-        _database.ref(_chatsCollection + chaId);
+        _database.ref(_chatsCollection + chatId);
     final DatabaseEvent event = await chatReference.once();
 
     if (event.snapshot.exists) {
@@ -135,7 +137,7 @@ class FirebaseRealtimeDatabase {
       }
 
       final FirebaseChat chat = FirebaseChat(
-        id: chaId,
+        id: chatId,
         participantIds: <String>{_firebaseUserA.id, _firebaseUserB.id},
         participantNames: <String, String>{
           _firebaseUserA.id: _firebaseUserA.name ?? 'anonymous',
@@ -146,7 +148,7 @@ class FirebaseRealtimeDatabase {
 
       // Create new chat.
       await chatReference.set(
-        chat.toFirebaseMap(),
+        chat.toMap(),
       );
 
       // Update users.
@@ -216,5 +218,77 @@ class FirebaseRealtimeDatabase {
     }
 
     return messages;
+  }
+
+  Future<FirebaseMessage> sendMessage({
+    required String textMessage,
+    required String chatId,
+    required String senderId,
+  }) async {
+    final DatabaseReference messageReference =
+        _database.ref(_messagesCollection + chatId).push();
+    final String? messageId = messageReference.key;
+    if (messageId is String) {
+      final DateTime dateTime = DateTime.now().toUtc();
+      final String receiverId =
+          chatId.split(',').firstWhere((String id) => id != senderId);
+
+      final FirebaseMessage message = FirebaseMessage(
+        message: textMessage,
+        chatDialogId: chatId,
+        messageId: messageId,
+        messageTime: dateTime,
+        firebaseMessageTime: dateTime,
+        messageReadStatus: receiverId,
+        messageType: 1,
+        receiverId: receiverId,
+        senderId: senderId,
+      );
+
+      // Update message reference.
+      await messageReference.set(message.toMap());
+
+      // Update corresponding chat.
+      final FirebaseChat chat = (await getChats(<String>{chatId})).first;
+      await _updateChatOnMessageSend(
+        chat: chat,
+        message: message,
+      );
+
+      // Update notifications collection.
+      await _updateNotificationsCollectionOnMessageSend(message);
+
+      return message;
+    } else {
+      throw AppException.firebaseCouldNotGenerateKey();
+    }
+  }
+
+  Future<void> _updateChatOnMessageSend({
+    required FirebaseChat chat,
+    required FirebaseMessage message,
+  }) async {
+    final DatabaseReference chatReference =
+        _database.ref(_chatsCollection + chat.id);
+
+    final FirebaseChat latestChat = chat.copyWith(
+      lastMessage: message.message,
+      lastMessageId: message.messageId,
+      lastMessageSenderId: message.senderId,
+      lastMessageTime: message.messageTime,
+      lastMessageType: message.messageType,
+    );
+
+    await chatReference.set(
+      latestChat.toMap(),
+    );
+  }
+
+  Future<void> _updateNotificationsCollectionOnMessageSend(
+      FirebaseMessage message) async {
+    final DatabaseReference notificationsReference =
+        _database.ref(_notificationsCollection + message.messageId);
+
+    await notificationsReference.set(message.toMap());
   }
 }

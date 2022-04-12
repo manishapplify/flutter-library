@@ -27,6 +27,8 @@ class AppException implements Exception {
   factory AppException.api400Exception({String? message}) {
     return AppException(message: message ?? 'Api request failed');
   }
+  factory AppException.firebaseCouldNotGenerateKey() =>
+      AppException(message: 'Firebase could not generate unique key');
 
   final String message;
 }

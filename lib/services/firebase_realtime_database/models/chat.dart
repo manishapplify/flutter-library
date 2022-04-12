@@ -43,7 +43,7 @@ class FirebaseChat {
   final Map<String, String> participantNames;
   final Map<String, String>? participantProfileImages;
 
-  Map<String, dynamic> toFirebaseMap() {
+  Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = <String, dynamic>{
       'chat_dialog_id': id,
       'participant_ids': participantIds.join(','),
