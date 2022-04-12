@@ -42,7 +42,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         .getFirebaseUser(user: _authCubit.state.user);
 
     if (firebaseUser is FirebaseUser &&
-        firebaseUser.chatIds is List<String> &&
+        firebaseUser.chatIds is Set<String> &&
         firebaseUser.chatIds!.isNotEmpty) {
       emit(
         state.copyWith(
@@ -90,38 +90,43 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _sendTextEventHandler(
       SendTextEvent event, Emitter<ChatState> emit) async {
-    emit(state.copyWith(blocStatus: FormSubmitting()));
+    if (state.message.isNotEmpty) {
+      emit(state.copyWith(blocStatus: FormSubmitting()));
 
-    try {
-      if (!_authCubit.state.isAuthorized) {
-        throw AppException.authenticationException;
+      try {
+        if (!_authCubit.state.isAuthorized) {
+          throw AppException.authenticationException;
+        }
+
+        final FirebaseMessage message =
+            await _firebaseRealtimeDatabase.sendMessage(
+          textMessage: state.message,
+          chatId: state.currentChat!.id,
+          senderId: _authCubit.state.user!.firebaseId,
+        );
+
+        emit(
+          state.copyWith(
+            messages: state.messages..add(message),
+            blocStatus: SubmissionSuccess(),
+          ),
+        );
+      } on AppException catch (e) {
+        emit(state.copyWith(
+            blocStatus: SubmissionFailed(exception: e, message: e.message)));
+      } on Exception catch (_) {
+        emit(
+          state.copyWith(
+            blocStatus: SubmissionFailed(exception: Exception('Failure')),
+          ),
+        );
       }
 
-      final FirebaseMessage message =
-          await _firebaseRealtimeDatabase.sendMessage(
-        textMessage: state.message,
-        chatId: state.currentChat!.id,
-        senderId: _authCubit.state.user!.firebaseId,
-      );
-
-      emit(
-        state.copyWith(
-          messages: state.messages..add(message),
-          blocStatus: SubmissionSuccess(),
-        ),
-      );
-    } on AppException catch (e) {
+      add(ClearTextMessageEvent());
+    } else {
       emit(state.copyWith(
-          blocStatus: SubmissionFailed(exception: e, message: e.message)));
-    } on Exception catch (_) {
-      emit(
-        state.copyWith(
-          blocStatus: SubmissionFailed(exception: Exception('Failure')),
-        ),
-      );
+          blocStatus: SubmissionFailed(message: 'Please type a message.')));
     }
-
-    add(ClearTextMessageEvent());
   }
 
   void _sendImageEventHandler(SendImageEvent event, Emitter<ChatState> emit) {
