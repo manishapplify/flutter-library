@@ -88,4 +88,30 @@ class FirebaseMessage {
   int get hashCode {
     return messageId.hashCode;
   }
+
+  FirebaseMessage copyWith({
+    String? attachmentUrl,
+    String? chatDialogId,
+    DateTime? firebaseMessageTime,
+    String? message,
+    String? messageId,
+    String? messageReadStatus,
+    DateTime? messageTime,
+    int? messageType,
+    String? receiverId,
+    String? senderId,
+  }) {
+    return FirebaseMessage(
+      attachmentUrl: attachmentUrl ?? this.attachmentUrl,
+      chatDialogId: chatDialogId ?? this.chatDialogId,
+      firebaseMessageTime: firebaseMessageTime ?? this.firebaseMessageTime,
+      message: message ?? this.message,
+      messageId: messageId ?? this.messageId,
+      messageReadStatus: messageReadStatus ?? this.messageReadStatus,
+      messageTime: messageTime ?? this.messageTime,
+      messageType: messageType ?? this.messageType,
+      receiverId: receiverId ?? this.receiverId,
+      senderId: senderId ?? this.senderId,
+    );
+  }
 }
