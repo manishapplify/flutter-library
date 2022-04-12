@@ -37,9 +37,7 @@ class ChatTile extends StatelessWidget {
               ? (imageBaseUrl + otherUserProfilePic)
               : null,
         ),
-        trailing: chat.lastMessageTime is DateTime
-            ? Text(chat.lastMessageTime!.day.toString())
-            : null,
+        trailing: Text(chat.lastMessage ?? ''),
       ),
     );
   }
