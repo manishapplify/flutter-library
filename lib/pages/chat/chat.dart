@@ -21,6 +21,7 @@ class ChatPage extends BasePage {
 class _ChatState extends BasePageState<ChatPage> {
   late final ChatBloc chatBloc;
   late final User currentUser;
+  late final TextEditingController textEditingController;
 
   @override
   void initState() {
@@ -31,7 +32,14 @@ class _ChatState extends BasePageState<ChatPage> {
 
     currentUser = authCubit.state.user!;
     chatBloc = BlocProvider.of(context)..add(GetCurrentChatMessagesEvent());
+    textEditingController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -145,16 +153,20 @@ class _ChatState extends BasePageState<ChatPage> {
                       ),
                     ),
                     const SizedBox(width: 15),
-                    const Expanded(
+                    Expanded(
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: textEditingController,
+                        decoration: const InputDecoration(
                           hintText: "Write message...",
                         ),
+                        onChanged: (String message) =>
+                            chatBloc.add(TextMessageChanged(message)),
+                        onSubmitted: (_) => onMessageSend(),
                       ),
                     ),
                     const SizedBox(width: 15),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: onMessageSend,
                       icon: const Icon(
                         Icons.send,
                         color: Colors.black,
@@ -175,5 +187,10 @@ class _ChatState extends BasePageState<ChatPage> {
         );
       },
     );
+  }
+
+  void onMessageSend() {
+    chatBloc.add(SendTextEvent());
+    textEditingController.value = TextEditingValue.empty;
   }
 }

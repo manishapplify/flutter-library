@@ -12,3 +12,17 @@ class RemoveChatEvent extends ChatEvent {
 }
 
 class GetCurrentChatMessagesEvent extends ChatEvent {}
+
+class TextMessageChanged extends ChatEvent {
+  TextMessageChanged(this.message);
+
+  final String message;
+}
+
+class ClearTextMessageEvent extends ChatEvent {}
+
+class SendTextEvent extends ChatEvent {}
+
+class SendImageEvent extends ChatEvent {}
+
+class SendDocEvent extends ChatEvent {}

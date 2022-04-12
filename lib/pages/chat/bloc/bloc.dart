@@ -24,6 +24,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<GetChatsEvent>(_getChatsEventHandler);
     on<RemoveChatEvent>(_removeChatEventHandler);
     on<GetCurrentChatMessagesEvent>(_getCurrentChatMessagesEventHandler);
+    on<TextMessageChanged>(_textMessageChangedHandler);
+    on<ClearTextMessageEvent>(_clearTextMessageEventHandler);
+    on<SendTextEvent>(_sendTextEventHandler);
+    on<SendImageEvent>(_sendImageEventHandler);
+    on<SendDocEvent>(_sendDocEventHandler);
   }
 
   final String imageBaseUrl;
@@ -70,5 +75,31 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         await _firebaseRealtimeDatabase.getMessages(state.currentChat!.id);
 
     emit(state.copyWith(messages: messages, blocStatus: SubmissionSuccess()));
+  }
+
+  void _textMessageChangedHandler(
+      TextMessageChanged event, Emitter<ChatState> emit) {
+    emit(state.copyWith(message: event.message));
+  }
+
+  void _clearTextMessageEventHandler(
+      ClearTextMessageEvent event, Emitter<ChatState> emit) {
+    emit(state.copyWith(message: ''));
+  }
+
+  void _sendTextEventHandler(SendTextEvent event, Emitter<ChatState> emit) {
+    add(ClearTextMessageEvent());
+    // TODO: Implement handler
+    throw UnimplementedError();
+  }
+
+  void _sendImageEventHandler(SendImageEvent event, Emitter<ChatState> emit) {
+    // TODO: Implement handler
+    throw UnimplementedError();
+  }
+
+  void _sendDocEventHandler(SendDocEvent event, Emitter<ChatState> emit) {
+    // TODO: Implement handler
+    throw UnimplementedError();
   }
 }
