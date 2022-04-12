@@ -3,6 +3,7 @@ import 'package:components/authentication/form_submission.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
+import 'package:components/services/firebase_realtime_database/models/message.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
 import 'package:meta/meta.dart';
 
@@ -22,6 +23,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ) {
     on<GetChatsEvent>(_getChatsEventHandler);
     on<RemoveChatEvent>(_removeChatEventHandler);
+    on<GetCurrentChatMessagesEvent>(_getCurrentChatMessagesEventHandler);
   }
 
   final String imageBaseUrl;
@@ -58,5 +60,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           ),
       ),
     );
+  }
+
+  void _getCurrentChatMessagesEventHandler(
+      GetCurrentChatMessagesEvent event, Emitter<ChatState> emit) async {
+    emit(state.copyWith(blocStatus: FormSubmitting()));
+
+    final List<FirebaseMessage> messages =
+        await _firebaseRealtimeDatabase.getMessages(state.currentChat!.id);
+
+    emit(state.copyWith(messages: messages, blocStatus: SubmissionSuccess()));
   }
 }

@@ -4,9 +4,9 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
-import 'package:components/pages/chat/message_model.dart';
-import 'package:components/pages/chat/message_tile.dart';
+import 'package:components/pages/chat/widgets/message_tile.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
+import 'package:components/services/firebase_realtime_database/models/message.dart';
 import 'package:components/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,17 +22,6 @@ class _ChatState extends BasePageState<ChatPage> {
   late final ChatBloc chatBloc;
   late final User currentUser;
 
-  List<ChatMessage> messages = <ChatMessage>[
-    ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
-    ChatMessage(messageContent: "Hey Mayank...", messageType: "sender"),
-    ChatMessage(messageContent: "How have you been?", messageType: "sender"),
-    ChatMessage(
-        messageContent: "I am fine dude. wbu?", messageType: "receiver"),
-    ChatMessage(messageContent: "ehhhh, doing OK", messageType: "sender"),
-    ChatMessage(
-        messageContent: "Is there any thing wrong?", messageType: "sender"),
-  ];
-
   @override
   void initState() {
     final AuthCubit authCubit = BlocProvider.of(context);
@@ -41,7 +30,7 @@ class _ChatState extends BasePageState<ChatPage> {
     }
 
     currentUser = authCubit.state.user!;
-    chatBloc = BlocProvider.of(context)..add(GetChatsEvent());
+    chatBloc = BlocProvider.of(context)..add(GetCurrentChatMessagesEvent());
     super.initState();
   }
 
@@ -92,10 +81,6 @@ class _ChatState extends BasePageState<ChatPage> {
                         ],
                       ),
                     ),
-                    const Icon(
-                      Icons.settings,
-                      color: Colors.black54,
-                    ),
                   ],
                 );
               },
@@ -108,6 +93,8 @@ class _ChatState extends BasePageState<ChatPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (BuildContext context, ChatState state) {
+        final List<FirebaseMessage> messages = state.messages;
+
         return Stack(
           children: <Widget>[
             ListView.builder(
@@ -117,13 +104,15 @@ class _ChatState extends BasePageState<ChatPage> {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 return MessageTile(
-                  message: messages[index].messageContent!,
-                  color: messages[index].messageType == "receiver"
-                      ? Colors.grey
-                      : Colors.blue,
-                  alignment: messages[index].messageType == "receiver"
-                      ? Alignment.topLeft
-                      : Alignment.topRight,
+                  message: messages[index].message,
+                  color: messages[index]
+                          .isSentByCurrentUser(currentUser.firebaseId)
+                      ? Colors.blue
+                      : Colors.grey,
+                  alignment: messages[index]
+                          .isSentByCurrentUser(currentUser.firebaseId)
+                      ? Alignment.topRight
+                      : Alignment.topLeft,
                 );
               },
             ),
@@ -133,7 +122,10 @@ class _ChatState extends BasePageState<ChatPage> {
                 padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
                 height: 60,
                 width: double.infinity,
-                color: Colors.white,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: Row(
                   children: <Widget>[
                     InkWell(
@@ -142,7 +134,7 @@ class _ChatState extends BasePageState<ChatPage> {
                         height: 30,
                         width: 30,
                         decoration: BoxDecoration(
-                          color: Colors.lightBlue,
+                          color: Colors.black,
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: const Icon(
@@ -157,7 +149,6 @@ class _ChatState extends BasePageState<ChatPage> {
                       child: TextField(
                         decoration: InputDecoration(
                           hintText: "Write message...",
-                          border: InputBorder.none,
                         ),
                       ),
                     ),
@@ -166,7 +157,7 @@ class _ChatState extends BasePageState<ChatPage> {
                       onPressed: () {},
                       icon: const Icon(
                         Icons.send,
-                        color: Colors.blue,
+                        color: Colors.black,
                         size: 20,
                       ),
                     ),

@@ -10,3 +10,5 @@ class RemoveChatEvent extends ChatEvent {
 
   final FirebaseChat chat;
 }
+
+class GetCurrentChatMessagesEvent extends ChatEvent {}
