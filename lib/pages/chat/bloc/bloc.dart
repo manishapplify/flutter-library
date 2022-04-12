@@ -50,5 +50,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await _firebaseRealtimeDatabase.removeChat(
       chat: event.chat,
     );
+    emit(
+      state.copyWith(
+        chats: state.chats
+          ..removeWhere(
+            (FirebaseChat chat) => chat.id == event.chat.id,
+          ),
+      ),
+    );
   }
 }
