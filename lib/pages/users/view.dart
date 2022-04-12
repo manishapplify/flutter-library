@@ -43,8 +43,12 @@ class _UsersState extends BasePageState<UsersPage> {
     return BlocBuilder<UsersBloc, UsersState>(
       builder: (BuildContext context, UsersState state) {
         if (state.chatStatus is SubmissionSuccess) {
-          // TODO: Redirect to chat screen when chatStatus is SubmissionSuccess.
-          // Future<void>.microtask(() => navigator.popAndPushNamed(Routes.));
+          Future<void>.microtask(
+            () => navigator.pushNamed(
+              Routes.chat,
+              arguments: state.chat,
+            ),
+          );
           usersBloc.add(ResetChatState());
         } else if (state.chatStatus is SubmissionFailed) {
           final SubmissionFailed failure = state.chatStatus as SubmissionFailed;

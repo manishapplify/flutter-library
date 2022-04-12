@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 class ImageContainer extends StatelessWidget {
   const ImageContainer({
     Key? key,
+    this.height = 100,
+    this.width = 100,
     this.imagePath,
     this.imageUrl,
     this.onContainerTap,
@@ -19,6 +21,8 @@ class ImageContainer extends StatelessWidget {
   final VoidCallback? onContainerTap;
   final bool circularDecoration;
   final Icon overlayIcon;
+  final double? width;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +30,8 @@ class ImageContainer extends StatelessWidget {
       onTap: this.onContainerTap,
       borderRadius: const BorderRadius.all(Radius.circular(100)),
       child: Container(
-        height: 100,
-        width: 100,
+        height: height,
+        width: width,
         alignment: Alignment.bottomRight,
         child: onContainerTap is VoidCallback ? overlayIcon : null,
         decoration: BoxDecoration(

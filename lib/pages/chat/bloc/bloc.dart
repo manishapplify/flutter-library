@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:components/authentication/form_submission.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/cubits/models/user.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
@@ -15,9 +14,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required this.imageBaseUrl,
     required AuthCubit authCubit,
     required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
+    FirebaseChat? currentChat,
   })  : _authCubit = authCubit,
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
-        super(const ChatState()) {
+        super(
+          ChatState(currentChat: currentChat),
+        ) {
     on<GetChatsEvent>(_getChatsEventHandler);
     on<RemoveChatEvent>(_removeChatEventHandler);
   }
