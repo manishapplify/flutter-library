@@ -5,6 +5,7 @@ class FirebaseChat {
     this.lastMessageId,
     this.lastMessageSenderId,
     this.lastMessageTime,
+    this.lastMessageType,
     required this.participantIds,
     required this.participantNames,
     required this.participantProfileImages,
@@ -16,6 +17,7 @@ class FirebaseChat {
       lastMessage: map['last_message'],
       lastMessageId: map['last_message_id'],
       lastMessageSenderId: map['last_message_sender_id'],
+      lastMessageType: map['last_message_type'],
       lastMessageTime: map['last_message_time'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['last_message_time'] as int)
           : null,
@@ -32,6 +34,11 @@ class FirebaseChat {
   final String? lastMessageId;
   final String? lastMessageSenderId;
   final DateTime? lastMessageTime;
+
+  /// 1 -> Text message
+  /// 2 -> Image
+  /// 3 -> Document
+  final int? lastMessageType;
   final Set<String> participantIds;
   final Map<String, String> participantNames;
   final Map<String, String>? participantProfileImages;
@@ -54,6 +61,9 @@ class FirebaseChat {
     }
     if (lastMessageTime is DateTime) {
       data['last_message_time'] = lastMessageTime!.millisecondsSinceEpoch;
+    }
+    if (lastMessageType is int) {
+      data['last_message_type'] = lastMessageType;
     }
     if (participantProfileImages is Map<String, String>) {
       data['profile_pic'] = participantProfileImages;
@@ -82,6 +92,7 @@ class FirebaseChat {
     String? lastMessageId,
     String? lastMessageSenderId,
     DateTime? lastMessageTime,
+    int? lastMessageType,
     Set<String>? participantIds,
     Map<String, String>? participantNames,
     Map<String, String>? participantProfileImages,
@@ -92,9 +103,11 @@ class FirebaseChat {
       lastMessageId: lastMessageId ?? this.lastMessageId,
       lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
       lastMessageTime: lastMessageTime ?? this.lastMessageTime,
+      lastMessageType: lastMessageType ?? this.lastMessageType,
       participantIds: participantIds ?? this.participantIds,
       participantNames: participantNames ?? this.participantNames,
-      participantProfileImages: participantProfileImages ?? this.participantProfileImages,
+      participantProfileImages:
+          participantProfileImages ?? this.participantProfileImages,
     );
   }
 }
