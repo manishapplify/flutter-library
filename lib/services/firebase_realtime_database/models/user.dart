@@ -40,7 +40,7 @@ class FirebaseUser {
     if (pic is String) {
       data['user_pic'] = pic;
     }
-    if (chatIds is List<String> && chatIds!.isNotEmpty) {
+    if (chatIds is Set<String> && chatIds!.isNotEmpty) {
       final Map<String, String> map = <String, String>{};
       for (String chatId in chatIds!) {
         map[chatId] = chatId;
