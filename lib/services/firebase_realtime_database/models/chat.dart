@@ -75,4 +75,26 @@ class FirebaseChat {
   int get hashCode {
     return id.hashCode;
   }
+
+  FirebaseChat copyWith({
+    String? id,
+    String? lastMessage,
+    String? lastMessageId,
+    String? lastMessageSenderId,
+    DateTime? lastMessageTime,
+    Set<String>? participantIds,
+    Map<String, String>? participantNames,
+    Map<String, String>? participantProfileImages,
+  }) {
+    return FirebaseChat(
+      id: id ?? this.id,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastMessageId: lastMessageId ?? this.lastMessageId,
+      lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
+      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
+      participantIds: participantIds ?? this.participantIds,
+      participantNames: participantNames ?? this.participantNames,
+      participantProfileImages: participantProfileImages ?? this.participantProfileImages,
+    );
+  }
 }
