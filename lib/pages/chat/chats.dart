@@ -5,6 +5,7 @@ import 'package:components/cubits/models/user.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
 import 'package:components/pages/chat/widgets/chat_tile.dart';
+import 'package:components/routes/navigation.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,7 +57,12 @@ class _ChatsState extends BasePageState<ChatsPage> {
                   imageBaseUrl: chatBloc.imageBaseUrl,
                   currentUserFirebaseId: currentUser.firebaseId,
                   onTileTap: () {
-                    // TODO: Redirect to chat page.
+                    Future<void>.microtask(
+                      () => navigator.pushNamed(
+                        Routes.chat,
+                        arguments: chat,
+                      ),
+                    );
                   },
                   onTileLongPress: () {
                     showDialog(
