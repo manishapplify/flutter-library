@@ -41,7 +41,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (BuildContext context, ChatState state) {
-        final List<FirebaseChat> chats = state.chats;
+        final List<FirebaseChat> chats = state.chats.toList();
         return Stack(
           children: <Widget>[
             ListView.separated(

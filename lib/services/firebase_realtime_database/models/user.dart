@@ -7,13 +7,13 @@ class FirebaseUser {
   });
 
   factory FirebaseUser.fromMap(Map<dynamic, dynamic> map) {
-    final List<String>? chatIds = map['chat_dialog_ids'] != null
+    final Set<String>? chatIds = map['chat_dialog_ids'] != null
         ? (map['chat_dialog_ids'] as Map<dynamic, dynamic>)
             .entries
             .map(
               (MapEntry<dynamic, dynamic> e) => (e.key as String),
             )
-            .toList()
+            .toSet()
         : null;
 
     return FirebaseUser(
@@ -27,7 +27,7 @@ class FirebaseUser {
   final String id;
   final String? name;
   final String? pic;
-  final List<String>? chatIds;
+  final Set<String>? chatIds;
 
   Map<String, dynamic> toFirebaseMap() {
     final Map<String, dynamic> data = <String, dynamic>{
@@ -60,7 +60,7 @@ class FirebaseUser {
     String? id,
     String? name,
     String? pic,
-    List<String>? chatIds,
+    Set<String>? chatIds,
   }) {
     return FirebaseUser(
       id: id ?? this.id,

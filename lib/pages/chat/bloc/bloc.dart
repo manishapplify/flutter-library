@@ -71,7 +71,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       GetCurrentChatMessagesEvent event, Emitter<ChatState> emit) async {
     emit(state.copyWith(blocStatus: FormSubmitting()));
 
-    final List<FirebaseMessage> messages =
+    final Set<FirebaseMessage> messages =
         await _firebaseRealtimeDatabase.getMessages(state.currentChat!.id);
 
     emit(state.copyWith(messages: messages, blocStatus: SubmissionSuccess()));

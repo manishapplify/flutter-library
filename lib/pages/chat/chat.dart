@@ -101,7 +101,7 @@ class _ChatState extends BasePageState<ChatPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (BuildContext context, ChatState state) {
-        final List<FirebaseMessage> messages = state.messages;
+        final List<FirebaseMessage> messages = state.messages.toList();
 
         return Stack(
           children: <Widget>[

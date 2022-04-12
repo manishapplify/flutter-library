@@ -75,8 +75,8 @@ class FirebaseRealtimeDatabase {
     return users;
   }
 
-  Future<List<FirebaseChat>> getChats(List<String> chatIds) async {
-    final List<FirebaseChat> chats = <FirebaseChat>[];
+  Future<Set<FirebaseChat>> getChats(Set<String> chatIds) async {
+    final Set<FirebaseChat> chats = <FirebaseChat>{};
 
     for (final String chatId in chatIds) {
       final DatabaseReference chatReference =
@@ -152,18 +152,18 @@ class FirebaseRealtimeDatabase {
       // Update users.
       await updateUser(
         _firebaseUserA.copyWith(
-          chatIds: <String>[
-            ..._firebaseUserA.chatIds ?? <String>[],
+          chatIds: <String>{
+            ..._firebaseUserA.chatIds ?? <String>{},
             chat.id,
-          ],
+          },
         ),
       );
       await updateUser(
         _firebaseUserB.copyWith(
-          chatIds: <String>[
-            ..._firebaseUserB.chatIds ?? <String>[],
+          chatIds: <String>{
+            ..._firebaseUserB.chatIds ?? <String>{},
             chat.id,
-          ],
+          },
         ),
       );
 
@@ -190,7 +190,7 @@ class FirebaseRealtimeDatabase {
           user.chatIds is List<String> &&
           user.chatIds!.isNotEmpty &&
           user.chatIds!.contains(_chatId)) {
-        final List<String> updatedChatList = user.chatIds!..remove(_chatId);
+        final Set<String> updatedChatList = user.chatIds!..remove(_chatId);
         await updateUser(user.copyWith(
           chatIds: updatedChatList,
         ));
@@ -198,12 +198,12 @@ class FirebaseRealtimeDatabase {
     }
   }
 
-  Future<List<FirebaseMessage>> getMessages(String chatId) async {
+  Future<Set<FirebaseMessage>> getMessages(String chatId) async {
     final DatabaseReference messagesReference =
         _database.ref(_messagesCollection + chatId);
 
     final DatabaseEvent event = await messagesReference.once();
-    List<FirebaseMessage> messages = <FirebaseMessage>[];
+    Set<FirebaseMessage> messages = <FirebaseMessage>{};
     if (event.snapshot.value != null) {
       final Map<dynamic, dynamic> map =
           event.snapshot.value as Map<dynamic, dynamic>;
@@ -212,7 +212,7 @@ class FirebaseRealtimeDatabase {
           .map(
             (MapEntry<dynamic, dynamic> e) => FirebaseMessage.fromMap(e.value),
           )
-          .toList();
+          .toSet();
     }
 
     return messages;

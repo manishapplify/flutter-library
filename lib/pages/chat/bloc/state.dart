@@ -4,22 +4,22 @@ part of 'bloc.dart';
 class ChatState {
   const ChatState({
     this.blocStatus = const InitialFormStatus(),
-    this.chats = const <FirebaseChat>[],
+    this.chats = const <FirebaseChat>{},
     this.message = '',
-    this.messages = const <FirebaseMessage>[],
+    this.messages = const <FirebaseMessage>{},
     this.currentChat,
   });
 
-  final List<FirebaseChat> chats;
+  final Set<FirebaseChat> chats;
   final FirebaseChat? currentChat;
   final String message;
-  final List<FirebaseMessage> messages;
+  final Set<FirebaseMessage> messages;
   final FormSubmissionStatus blocStatus;
 
   ChatState copyWith({
-    List<FirebaseChat>? chats,
+    Set<FirebaseChat>? chats,
     String? message,
-    List<FirebaseMessage>? messages,
+    Set<FirebaseMessage>? messages,
     FormSubmissionStatus? blocStatus,
   }) {
     return ChatState(
