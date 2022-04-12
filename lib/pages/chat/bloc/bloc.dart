@@ -30,6 +30,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<SendTextEvent>(_sendTextEventHandler);
     on<SendImageEvent>(_sendImageEventHandler);
     on<SendDocEvent>(_sendDocEventHandler);
+    on<ResetBlocStatus>(_resetBlocStatusHandler);
   }
 
   final String imageBaseUrl;
@@ -137,5 +138,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   void _sendDocEventHandler(SendDocEvent event, Emitter<ChatState> emit) {
     // TODO: Implement handler
     throw UnimplementedError();
+  }
+
+  void _resetBlocStatusHandler(ResetBlocStatus event, Emitter<ChatState> emit) {
+    emit(state.copyWith(blocStatus: const InitialFormStatus()));
   }
 }

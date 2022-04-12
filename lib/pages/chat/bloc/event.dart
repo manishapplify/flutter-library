@@ -26,3 +26,5 @@ class SendTextEvent extends ChatEvent {}
 class SendImageEvent extends ChatEvent {}
 
 class SendDocEvent extends ChatEvent {}
+
+class ResetBlocStatus extends ChatEvent {}

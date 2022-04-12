@@ -210,11 +210,15 @@ class FirebaseRealtimeDatabase {
       final Map<dynamic, dynamic> map =
           event.snapshot.value as Map<dynamic, dynamic>;
 
-      messages = map.entries
+      final List<FirebaseMessage> _messages = map.entries
           .map(
             (MapEntry<dynamic, dynamic> e) => FirebaseMessage.fromMap(e.value),
           )
-          .toSet();
+          .toList()
+        ..sort(((FirebaseMessage a, FirebaseMessage b) =>
+            a.messageTime.compareTo(b.messageTime)));
+
+      messages = _messages.toSet();
     }
 
     return messages;

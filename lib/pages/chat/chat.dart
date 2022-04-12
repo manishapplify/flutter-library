@@ -1,4 +1,4 @@
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
@@ -50,6 +50,20 @@ class _ChatState extends BasePageState<ChatPage> {
             padding: const EdgeInsets.only(right: 16),
             child: BlocBuilder<ChatBloc, ChatState>(
               builder: (BuildContext context, ChatState state) {
+                if (state.blocStatus is SubmissionFailed) {
+                  chatBloc.add(ResetBlocStatus());
+
+                  final SubmissionFailed failure =
+                      state.blocStatus as SubmissionFailed;
+                  Future<void>.microtask(
+                    () => showSnackBar(
+                      SnackBar(
+                        content: Text(failure.message ?? 'Failure'),
+                      ),
+                    ),
+                  );
+                }
+
                 final FirebaseChat chat = state.currentChat!;
                 final String otherUserId = chat.participantIds.firstWhere(
                   (String id) => id != currentUser.firebaseId,
