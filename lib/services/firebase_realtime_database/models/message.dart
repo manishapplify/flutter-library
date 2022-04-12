@@ -74,4 +74,18 @@ class FirebaseMessage {
   String toString() {
     return 'FirebaseMessage(attachmentUrl: $attachmentUrl, chatDialogId: $chatDialogId, firebaseMessageTime: $firebaseMessageTime, message: $message, messageId: $messageId, messageReadStatus: $messageReadStatus, messageTime: $messageTime, messageType: $messageType, receiverId: $receiverId, senderId: $senderId)';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
+    return other is FirebaseMessage && other.messageId == messageId;
+  }
+
+  @override
+  int get hashCode {
+    return messageId.hashCode;
+  }
 }
