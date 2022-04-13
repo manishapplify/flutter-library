@@ -189,7 +189,7 @@ class FirebaseRealtimeDatabase {
     for (String userId in userIds) {
       final FirebaseUser? user = await getFirebaseUser(firebaseId: userId);
       if (user is FirebaseUser &&
-          user.chatIds is List<String> &&
+          user.chatIds is Set<String> &&
           user.chatIds!.isNotEmpty &&
           user.chatIds!.contains(_chatId)) {
         final Set<String> updatedChatList = user.chatIds!..remove(_chatId);
