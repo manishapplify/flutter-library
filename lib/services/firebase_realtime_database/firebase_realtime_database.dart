@@ -19,10 +19,11 @@ class FirebaseRealtimeDatabase {
   Future<void> addUser(User user) async {
     final DatabaseReference userReference =
         _database.ref(_userCollection + user.firebaseId);
-
-    await userReference.set(
-      user.toFirebaseMap(),
-    );
+    if (!(await userReference.once()).snapshot.exists) {
+      await userReference.set(
+        user.toFirebaseMap(),
+      );
+    }
   }
 
   Future<void> removeUser({
