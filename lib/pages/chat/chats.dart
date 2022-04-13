@@ -1,4 +1,4 @@
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
@@ -42,6 +42,18 @@ class _ChatsState extends BasePageState<ChatsPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (BuildContext context, ChatState state) {
+        if (state.blocStatus is SubmissionFailed) {
+          final SubmissionFailed failure = state.blocStatus as SubmissionFailed;
+          Future<void>.microtask(
+            () => showSnackBar(
+              SnackBar(
+                content: Text(failure.message ?? 'Failure'),
+              ),
+            ),
+          );
+          chatBloc.add(ResetBlocStatus());
+        }
+
         final List<FirebaseChat> chats = state.chats.toList();
         return Stack(
           children: <Widget>[
@@ -64,58 +76,72 @@ class _ChatsState extends BasePageState<ChatsPage> {
                       ),
                     );
                   },
-                  onTileLongPress: () {
-                    showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          title: const Text('Delete chat'),
-                          content: const Text(
-                              'Are you sure? The chat will be deleted for both the users.'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                chatBloc.add(RemoveChatEvent(chat));
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text(
-                                'Okay',
-                                style: TextStyle(
-                                  color: Colors.blueAccent,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  color: Colors.blueAccent,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
+                  onTileLongPress: () => onChatTileLongPress(
+                    context: context,
+                    chat: chat,
+                  ),
                 );
               },
               itemCount: chats.length,
             ),
             Visibility(
               child: const Center(
+                child: Text('No chats present'),
+              ),
+              visible:
+                  state.blocStatus is! FormSubmitting && state.chats.isEmpty,
+            ),
+            Visibility(
+              child: const Center(
                 child: CircularProgressIndicator(),
               ),
               visible: state.blocStatus is FormSubmitting,
-            )
+            ),
           ],
         );
       },
     );
   }
+
+  void onChatTileLongPress({
+    required BuildContext context,
+    required FirebaseChat chat,
+  }) =>
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: const Text('Delete chat'),
+            content: const Text(
+                'Are you sure? The chat will be deleted for both the users.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  chatBloc.add(RemoveChatEvent(chat));
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Okay',
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
 }

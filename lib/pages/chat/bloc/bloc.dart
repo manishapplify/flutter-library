@@ -39,44 +39,71 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _getChatsEventHandler(
       GetChatsEvent event, Emitter<ChatState> emit) async {
-    final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
-        .getFirebaseUser(user: _authCubit.state.user);
+    await _commonHandler(
+      handlerJob: () async {
+        if (!_authCubit.state.isAuthorized) {
+          throw AppException.authenticationException;
+        }
 
-    if (firebaseUser is FirebaseUser &&
-        firebaseUser.chatIds is Set<String> &&
-        firebaseUser.chatIds!.isNotEmpty) {
-      emit(
-        state.copyWith(
-          chats:
-              await _firebaseRealtimeDatabase.getChats(firebaseUser.chatIds!),
-        ),
-      );
-    }
+        final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
+            .getFirebaseUser(user: _authCubit.state.user);
+
+        if (firebaseUser is FirebaseUser) {
+          if (firebaseUser.chatIds is Set<String> &&
+              firebaseUser.chatIds!.isNotEmpty) {
+            emit(
+              state.copyWith(
+                chats: await _firebaseRealtimeDatabase
+                    .getChats(firebaseUser.chatIds!),
+              ),
+            );
+          } else {
+            throw AppException.noChatsPresent();
+          }
+        } else {
+          throw AppException.couldNotLoadChats();
+        }
+      },
+      emit: emit,
+    );
   }
 
   void _removeChatEventHandler(
       RemoveChatEvent event, Emitter<ChatState> emit) async {
-    await _firebaseRealtimeDatabase.removeChat(
-      chat: event.chat,
-    );
-    emit(
-      state.copyWith(
-        chats: state.chats
-          ..removeWhere(
-            (FirebaseChat chat) => chat.id == event.chat.id,
+    await _commonHandler(
+      handlerJob: () async {
+        await _firebaseRealtimeDatabase.removeChat(
+          chat: event.chat,
+        );
+
+        emit(
+          state.copyWith(
+            chats: state.chats
+              ..removeWhere(
+                (FirebaseChat chat) => chat.id == event.chat.id,
+              ),
           ),
-      ),
+        );
+      },
+      emit: emit,
     );
   }
 
   void _getCurrentChatMessagesEventHandler(
       GetCurrentChatMessagesEvent event, Emitter<ChatState> emit) async {
-    emit(state.copyWith(blocStatus: FormSubmitting()));
+    await _commonHandler(
+      handlerJob: () async {
+        final Set<FirebaseMessage> messages =
+            await _firebaseRealtimeDatabase.getMessages(state.currentChat!.id);
 
-    final Set<FirebaseMessage> messages =
-        await _firebaseRealtimeDatabase.getMessages(state.currentChat!.id);
-
-    emit(state.copyWith(messages: messages, blocStatus: SubmissionSuccess()));
+        emit(
+          state.copyWith(
+            messages: messages,
+          ),
+        );
+      },
+      emit: emit,
+    );
   }
 
   void _textMessageChangedHandler(
@@ -91,43 +118,32 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _sendTextEventHandler(
       SendTextEvent event, Emitter<ChatState> emit) async {
-    if (state.message.isNotEmpty) {
-      emit(state.copyWith(blocStatus: FormSubmitting()));
+    await _commonHandler(
+      handlerJob: () async {
+        if (state.message.isNotEmpty) {
+          if (!_authCubit.state.isAuthorized) {
+            throw AppException.authenticationException;
+          }
 
-      try {
-        if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
+          final FirebaseMessage message =
+              await _firebaseRealtimeDatabase.sendMessage(
+            textMessage: state.message,
+            chatId: state.currentChat!.id,
+            senderId: _authCubit.state.user!.firebaseId,
+          );
+
+          emit(
+            state.copyWith(
+              messages: state.messages..add(message),
+            ),
+          );
+          add(ClearTextMessageEvent());
+        } else {
+          throw AppException.messageCannotBeEmpty();
         }
-
-        final FirebaseMessage message =
-            await _firebaseRealtimeDatabase.sendMessage(
-          textMessage: state.message,
-          chatId: state.currentChat!.id,
-          senderId: _authCubit.state.user!.firebaseId,
-        );
-
-        emit(
-          state.copyWith(
-            messages: state.messages..add(message),
-            blocStatus: SubmissionSuccess(),
-          ),
-        );
-      } on AppException catch (e) {
-        emit(state.copyWith(
-            blocStatus: SubmissionFailed(exception: e, message: e.message)));
-      } on Exception catch (_) {
-        emit(
-          state.copyWith(
-            blocStatus: SubmissionFailed(exception: Exception('Failure')),
-          ),
-        );
-      }
-
-      add(ClearTextMessageEvent());
-    } else {
-      emit(state.copyWith(
-          blocStatus: SubmissionFailed(message: 'Please type a message.')));
-    }
+      },
+      emit: emit,
+    );
   }
 
   void _sendImageEventHandler(SendImageEvent event, Emitter<ChatState> emit) {
@@ -142,5 +158,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _resetBlocStatusHandler(ResetBlocStatus event, Emitter<ChatState> emit) {
     emit(state.copyWith(blocStatus: const InitialFormStatus()));
+  }
+
+  Future<void> _commonHandler(
+      {required Future<void> Function() handlerJob,
+      required Emitter<ChatState> emit}) async {
+    emit(state.copyWith(blocStatus: FormSubmitting()));
+
+    try {
+      await handlerJob();
+      emit(state.copyWith(blocStatus: SubmissionSuccess()));
+    } on AppException catch (e) {
+      emit(state.copyWith(
+          blocStatus: SubmissionFailed(exception: e, message: e.message)));
+    } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          blocStatus: SubmissionFailed(exception: Exception('Failure')),
+        ),
+      );
+    }
   }
 }

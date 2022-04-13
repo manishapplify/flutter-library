@@ -27,8 +27,18 @@ class AppException implements Exception {
   factory AppException.api400Exception({String? message}) {
     return AppException(message: message ?? 'Api request failed');
   }
-  factory AppException.firebaseCouldNotGenerateKey() =>
-      AppException(message: 'Firebase could not generate unique key');
+  factory AppException.firebaseCouldNotGenerateKey() {
+    return AppException(message: 'Firebase could not generate unique key');
+  }
+  factory AppException.couldNotLoadChats() {
+    return AppException(message: 'Could not load your chats');
+  }
+  factory AppException.noChatsPresent() {
+    return AppException(message: 'You have no chats');
+  }
+  factory AppException.messageCannotBeEmpty() {
+    return AppException(message: 'Message cannot be empty'); 
+  }
 
   final String message;
 }
