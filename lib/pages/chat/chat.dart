@@ -22,6 +22,8 @@ class _ChatState extends BasePageState<ChatPage> {
   late final ChatBloc chatBloc;
   late final User currentUser;
   late final TextEditingController textEditingController;
+  late final ScrollController controller;
+  bool firstBuild = true;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _ChatState extends BasePageState<ChatPage> {
     currentUser = authCubit.state.user!;
     chatBloc = BlocProvider.of(context)..add(GetCurrentChatMessagesEvent());
     textEditingController = TextEditingController();
+    controller = ScrollController();
     super.initState();
   }
 
@@ -113,6 +116,7 @@ class _ChatState extends BasePageState<ChatPage> {
 
   @override
   Widget body(BuildContext context) {
+
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (BuildContext context, ChatState state) {
         final List<FirebaseMessage> messages = state.messages.toList();
@@ -120,6 +124,7 @@ class _ChatState extends BasePageState<ChatPage> {
         return Stack(
           children: <Widget>[
             ListView.builder(
+              controller: controller,
               itemCount: messages.length,
               shrinkWrap: true,
               padding: const EdgeInsets.only(top: 2, bottom: 60),
@@ -205,5 +210,18 @@ class _ChatState extends BasePageState<ChatPage> {
   void onMessageSend() {
     chatBloc.add(SendTextEvent());
     textEditingController.value = TextEditingValue.empty;
+    controller
+        .animateTo(
+          controller.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.fastOutSlowIn,
+        )
+        .then(
+          (_) => controller.animateTo(
+            controller.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+          ),
+        );
   }
 }
