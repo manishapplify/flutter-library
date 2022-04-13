@@ -122,8 +122,7 @@ class _ChatState extends BasePageState<ChatPage> {
             ListView.builder(
               itemCount: messages.length,
               shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(top: 2, bottom: 60),
               itemBuilder: (BuildContext context, int index) {
                 return MessageTile(
                   message: messages[index].message,
