@@ -181,8 +181,11 @@ class FirebaseRealtimeDatabase {
 
     final DatabaseReference chatReference =
         _database.ref(_chatsCollection + _chatId);
+    final DatabaseReference messagesReference =
+        _database.ref(_messagesCollection + _chatId);
 
     await chatReference.remove();
+    await messagesReference.remove();
 
     final List<String> userIds = _chatId.split(',');
 
