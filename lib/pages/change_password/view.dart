@@ -69,7 +69,19 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               ),
             ),
           );
-        }
+        } else if (state.formStatus is SubmissionFailed) {
+                //feedbackBloc.add(ResetFormStatus());
+
+                final SubmissionFailed failure =
+                    state.formStatus as SubmissionFailed;
+                Future<void>.microtask(
+                  () => showSnackBar(
+                    SnackBar(
+                      content: Text(failure.message ?? 'Failure'),
+                    ),
+                  ),
+                );
+              }
 
         return Column(
           children: <Widget>[

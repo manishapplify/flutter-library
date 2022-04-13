@@ -15,150 +15,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required AuthRepository authRepository,
   })  : _authRepository = authRepository,
         super(LoginState()) {
-    on<LoginEmailChanged>((LoginEmailChanged event, Emitter<LoginState> emit) {
-      emit(
-        state.copyWith(
-          email: event.email,
-        ),
-      );
-    });
-    on<LoginPasswordChanged>(
-        (LoginPasswordChanged event, Emitter<LoginState> emit) {
-      emit(
-        state.copyWith(
-          password: event.password,
-        ),
-      );
-    });
-    on<LoginSubmitted>((LoginSubmitted event, Emitter<LoginState> emit) async {
-      emit(
-        state.copyWith(
-          formStatus: FormSubmitting(),
-        ),
-      );
-      try {
-        await _authRepository.login(
-          username: state.email,
-          password: state.password,
-        );
-        emit(
-          state.copyWith(
-            formStatus: SubmissionSuccess(),
-          ),
-        );
-      } on DioError catch (e) {
-        late final AppException exception;
-
-        if (e.type == DioErrorType.other && e.error is AppException) {
-          exception = e.error;
-        } else {
-          exception = AppException.api400Exception();
-        }
-
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(
-              exception: exception,
-              message: exception.message,
-            ),
-          ),
-        );
-      } on AppException catch (e) {
-        emit(state.copyWith(
-            formStatus: SubmissionFailed(exception: e, message: e.message)));
-      } on Exception catch (_) {
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(exception: Exception('Failure')),
-          ),
-        );
-      }
-    });
-    on<SocialSignInSummitted>(
-        (SocialSignInSummitted event, Emitter<LoginState> emit) async {
-      emit(
-        state.copyWith(
-          formStatus: FormSubmitting(),
-        ),
-      );
-      try {
-        await _authRepository.signInWithGoogle();
-        emit(
-          state.copyWith(
-            formStatus: SubmissionSuccess(),
-          ),
-        );
-      } on DioError catch (e) {
-        late final AppException exception;
-
-        if (e.type == DioErrorType.other && e.error is AppException) {
-          exception = e.error;
-        } else {
-          exception = AppException.api400Exception();
-        }
-
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(
-              exception: exception,
-              message: exception.message,
-            ),
-          ),
-        );
-      } on AppException catch (e) {
-        emit(state.copyWith(
-            formStatus: SubmissionFailed(exception: e, message: e.message)));
-      } on Exception catch (_) {
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(exception: Exception('Failure')),
-          ),
-        );
-      }
-    });
-    on<FacebookSignInSummitted>(
-        (FacebookSignInSummitted event, Emitter<LoginState> emit) async {
-      emit(
-        state.copyWith(
-          formStatus: FormSubmitting(),
-        ),
-      );
-      try {
-        await _authRepository.signInWithFacebook();
-        emit(
-          state.copyWith(
-            formStatus: SubmissionSuccess(),
-          ),
-        );
-      } on DioError catch (e) {
-        late final AppException exception;
-
-        if (e.type == DioErrorType.other && e.error is AppException) {
-          exception = e.error;
-        } else {
-          exception = AppException.api400Exception();
-        }
-
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(
-              exception: exception,
-              message: exception.message,
-            ),
-          ),
-        );
-      } on AppException catch (e) {
-        emit(state.copyWith(
-            formStatus: SubmissionFailed(exception: e, message: e.message)));
-      } on Exception catch (_) {
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(exception: Exception('Failure')),
-          ),
-        );
-      }
-    });
-
+    on<LoginEmailChanged>(_loginEmailChangedHandler);
+    on<LoginPasswordChanged>(_loginPasswordChangedHandler);
+    on<LoginSubmitted>(_loginEventHandler);
+    on<GoogleSignInSummitted>(_googleLoginEventHandler);
+    on<FacebookSignInSummitted>(_facebookLoginEventHandler);
     on<ResetFormStatus>(_resetFormStatusHandler);
   }
 
@@ -171,4 +32,92 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           formStatus: const InitialFormStatus(),
         ),
       );
+
+  void _loginEmailChangedHandler(
+      LoginEmailChanged event, Emitter<LoginState> emit) {
+    emit(
+      state.copyWith(
+        email: event.email,       
+      ),
+    );
+  }
+
+  void _loginPasswordChangedHandler(
+      LoginPasswordChanged event, Emitter<LoginState> emit) {
+    emit(
+      state.copyWith(
+        password: event.password,
+      ),
+    );
+  }
+
+  void _loginEventHandler(
+      LoginSubmitted event, Emitter<LoginState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
+        await _authRepository.login(
+          username: state.email,
+          password: state.password,
+        );
+      },
+      emit: emit,
+    );
+  }
+
+  void _googleLoginEventHandler(
+      GoogleSignInSummitted event, Emitter<LoginState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
+        await _authRepository.signInWithGoogle();
+      },
+      emit: emit,
+    );
+  }
+
+  void _facebookLoginEventHandler(
+      FacebookSignInSummitted event, Emitter<LoginState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
+        await _authRepository.signInWithFacebook();
+      },
+      emit: emit,
+    );
+  }
+
+  Future<void> _commonHandler(
+      {required Future<void> Function() handlerJob,
+      required Emitter<LoginState> emit}) async {
+    emit(state.copyWith(formStatus: FormSubmitting()));
+
+    try {
+      await handlerJob();
+      emit(state.copyWith(formStatus: SubmissionSuccess()));
+    } on DioError catch (e) {
+      late final AppException exception;
+
+      if (e.type == DioErrorType.other && e.error is AppException) {
+        exception = e.error;
+      } else {
+        exception = AppException.api400Exception();
+      }
+
+      emit(
+        state.copyWith(
+          formStatus: SubmissionFailed(
+            exception: exception,
+            message: exception.message,
+          ),
+        ),
+      );
+    } on AppException catch (e) {
+      emit(state.copyWith(
+          formStatus: SubmissionFailed(exception: e, message: e.message)));
+    } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          formStatus: SubmissionFailed(exception: Exception('Failure')),
+        ),
+      );
+    }
+  }
 }

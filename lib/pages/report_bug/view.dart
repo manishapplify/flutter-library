@@ -110,6 +110,7 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                         decoration: const InputDecoration(
                           hintText: 'Please briefly describe the issue',
                           labelText: 'Description',
+                          alignLabelWithHint: true,
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)),

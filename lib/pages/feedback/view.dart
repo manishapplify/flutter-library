@@ -159,10 +159,11 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                       controller: descriptionTextEditingController,
                       textCapitalization: TextCapitalization.words,
                       maxLines: 10,
-                      textAlignVertical: TextAlignVertical.bottom,
                       decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(16.0),
                         hintText: 'Please briefly describe the issue',
                         labelText: 'Description',
+                        alignLabelWithHint: true,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(
                             Radius.circular(10.0),
