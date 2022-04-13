@@ -58,6 +58,7 @@ class _FeedbackScreenThirdState extends BasePageState<FeedbackScreenThird> {
                   focusNode: emailFocusNode,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: const InputDecoration(
+                    errorStyle: TextStyle(height: 0.5),
                     hintText: 'Enter your email',
                     labelText: 'Email',
                   ),
@@ -98,6 +99,7 @@ class _FeedbackScreenThirdState extends BasePageState<FeedbackScreenThird> {
                   maxLines: 10,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: const InputDecoration(
+                    errorStyle: TextStyle(height: 0.5),
                     hintText: 'Tell us your experience...',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),

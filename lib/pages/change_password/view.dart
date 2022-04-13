@@ -71,7 +71,6 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
           );
         } else if (state.formStatus is SubmissionFailed) {
                 //feedbackBloc.add(ResetFormStatus());
-
                 final SubmissionFailed failure =
                     state.formStatus as SubmissionFailed;
                 Future<void>.microtask(
@@ -99,6 +98,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
                 hintText: 'Current Password',
+                errorStyle: TextStyle(height: 0.5),
                 prefixIcon: Icon(
                   Icons.lock,
                 ),
@@ -118,6 +118,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               obscureText: true,
               style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
+                errorStyle: TextStyle(height: 0.5),
                 labelText: 'New Password',
                 hintText: 'Enter new password',
                 prefixIcon: Icon(
@@ -141,6 +142,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               obscureText: true,
               style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
+                errorStyle: TextStyle(height: 0.5),
                 labelText: 'Confirm New Password',
                 hintText: 'Enter new password again',
                 prefixIcon: Icon(

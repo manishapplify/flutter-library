@@ -160,7 +160,7 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                       textCapitalization: TextCapitalization.words,
                       maxLines: 10,
                       decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(16.0),
+                        errorStyle: TextStyle(height: 0.5),
                         hintText: 'Please briefly describe the issue',
                         labelText: 'Description',
                         alignLabelWithHint: true,

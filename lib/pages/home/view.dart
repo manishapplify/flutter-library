@@ -64,7 +64,7 @@ class _HomeState extends BasePageState<HomePage> {
           return ListView(
             children: <Widget>[
               DrawerHeader(
-                padding: EdgeInsets.all(30.0),
+                padding: const EdgeInsets.all(30.0),
                 child: ImageContainer(
                   // TODO: Refactor this while implementing HomeBloc.
                   imageUrl: (user.profilePic is String)

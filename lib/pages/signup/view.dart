@@ -70,8 +70,10 @@ class _SignupState extends BasePageState<SignupPage> {
               ),
               TextFormField(
                 focusNode: emailFocusNode,
+                textAlignVertical: TextAlignVertical.center,
                 autofocus: true,
                 decoration: const InputDecoration(
+                  errorStyle: TextStyle(height: 0.5),
                   hintText: 'Enter your email',
                   labelText: 'Email',
                   prefixIcon: Icon(Icons.mail),
@@ -107,7 +109,9 @@ class _SignupState extends BasePageState<SignupPage> {
                     child: TextFormField(
                       focusNode: phoneFocusNode,
                       autofocus: true,
+                      textAlignVertical: TextAlignVertical.center,
                       decoration: const InputDecoration(
+                        errorStyle: TextStyle(height: 0.5),
                         hintText: 'Enter your phone number',
                         labelText: 'Phone number',
                         prefixIcon: Icon(Icons.phone),
@@ -131,8 +135,10 @@ class _SignupState extends BasePageState<SignupPage> {
                 Column(
                   children: <Widget>[
                     TextFormField(
+                      textAlignVertical: TextAlignVertical.center,
                       focusNode: passwordFocusNodes[i],
                       decoration: InputDecoration(
+                        errorStyle: const TextStyle(height: 0.5),
                         prefixIcon: const Icon(
                           Icons.lock,
                         ),

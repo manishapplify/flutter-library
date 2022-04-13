@@ -255,6 +255,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     textCapitalization: TextCapitalization.words,
                     controller: firstNameTextEditingController,
                     decoration: const InputDecoration(
+                      errorStyle: TextStyle(height: 0.5),
                       prefixIcon: Icon(
                         Icons.account_circle_outlined,
                       ),
@@ -277,6 +278,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     controller: lastNameTextEditingController,
                     focusNode: lastNameFocusNode,
                     decoration: const InputDecoration(
+                      errorStyle: TextStyle(height: 0.5),
                       prefixIcon: Icon(
                         Icons.account_circle_outlined,
                       ),
@@ -298,6 +300,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     controller: emailTextEditingController,
                     focusNode: emailFocusNode,
                     decoration: const InputDecoration(
+                      errorStyle: TextStyle(height: 0.5),
                       prefixIcon: Icon(
                         Icons.email,
                       ),
@@ -335,6 +338,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                           controller: phoneTextEditingController,
                           focusNode: phoneFocusNode,
                           decoration: const InputDecoration(
+                            errorStyle: TextStyle(height: 0.5),
                             prefixIcon: Icon(
                               Icons.phone,
                             ),
@@ -374,6 +378,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     controller: ageTextEditingController,
                     focusNode: ageFocusNode,
                     decoration: const InputDecoration(
+                      errorStyle: TextStyle(height: 0.5),
                       prefixIcon: Icon(Icons.account_circle_outlined),
                       hintText: 'Enter your age',
                       labelText: 'Age',
@@ -394,6 +399,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     controller: addressTextEditingController,
                     focusNode: addressFocusNode,
                     decoration: const InputDecoration(
+                      errorStyle: TextStyle(height: 0.5),
                       prefixIcon: Icon(Icons.home),
                       hintText: 'Enter your address',
                       labelText: 'Address',
@@ -415,6 +421,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     controller: cityTextEditingController,
                     focusNode: cityFocusNode,
                     decoration: const InputDecoration(
+                      errorStyle: TextStyle(height: 0.5),
                       prefixIcon: Icon(
                         Icons.home,
                       ),
@@ -462,6 +469,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     TextFormField(
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        errorStyle: TextStyle(height: 0.5),
                         prefixIcon: Icon(
                           Icons.qr_code_rounded,
                         ),

@@ -86,6 +86,7 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                         textCapitalization: TextCapitalization.words,
                         autofocus: true,
                         decoration: const InputDecoration(
+                          errorStyle: TextStyle(height: 0.5),
                           hintText: 'Enter a title',
                           labelText: 'Title',
                           prefixIcon: Icon(Icons.edit),
@@ -108,6 +109,7 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                         focusNode: descriptionFocusNode,
                         maxLines: 5,
                         decoration: const InputDecoration(
+                          errorStyle: TextStyle(height: 0.5),
                           hintText: 'Please briefly describe the issue',
                           labelText: 'Description',
                           alignLabelWithHint: true,

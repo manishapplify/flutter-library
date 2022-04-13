@@ -95,6 +95,7 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                         obscureText: true,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
+                          errorStyle: TextStyle(height: 0.5),
                           labelText: 'New Password',
                           hintText: 'Enter new password',
                           prefixIcon: Icon(
@@ -116,6 +117,7 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                         obscureText: true,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
+                          errorStyle: TextStyle(height: 0.5),
                           labelText: 'Confirm New Password',
                           hintText: 'Enter new password again',
                           prefixIcon: Icon(

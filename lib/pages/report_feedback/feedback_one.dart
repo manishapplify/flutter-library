@@ -146,6 +146,7 @@ class _FeedbackScreenOneState extends BasePageState<FeedbackScreenOne> {
                             .add(FeedbackIssueChanged(feebackIssue: value)),
                         textAlignVertical: TextAlignVertical.top,
                         decoration: const InputDecoration(
+                          errorStyle: TextStyle(height: 0.5),
                           hintText: 'Please briefly describe the issue',
                           border: OutlineInputBorder(
                             borderRadius:
@@ -159,6 +160,7 @@ class _FeedbackScreenOneState extends BasePageState<FeedbackScreenOne> {
                         focusNode: emailFocusNode,
                         textAlignVertical: TextAlignVertical.top,
                         decoration: const InputDecoration(
+                          errorStyle: TextStyle(height: 0.5),
                           hintText: 'Enter your email',
                           labelText: 'Email',
                         ),

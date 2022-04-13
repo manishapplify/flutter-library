@@ -95,6 +95,7 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                         autofocus: true,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
+                          errorStyle: TextStyle(height: 0.5),
                           hintText: 'Enter your email',
                           labelText: 'Email',
                           prefixIcon: Icon(

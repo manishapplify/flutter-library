@@ -15,56 +15,71 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     required AuthCubit authCubit,
   })  : _authRepo = authRepository,
         super(SignUpState()) {
-    on<SignUpCountryCodeChanged>(
-        (SignUpCountryCodeChanged event, Emitter<SignUpState> emit) {
-      emit(
-        state.copyWith(
-          countryCode: event.countryCode,
-          formStatus: const InitialFormStatus(),
-        ),
-      );
-    });
-    on<SignUpPhoneNumberChanged>(
-        (SignUpPhoneNumberChanged event, Emitter<SignUpState> emit) {
-      emit(
-        state.copyWith(
-          phoneNumber: event.phoneNumber,
-          formStatus: const InitialFormStatus(),
-        ),
-      );
-    });
-    on<SignUpEmailChanged>(
-        (SignUpEmailChanged event, Emitter<SignUpState> emit) {
-      emit(
-        state.copyWith(
-          email: event.email,
-          formStatus: const InitialFormStatus(),
-        ),
-      );
-    });
-    on<SignUpPasswordChanged>(
-        (SignUpPasswordChanged event, Emitter<SignUpState> emit) {
-      emit(
-        state.copyWith(
-          password: event.password,
-          formStatus: const InitialFormStatus(),
-        ),
-      );
-    });
-    on<SignUpConfirmPasswordChanged>(
-        (SignUpConfirmPasswordChanged event, Emitter<SignUpState> emit) {
-      emit(
-        state.copyWith(
-          confirmPassword: event.confirmPassword,
-          formStatus: const InitialFormStatus(),
-        ),
-      );
-    });
+    on<SignUpCountryCodeChanged>(_signUpCountryCodeChangedHandler);
+    on<SignUpPhoneNumberChanged>(_signUpPhoneNumberChangedHandler);
+    on<SignUpEmailChanged>(_signUpEmailChangedHandler);
+    on<SignUpPasswordChanged>(_signUpPasswordChangedHandler);
+    on<SignUpConfirmPasswordChanged>(_signConfirmPasswordChangedHandler);
 
-    on<SignUpSubmitted>(
-        (SignUpSubmitted event, Emitter<SignUpState> emit) async {
-      emit(state.copyWith(formStatus: FormSubmitting()));
-      try {
+    on<SignUpSubmitted>(_signUpEventHandler);
+  }
+
+  final AuthRepository _authRepo;
+
+  void _signUpCountryCodeChangedHandler(
+      SignUpCountryCodeChanged event, Emitter<SignUpState> emit) {
+    emit(
+      state.copyWith(
+        countryCode: event.countryCode,
+        formStatus: const InitialFormStatus(),
+      ),
+    );
+  }
+
+  void _signUpPhoneNumberChangedHandler(
+      SignUpPhoneNumberChanged event, Emitter<SignUpState> emit) {
+    emit(
+      state.copyWith(
+        phoneNumber: event.phoneNumber,
+        formStatus: const InitialFormStatus(),
+      ),
+    );
+  }
+
+  void _signUpEmailChangedHandler(
+      SignUpEmailChanged event, Emitter<SignUpState> emit) {
+    emit(
+      state.copyWith(
+        email: event.email,
+        formStatus: const InitialFormStatus(),
+      ),
+    );
+  }
+
+  void _signUpPasswordChangedHandler(
+      SignUpPasswordChanged event, Emitter<SignUpState> emit) {
+    emit(
+      state.copyWith(
+        password: event.password,
+        formStatus: const InitialFormStatus(),
+      ),
+    );
+  }
+
+  void _signConfirmPasswordChangedHandler(
+      SignUpConfirmPasswordChanged event, Emitter<SignUpState> emit) {
+    emit(
+      state.copyWith(
+        confirmPassword: event.confirmPassword,
+        formStatus: const InitialFormStatus(),
+      ),
+    );
+  }
+
+  void _signUpEventHandler(
+      SignUpSubmitted event, Emitter<SignUpState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
         await _authRepo.signUp(
           countryCode: state.countryCode,
           phoneNumber: state.phoneNumber,
@@ -72,36 +87,45 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           password: state.password,
           userType: 1,
         );
-        emit(state.copyWith(formStatus: SubmissionSuccess()));
-      } on DioError catch (e) {
-        late final AppException exception;
-
-        if (e.type == DioErrorType.other && e.error is AppException) {
-          exception = e.error;
-        } else {
-          exception = AppException.api400Exception();
-        }
-
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(
-              exception: exception,
-              message: exception.message,
-            ),
-          ),
-        );
-      } on AppException catch (e) {
-        emit(state.copyWith(
-            formStatus: SubmissionFailed(exception: e, message: e.message)));
-      } on Exception catch (_) {
-        emit(
-          state.copyWith(
-            formStatus: SubmissionFailed(exception: Exception('Failure')),
-          ),
-        );
-      }
-    });
+      },
+      emit: emit,
+    );
   }
 
-  final AuthRepository _authRepo;
+  Future<void> _commonHandler(
+      {required Future<void> Function() handlerJob,
+      required Emitter<SignUpState> emit}) async {
+    emit(state.copyWith(formStatus: FormSubmitting()));
+
+    try {
+      await handlerJob();
+      emit(state.copyWith(formStatus: SubmissionSuccess()));
+    } on DioError catch (e) {
+      late final AppException exception;
+
+      if (e.type == DioErrorType.other && e.error is AppException) {
+        exception = e.error;
+      } else {
+        exception = AppException.api400Exception();
+      }
+
+      emit(
+        state.copyWith(
+          formStatus: SubmissionFailed(
+            exception: exception,
+            message: exception.message,
+          ),
+        ),
+      );
+    } on AppException catch (e) {
+      emit(state.copyWith(
+          formStatus: SubmissionFailed(exception: e, message: e.message)));
+    } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          formStatus: SubmissionFailed(exception: Exception('Failure')),
+        ),
+      );
+    }
+  }
 }

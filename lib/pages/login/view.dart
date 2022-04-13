@@ -80,8 +80,8 @@ class _LoginState extends BasePageState<LoginPage> {
                   style: const TextStyle(color: Colors.black),
                   decoration: const InputDecoration(
                     hintText: 'Enter your email',
-                    
                     labelText: 'Email',
+                    errorStyle: TextStyle(height: 0.5),
                     prefixIcon: Icon(
                       Icons.email,
                     ),
@@ -110,7 +110,6 @@ class _LoginState extends BasePageState<LoginPage> {
                   ),
                   onFieldSubmitted: (_) => onFormSubmitted(),
                 ),
-                const SizedBox(height: 25.0),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
