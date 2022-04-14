@@ -83,12 +83,12 @@ class _HomeState extends BasePageState<HomePage> {
                 ),
               ),
               const Divider(),
-              // ListTile(
-              //   title: const Text('Users'),
-              //   onTap: () => navigator.popAndPushNamed(
-              //     Routes.users,
-              //   ),
-              // ),
+              ListTile(
+                title: const Text('Users'),
+                onTap: () => navigator.popAndPushNamed(
+                  Routes.users,
+                ),
+              ),
               ListTile(
                 title: const Text('Chats'),
                 onTap: () => navigator.popAndPushNamed(

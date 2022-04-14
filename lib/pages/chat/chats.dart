@@ -34,8 +34,16 @@ class _ChatsState extends BasePageState<ChatsPage> {
     }
 
     currentUser = authCubit.state.user!;
-    chatBloc = BlocProvider.of(context)..add(GetChatsEvent());
+    chatBloc = BlocProvider.of(context)
+      ..add(GetChatsEvent())
+      ..add(GetChatSubscriptionsEvent());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    chatBloc.add(ViewDisposeEvent());
+    super.dispose();
   }
 
   @override
@@ -55,49 +63,48 @@ class _ChatsState extends BasePageState<ChatsPage> {
         }
 
         final List<FirebaseChat> chats = state.chats.toList();
-        return Stack(
-          children: <Widget>[
-            ListView.separated(
-              separatorBuilder: (_, __) => const SizedBox(
-                height: 8,
-              ),
-              itemBuilder: (BuildContext context, int i) {
-                final FirebaseChat chat = chats[i];
+        return WillPopScope(
+          onWillPop: () {
+            chatBloc.add(ResetBlocState());
+            return Future<bool>.value(true);
+          },
+          child: Stack(
+            children: <Widget>[
+              ListView.separated(
+                separatorBuilder: (_, __) => const SizedBox(
+                  height: 8,
+                ),
+                itemBuilder: (BuildContext context, int i) {
+                  final FirebaseChat chat = chats[i];
 
-                return ChatTile(
-                  chat: chat,
-                  imageBaseUrl: chatBloc.imageBaseUrl,
-                  currentUserFirebaseId: currentUser.firebaseId,
-                  onTileTap: () {
-                    Future<void>.microtask(
-                      () => navigator.pushNamed(
-                        Routes.chat,
-                        arguments: chat,
-                      ),
-                    );
-                  },
-                  onTileLongPress: () => onChatTileLongPress(
-                    context: context,
+                  return ChatTile(
                     chat: chat,
-                  ),
-                );
-              },
-              itemCount: chats.length,
-            ),
-            Visibility(
-              child: const Center(
-                child: Text('No chats present'),
+                    imageBaseUrl: chatBloc.imageBaseUrl,
+                    currentUserFirebaseId: currentUser.firebaseId,
+                    onTileTap: () {
+                      chatBloc.add(ChatOpenedEvent(chat));
+                      Future<void>.microtask(
+                        () => navigator.pushNamed(
+                          Routes.chat,
+                        ),
+                      );
+                    },
+                    onTileLongPress: () => onChatTileLongPress(
+                      context: context,
+                      chat: chat,
+                    ),
+                  );
+                },
+                itemCount: chats.length,
               ),
-              visible:
-                  state.blocStatus is! FormSubmitting && state.chats.isEmpty,
-            ),
-            Visibility(
-              child: const Center(
-                child: CircularProgressIndicator(),
+              Visibility(
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                visible: state.blocStatus is FormSubmitting,
               ),
-              visible: state.blocStatus is FormSubmitting,
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

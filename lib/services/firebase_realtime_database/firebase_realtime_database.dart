@@ -95,6 +95,21 @@ class FirebaseRealtimeDatabase {
     return chats;
   }
 
+  /// Returns a map of streams according to the following scheme {ChatId: Stream}
+  Map<String, Stream<Set<FirebaseMessage>>> getChatMessagesSubscription(
+      Set<String> chatIds) {
+    final Map<String, Stream<Set<FirebaseMessage>>> streams =
+        <String, Stream<Set<FirebaseMessage>>>{};
+    for (final String chatId in chatIds) {
+      streams[chatId] = _database
+          .ref(_messagesCollection + chatId)
+          .onValue
+          .map(_parseMessagesDatabaseEvent);
+    }
+
+    return streams;
+  }
+
   /// Creates a new chat between [firebaseUserA] and [firebaseUserB], if not
   /// present already.
   Future<FirebaseChat> addChatIfNotExists({
@@ -209,23 +224,7 @@ class FirebaseRealtimeDatabase {
         _database.ref(_messagesCollection + chatId);
 
     final DatabaseEvent event = await messagesReference.once();
-    Set<FirebaseMessage> messages = <FirebaseMessage>{};
-    if (event.snapshot.value != null) {
-      final Map<dynamic, dynamic> map =
-          event.snapshot.value as Map<dynamic, dynamic>;
-
-      final List<FirebaseMessage> _messages = map.entries
-          .map(
-            (MapEntry<dynamic, dynamic> e) => FirebaseMessage.fromMap(e.value),
-          )
-          .toList()
-        ..sort(((FirebaseMessage a, FirebaseMessage b) =>
-            a.messageTime.compareTo(b.messageTime)));
-
-      messages = _messages.toSet();
-    }
-
-    return messages;
+    return _parseMessagesDatabaseEvent(event);
   }
 
   Future<FirebaseMessage> sendMessage({
@@ -298,5 +297,25 @@ class FirebaseRealtimeDatabase {
         _database.ref(_notificationsCollection + message.messageId);
 
     await notificationsReference.set(message.toMap());
+  }
+
+  Set<FirebaseMessage> _parseMessagesDatabaseEvent(DatabaseEvent event) {
+    Set<FirebaseMessage> messages = <FirebaseMessage>{};
+    if (event.snapshot.value != null) {
+      final Map<dynamic, dynamic> map =
+          event.snapshot.value as Map<dynamic, dynamic>;
+
+      final List<FirebaseMessage> _messages = map.entries
+          .map(
+            (MapEntry<dynamic, dynamic> e) => FirebaseMessage.fromMap(e.value),
+          )
+          .toList()
+        ..sort(((FirebaseMessage a, FirebaseMessage b) =>
+            a.messageTime.compareTo(b.messageTime)));
+
+      messages = _messages.toSet();
+    }
+
+    return messages;
   }
 }

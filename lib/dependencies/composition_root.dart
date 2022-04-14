@@ -1,35 +1,39 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
+import 'package:components/enums/platform.dart' as enums;
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/profile/repo.dart';
-import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/api/api.dart';
+import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-
-import 'package:components/enums/platform.dart' as enums;
 
 class CompositionRoot {
   CompositionRoot({
     required this.authCubit,
     required this.passwordAuthCubit,
     required this.navigation,
+    required this.firebaseRealtimeDatabase,
+    required this.s3imageUpload,
   });
 
   final AuthCubit authCubit;
   final PasswordAuthCubit passwordAuthCubit;
   final Navigation navigation;
+  final FirebaseRealtimeDatabase firebaseRealtimeDatabase;
+  final S3ImageUpload s3imageUpload;
 }
 
 Future<CompositionRoot> configureDependencies() async {
@@ -122,6 +126,8 @@ Future<CompositionRoot> configureDependencies() async {
       s3imageUpload: s3imageUpload,
       firebaseRealtimeDatabase: firebaseRealtimeDatabase,
     ),
+    firebaseRealtimeDatabase: firebaseRealtimeDatabase,
+    s3imageUpload: s3imageUpload,
   );
 }
 

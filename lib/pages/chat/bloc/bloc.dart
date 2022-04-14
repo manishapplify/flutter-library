@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:components/authentication/form_submission.dart';
 import 'package:components/cubits/auth_cubit.dart';
@@ -16,21 +18,24 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required this.imageBaseUrl,
     required AuthCubit authCubit,
     required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
-    FirebaseChat? currentChat,
   })  : _authCubit = authCubit,
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
-        super(
-          ChatState(currentChat: currentChat),
-        ) {
+        super(const ChatState()) {
     on<GetChatsEvent>(_getChatsEventHandler);
+    on<GetChatSubscriptionsEvent>(_getChatSubscriptionsEventHandler);
     on<RemoveChatEvent>(_removeChatEventHandler);
+    on<ChatOpenedEvent>(_chatOpenedEventHandler);
     on<GetCurrentChatMessagesEvent>(_getCurrentChatMessagesEventHandler);
+    on<_OnMessagesEvent>(_onMessagesEventHandler);
     on<TextMessageChanged>(_textMessageChangedHandler);
-    on<ClearTextMessageEvent>(_clearTextMessageEventHandler);
+    on<_ClearTextMessageEvent>(_clearTextMessageEventHandler);
     on<SendTextEvent>(_sendTextEventHandler);
     on<SendImageEvent>(_sendImageEventHandler);
     on<SendDocEvent>(_sendDocEventHandler);
     on<ResetBlocStatus>(_resetBlocStatusHandler);
+    on<ChatPagePopEvent>(_chatPagePopEventHandler);
+    on<ResetBlocState>(_resetBlocStateHandler);
+    on<ViewDisposeEvent>(_viewDisposeEventHandler);
   }
 
   final String imageBaseUrl;
@@ -51,12 +56,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (firebaseUser is FirebaseUser) {
           if (firebaseUser.chatIds is Set<String> &&
               firebaseUser.chatIds!.isNotEmpty) {
-            emit(
-              state.copyWith(
-                chats: await _firebaseRealtimeDatabase
-                    .getChats(firebaseUser.chatIds!),
-              ),
-            );
+            final Set<FirebaseChat> chats =
+                await _firebaseRealtimeDatabase.getChats(firebaseUser.chatIds!);
+
+            emit(state.copyWith(chats: chats));
           } else {
             throw AppException.noChatsPresent();
           }
@@ -65,6 +68,48 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
       },
       emit: emit,
+    );
+  }
+
+  void _getChatSubscriptionsEventHandler(
+      GetChatSubscriptionsEvent event, Emitter<ChatState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
+        if (!_authCubit.state.isAuthorized) {
+          throw AppException.authenticationException;
+        }
+
+        final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
+            .getFirebaseUser(user: _authCubit.state.user);
+
+        if (firebaseUser is FirebaseUser &&
+            firebaseUser.chatIds is Set<String> &&
+            firebaseUser.chatIds!.isNotEmpty) {
+          final Map<String, Stream<Set<FirebaseMessage>>> messageStreams =
+              _firebaseRealtimeDatabase
+                  .getChatMessagesSubscription(firebaseUser.chatIds!);
+
+          final List<StreamSubscription<Set<FirebaseMessage>>> subscriptions =
+              <StreamSubscription<Set<FirebaseMessage>>>[];
+
+          for (final MapEntry<String, Stream<Set<FirebaseMessage>>> mapEntry
+              in messageStreams.entries) {
+            final StreamSubscription<Set<FirebaseMessage>> subscription =
+                mapEntry.value.listen((Set<FirebaseMessage> messages) {
+              add(_OnMessagesEvent(chatId: mapEntry.key, messages: messages));
+            });
+
+            subscriptions.add(subscription);
+          }
+
+          emit(state.copyWith(
+            subscriptions: subscriptions,
+            messagesStream: messageStreams,
+          ));
+        }
+      },
+      emit: emit,
+      emitFailureOnly: true,
     );
   }
 
@@ -89,6 +134,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
   }
 
+  void _chatOpenedEventHandler(
+      ChatOpenedEvent event, Emitter<ChatState> emit) async {
+    emit(
+      state.copyWith(
+        currentChat: event.chat,
+      ),
+    );
+  }
+
   void _getCurrentChatMessagesEventHandler(
       GetCurrentChatMessagesEvent event, Emitter<ChatState> emit) async {
     await _commonHandler(
@@ -106,13 +160,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
   }
 
+  void _onMessagesEventHandler(
+      _OnMessagesEvent event, Emitter<ChatState> emit) {
+    if (state.currentChat != null && event.chatId == state.currentChat!.id) {
+      emit(state.copyWith(messages: event.messages));
+    }
+  }
+
   void _textMessageChangedHandler(
       TextMessageChanged event, Emitter<ChatState> emit) {
     emit(state.copyWith(message: event.message));
   }
 
   void _clearTextMessageEventHandler(
-      ClearTextMessageEvent event, Emitter<ChatState> emit) {
+      _ClearTextMessageEvent event, Emitter<ChatState> emit) {
     emit(state.copyWith(message: ''));
   }
 
@@ -125,19 +186,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             throw AppException.authenticationException;
           }
 
-          final FirebaseMessage message =
-              await _firebaseRealtimeDatabase.sendMessage(
+          _firebaseRealtimeDatabase.sendMessage(
             textMessage: state.message,
             chatId: state.currentChat!.id,
             senderId: _authCubit.state.user!.firebaseId,
           );
 
-          emit(
-            state.copyWith(
-              messages: state.messages..add(message),
-            ),
-          );
-          add(ClearTextMessageEvent());
+          add(_ClearTextMessageEvent());
         } else {
           throw AppException.messageCannotBeEmpty();
         }
@@ -160,14 +215,49 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(state.copyWith(blocStatus: const InitialFormStatus()));
   }
 
-  Future<void> _commonHandler(
-      {required Future<void> Function() handlerJob,
-      required Emitter<ChatState> emit}) async {
-    emit(state.copyWith(blocStatus: FormSubmitting()));
+  void _chatPagePopEventHandler(
+      ChatPagePopEvent event, Emitter<ChatState> emit) {
+    emit(ChatState(
+      chats: state.chats,
+      messagesStream: state.messagesStream,
+      subscriptions: state.subscriptions,
+    ));
+  }
+
+  void _resetBlocStateHandler(ResetBlocState event, Emitter<ChatState> emit) {
+    emit(ChatState(
+      messagesStream: state.messagesStream,
+      subscriptions: state.subscriptions,
+    ));
+  }
+
+  void _viewDisposeEventHandler(
+      ViewDisposeEvent event, Emitter<ChatState> emit) {
+    for (final StreamSubscription<Set<FirebaseMessage>> subscription
+        in state.subscriptions) {
+      subscription.cancel();
+    }
+
+    emit(state.copyWith(
+      messagesStream: <String, Stream<Set<FirebaseMessage>>>{},
+      subscriptions: <StreamSubscription<Set<FirebaseMessage>>>[],
+    ));
+  }
+
+  Future<void> _commonHandler({
+    required Future<void> Function() handlerJob,
+    required Emitter<ChatState> emit,
+    bool emitFailureOnly = false,
+  }) async {
+    if (!emitFailureOnly) {
+      emit(state.copyWith(blocStatus: FormSubmitting()));
+    }
 
     try {
       await handlerJob();
-      emit(state.copyWith(blocStatus: SubmissionSuccess()));
+      if (!emitFailureOnly) {
+        emit(state.copyWith(blocStatus: SubmissionSuccess()));
+      }
     } on AppException catch (e) {
       emit(state.copyWith(
           blocStatus: SubmissionFailed(exception: e, message: e.message)));

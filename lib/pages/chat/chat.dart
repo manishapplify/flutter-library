@@ -116,92 +116,97 @@ class _ChatState extends BasePageState<ChatPage> {
 
   @override
   Widget body(BuildContext context) {
-
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (BuildContext context, ChatState state) {
         final List<FirebaseMessage> messages = state.messages.toList();
 
-        return Stack(
-          children: <Widget>[
-            ListView.builder(
-              controller: controller,
-              itemCount: messages.length,
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 2, bottom: 60),
-              itemBuilder: (BuildContext context, int index) {
-                return MessageTile(
-                  message: messages[index].message,
-                  color: messages[index]
-                          .isSentByCurrentUser(currentUser.firebaseId)
-                      ? Colors.blue
-                      : Colors.grey,
-                  alignment: messages[index]
-                          .isSentByCurrentUser(currentUser.firebaseId)
-                      ? Alignment.topRight
-                      : Alignment.topLeft,
-                );
-              },
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                height: 60,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(30),
+        return WillPopScope(
+          onWillPop: () async {
+            chatBloc.add(ChatPagePopEvent());
+            return Future<bool>.value(true);
+          },
+          child: Stack(
+            children: <Widget>[
+              ListView.builder(
+                controller: controller,
+                itemCount: messages.length,
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(top: 2, bottom: 60),
+                itemBuilder: (BuildContext context, int index) {
+                  return MessageTile(
+                    message: messages[index].message,
+                    color: messages[index]
+                            .isSentByCurrentUser(currentUser.firebaseId)
+                        ? Colors.blue
+                        : Colors.grey,
+                    alignment: messages[index]
+                            .isSentByCurrentUser(currentUser.firebaseId)
+                        ? Alignment.topRight
+                        : Alignment.topLeft,
+                  );
+                },
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                  height: 60,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {},
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: TextField(
+                          controller: textEditingController,
+                          decoration: const InputDecoration(
+                            hintText: "Write message...",
+                          ),
+                          onChanged: (String message) =>
+                              chatBloc.add(TextMessageChanged(message)),
+                          onSubmitted: (_) => onMessageSend(),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      IconButton(
+                        onPressed: onMessageSend,
+                        icon: const Icon(
+                          Icons.send,
+                          color: Colors.black,
                           size: 20,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: TextField(
-                        controller: textEditingController,
-                        decoration: const InputDecoration(
-                          hintText: "Write message...",
-                        ),
-                        onChanged: (String message) =>
-                            chatBloc.add(TextMessageChanged(message)),
-                        onSubmitted: (_) => onMessageSend(),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    IconButton(
-                      onPressed: onMessageSend,
-                      icon: const Icon(
-                        Icons.send,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Visibility(
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-              visible: state.blocStatus is FormSubmitting,
-            )
-          ],
+              Visibility(
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                visible: state.blocStatus is FormSubmitting,
+              )
+            ],
+          ),
         );
       },
     );

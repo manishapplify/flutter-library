@@ -4,7 +4,6 @@ import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/pages/change_password/bloc/bloc.dart';
 import 'package:components/pages/change_password/view.dart';
-import 'package:components/pages/chat/bloc/bloc.dart';
 import 'package:components/pages/chat/chat.dart';
 import 'package:components/pages/chat/chats.dart';
 import 'package:components/pages/feedback/bloc/bloc.dart';
@@ -37,7 +36,6 @@ import 'package:components/pages/users/bloc/bloc.dart';
 import 'package:components/pages/users/view.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
-import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/utils/config.dart';
@@ -233,27 +231,12 @@ class Navigation {
       case Routes.chats:
         return MaterialPageRoute<ChatsPage>(
           settings: settings,
-          builder: (_) => BlocProvider<ChatBloc>(
-            create: (_) => ChatBloc(
-              authCubit: _authCubit,
-              firebaseRealtimeDatabase: _firebaseRealtimeDatabase,
-              imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
-            ),
-            child: const ChatsPage(),
-          ),
+          builder: (_) => const ChatsPage(),
         );
       case Routes.chat:
         return MaterialPageRoute<ChatPage>(
           settings: settings,
-          builder: (_) => BlocProvider<ChatBloc>(
-            create: (_) => ChatBloc(
-              authCubit: _authCubit,
-              firebaseRealtimeDatabase: _firebaseRealtimeDatabase,
-              imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
-              currentChat: settings.arguments as FirebaseChat,
-            ),
-            child: const ChatPage(),
-          ),
+          builder: (_) => const ChatPage(),
         );
 
       case Routes.feedbackScreens:
