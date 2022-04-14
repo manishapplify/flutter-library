@@ -87,7 +87,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             firebaseUser.chatIds!.isNotEmpty) {
           final Map<String, Stream<Set<FirebaseMessage>>> messageStreams =
               _firebaseRealtimeDatabase
-                  .getChatMessagesSubscription(firebaseUser.chatIds!);
+                  .getMessagesSubscription(firebaseUser.chatIds!);
 
           final List<StreamSubscription<Set<FirebaseMessage>>> subscriptions =
               <StreamSubscription<Set<FirebaseMessage>>>[];

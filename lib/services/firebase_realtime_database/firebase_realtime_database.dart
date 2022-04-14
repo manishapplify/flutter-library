@@ -95,21 +95,6 @@ class FirebaseRealtimeDatabase {
     return chats;
   }
 
-  /// Returns a map of streams according to the following scheme {ChatId: Stream}
-  Map<String, Stream<Set<FirebaseMessage>>> getChatMessagesSubscription(
-      Set<String> chatIds) {
-    final Map<String, Stream<Set<FirebaseMessage>>> streams =
-        <String, Stream<Set<FirebaseMessage>>>{};
-    for (final String chatId in chatIds) {
-      streams[chatId] = _database
-          .ref(_messagesCollection + chatId)
-          .onValue
-          .map(_parseMessagesDatabaseEvent);
-    }
-
-    return streams;
-  }
-
   /// Creates a new chat between [firebaseUserA] and [firebaseUserB], if not
   /// present already.
   Future<FirebaseChat> addChatIfNotExists({
@@ -225,6 +210,21 @@ class FirebaseRealtimeDatabase {
 
     final DatabaseEvent event = await messagesReference.once();
     return _parseMessagesDatabaseEvent(event);
+  }
+
+  /// Returns a map of streams according to the following scheme {ChatId: Stream}
+  Map<String, Stream<Set<FirebaseMessage>>> getMessagesSubscription(
+      Set<String> chatIds) {
+    final Map<String, Stream<Set<FirebaseMessage>>> streams =
+        <String, Stream<Set<FirebaseMessage>>>{};
+    for (final String chatId in chatIds) {
+      streams[chatId] = _database
+          .ref(_messagesCollection + chatId)
+          .onValue
+          .map(_parseMessagesDatabaseEvent);
+    }
+
+    return streams;
   }
 
   Future<FirebaseMessage> sendMessage({
