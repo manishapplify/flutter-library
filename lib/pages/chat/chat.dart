@@ -66,48 +66,51 @@ class _ChatState extends BasePageState<ChatPage> {
                     ),
                   );
                 }
+                if (state.currentChat is FirebaseChat) {
+                  final FirebaseChat chat = state.currentChat!;
+                  final String otherUserId = chat.participantIds.firstWhere(
+                    (String id) => id != currentUser.firebaseId,
+                  );
 
-                final FirebaseChat chat = state.currentChat!;
-                final String otherUserId = chat.participantIds.firstWhere(
-                  (String id) => id != currentUser.firebaseId,
-                );
-
-                return Row(
-                  children: <Widget>[
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
+                  return Row(
+                    children: <Widget>[
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 2,
-                    ),
-                    ImageContainer(
-                      height: 50,
-                      width: 50,
-                      imageUrl: chatBloc.imageBaseUrl +
-                          (chat.participantProfileImages?[otherUserId] ?? ''),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(chat.participantNames[otherUserId] ?? ''),
-                          const SizedBox(height: 6),
-                          const Text("Online"),
-                        ],
+                      const SizedBox(
+                        width: 2,
                       ),
-                    ),
-                  ],
-                );
+                      ImageContainer(
+                        height: 50,
+                        width: 50,
+                        imageUrl: chatBloc.imageBaseUrl +
+                            (chat.participantProfileImages?[otherUserId] ?? ''),
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(chat.participantNames[otherUserId] ?? ''),
+                            const SizedBox(height: 6),
+                            const Text("Online"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox();
+                }
               },
             ),
           ),
