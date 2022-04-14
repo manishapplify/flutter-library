@@ -5,8 +5,6 @@ abstract class ChatEvent {}
 
 class GetChatsEvent extends ChatEvent {}
 
-class GetChatSubscriptionsEvent extends ChatEvent {}
-
 class RemoveChatEvent extends ChatEvent {
   RemoveChatEvent(this.chat);
 
@@ -20,6 +18,8 @@ class ChatOpenedEvent extends ChatEvent {
 }
 
 class GetCurrentChatMessagesEvent extends ChatEvent {}
+
+class GetMessageSubscriptionsEvent extends ChatEvent {}
 
 class _OnMessagesEvent extends ChatEvent {
   _OnMessagesEvent({

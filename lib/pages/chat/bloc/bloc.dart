@@ -22,10 +22,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
         super(const ChatState()) {
     on<GetChatsEvent>(_getChatsEventHandler);
-    on<GetChatSubscriptionsEvent>(_getChatSubscriptionsEventHandler);
     on<RemoveChatEvent>(_removeChatEventHandler);
     on<ChatOpenedEvent>(_chatOpenedEventHandler);
     on<GetCurrentChatMessagesEvent>(_getCurrentChatMessagesEventHandler);
+    on<GetMessageSubscriptionsEvent>(_getMessageSubscriptionsEventHandler);
     on<_OnMessagesEvent>(_onMessagesEventHandler);
     on<TextMessageChanged>(_textMessageChangedHandler);
     on<_ClearTextMessageEvent>(_clearTextMessageEventHandler);
@@ -68,48 +68,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
       },
       emit: emit,
-    );
-  }
-
-  void _getChatSubscriptionsEventHandler(
-      GetChatSubscriptionsEvent event, Emitter<ChatState> emit) async {
-    await _commonHandler(
-      handlerJob: () async {
-        if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
-        }
-
-        final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
-            .getFirebaseUser(user: _authCubit.state.user);
-
-        if (firebaseUser is FirebaseUser &&
-            firebaseUser.chatIds is Set<String> &&
-            firebaseUser.chatIds!.isNotEmpty) {
-          final Map<String, Stream<Set<FirebaseMessage>>> messageStreams =
-              _firebaseRealtimeDatabase
-                  .getMessagesSubscription(firebaseUser.chatIds!);
-
-          final List<StreamSubscription<Set<FirebaseMessage>>> subscriptions =
-              <StreamSubscription<Set<FirebaseMessage>>>[];
-
-          for (final MapEntry<String, Stream<Set<FirebaseMessage>>> mapEntry
-              in messageStreams.entries) {
-            final StreamSubscription<Set<FirebaseMessage>> subscription =
-                mapEntry.value.listen((Set<FirebaseMessage> messages) {
-              add(_OnMessagesEvent(chatId: mapEntry.key, messages: messages));
-            });
-
-            subscriptions.add(subscription);
-          }
-
-          emit(state.copyWith(
-            subscriptions: subscriptions,
-            messagesStream: messageStreams,
-          ));
-        }
-      },
-      emit: emit,
-      emitFailureOnly: true,
     );
   }
 
@@ -157,6 +115,48 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         );
       },
       emit: emit,
+    );
+  }
+
+  void _getMessageSubscriptionsEventHandler(
+      GetMessageSubscriptionsEvent event, Emitter<ChatState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
+        if (!_authCubit.state.isAuthorized) {
+          throw AppException.authenticationException;
+        }
+
+        final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
+            .getFirebaseUser(user: _authCubit.state.user);
+
+        if (firebaseUser is FirebaseUser &&
+            firebaseUser.chatIds is Set<String> &&
+            firebaseUser.chatIds!.isNotEmpty) {
+          final Map<String, Stream<Set<FirebaseMessage>>> messageStreams =
+              _firebaseRealtimeDatabase
+                  .getMessagesSubscription(firebaseUser.chatIds!);
+
+          final List<StreamSubscription<Set<FirebaseMessage>>> subscriptions =
+              <StreamSubscription<Set<FirebaseMessage>>>[];
+
+          for (final MapEntry<String, Stream<Set<FirebaseMessage>>> mapEntry
+              in messageStreams.entries) {
+            final StreamSubscription<Set<FirebaseMessage>> subscription =
+                mapEntry.value.listen((Set<FirebaseMessage> messages) {
+              add(_OnMessagesEvent(chatId: mapEntry.key, messages: messages));
+            });
+
+            subscriptions.add(subscription);
+          }
+
+          emit(state.copyWith(
+            subscriptions: subscriptions,
+            messagesStream: messageStreams,
+          ));
+        }
+      },
+      emit: emit,
+      emitFailureOnly: true,
     );
   }
 

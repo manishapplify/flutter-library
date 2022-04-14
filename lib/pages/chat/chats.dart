@@ -36,7 +36,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
     currentUser = authCubit.state.user!;
     chatBloc = BlocProvider.of(context)
       ..add(GetChatsEvent())
-      ..add(GetChatSubscriptionsEvent());
+      ..add(GetMessageSubscriptionsEvent());
     super.initState();
   }
 
