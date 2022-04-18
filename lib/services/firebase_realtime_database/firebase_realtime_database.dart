@@ -91,11 +91,9 @@ class FirebaseRealtimeDatabase {
       final DatabaseReference chatReference =
           _database.ref(_chatsCollection + chatId);
       final DatabaseEvent event = await chatReference.once();
-
-      if (event.snapshot.value != null) {
-        final Map<dynamic, dynamic> map =
-            event.snapshot.value as Map<dynamic, dynamic>;
-        chats.add(FirebaseChat.fromMap(map));
+      final FirebaseChat? chat = _parseChatDatabaseEvent(event);
+      if (chat is FirebaseChat) {
+        chats.add(chat);
       }
     }
     return chats;
@@ -323,5 +321,15 @@ class FirebaseRealtimeDatabase {
     }
 
     return messages;
+  }
+
+  FirebaseChat? _parseChatDatabaseEvent(DatabaseEvent event) {
+    if (event.snapshot.value != null) {
+      final Map<dynamic, dynamic> map =
+          event.snapshot.value as Map<dynamic, dynamic>;
+      return FirebaseChat.fromMap(map);
+    }
+
+    return null;
   }
 }
