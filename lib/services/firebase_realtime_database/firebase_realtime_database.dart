@@ -28,10 +28,13 @@ class FirebaseRealtimeDatabase {
 
   Future<void> removeUser({
     User? user,
+    FirebaseUser? firebaseUser,
     String? firebaseId,
   }) async {
+    final String userId = user?.firebaseId ?? firebaseUser?.id ?? firebaseId!;
+
     final DatabaseReference userReference =
-        _database.ref(_userCollection + (user?.firebaseId ?? firebaseId!));
+        _database.ref(_userCollection + userId);
 
     await userReference.remove();
   }
@@ -45,10 +48,13 @@ class FirebaseRealtimeDatabase {
 
   Future<FirebaseUser?> getFirebaseUser({
     User? user,
+    FirebaseUser? firebaseUser,
     String? firebaseId,
   }) async {
+    final String userId = user?.firebaseId ?? firebaseUser?.id ?? firebaseId!;
+
     final DatabaseReference userReference =
-        _database.ref(_userCollection + (user?.firebaseId ?? firebaseId!));
+        _database.ref(_userCollection + userId);
     final DatabaseEvent event = await userReference.once();
 
     if (event.snapshot.value != null) {
