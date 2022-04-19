@@ -39,6 +39,12 @@ class AppException implements Exception {
   factory AppException.messageCannotBeEmpty() {
     return AppException(message: 'Message cannot be empty'); 
   }
+  factory AppException.otpCannotBeEmpty() {
+    return AppException(message: 'Please enter OTP'); 
+  }
+  factory AppException.otpvalid() {
+    return AppException(message: 'Please enter valid otp'); 
+  }
 
   final String message;
 }

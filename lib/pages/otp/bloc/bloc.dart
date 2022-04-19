@@ -8,6 +8,7 @@ import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/api/api.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
+import 'package:components/validators/validators.dart' as validators;
 
 part 'event.dart';
 part 'state.dart';
@@ -40,6 +41,12 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
     emit(state.copyWith(formStatus: FormSubmitting()));
 
     try {
+      if(state.isOtpValid==false){
+        if(state.isOtpEmpty == true){
+        throw AppException.otpCannotBeEmpty();
+      }
+        throw AppException.otpvalid();
+      }
       if (state.screenType == Screen.forgotPassword) {
         await _authRepository.verifyForgetPasswordOtp(state.otp!);
       } else if (state.screenType == Screen.verifyEmail) {

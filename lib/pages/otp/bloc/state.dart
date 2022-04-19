@@ -12,6 +12,7 @@ class OtpState {
   final Screen screenType;
 
   bool get isOtpValid => otp is String && otp!.length == 4;
+  bool get isOtpEmpty => !validators.notEmptyValidator(otp);
 
   OtpState copyWith({
     String? otp,

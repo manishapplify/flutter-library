@@ -67,11 +67,9 @@ class _OTPState extends BasePageState<OtpPage> {
 
   void onFormSubmitted() async {
     FocusScope.of(context).unfocus();
-    if (otpBloc.state.isOtpValid) {
-      otpBloc.add(
-        OtpSubmitted(),
-      );
-    }
+    otpBloc.add(
+      OtpSubmitted(),
+    );
   }
 
   void valueChangeHandler(int i, String value) {
