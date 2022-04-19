@@ -27,8 +27,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<RemoveChatEvent>(_removeChatEventHandler);
     on<ChatOpenedEvent>(_chatOpenedEventHandler);
     on<GetCurrentChatMessagesEvent>(_getCurrentChatMessagesEventHandler);
+    on<ResetCurrentChatMessagesFetched>(
+        _resetCurrentChatMessagesFetchedHandler);
     on<GetMessageSubscriptionsEvent>(_getMessageSubscriptionsEventHandler);
     on<_OnMessagesEvent>(_onMessagesEventHandler);
+    on<ResetCurrentChatNewMessageReceived>(
+        _resetCurrentChatNewMessageReceivedHandler);
     on<TextMessageChanged>(_textMessageChangedHandler);
     on<_ClearTextMessageEvent>(_clearTextMessageEventHandler);
     on<SendTextEvent>(_sendTextEventHandler);
@@ -188,9 +192,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             messages: messages,
           ),
         );
+        emit(
+          state.copyWith(
+            currentChatMessagesFetched: true,
+          ),
+        );
       },
       emit: emit,
     );
+  }
+
+  void _resetCurrentChatMessagesFetchedHandler(
+      ResetCurrentChatMessagesFetched event, Emitter<ChatState> emit) async {
+    emit(state.copyWith(currentChatMessagesFetched: false));
   }
 
   void _getMessageSubscriptionsEventHandler(
@@ -227,8 +241,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   void _onMessagesEventHandler(
       _OnMessagesEvent event, Emitter<ChatState> emit) {
     if (state.currentChat != null && event.chatId == state.currentChat!.id) {
-      emit(state.copyWith(messages: event.messages));
+      emit(
+        state.copyWith(
+          messages: event.messages,
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          currentChatMessagesFetched: true,
+        ),
+      );
     }
+  }
+
+  void _resetCurrentChatNewMessageReceivedHandler(
+      ResetCurrentChatNewMessageReceived event, Emitter<ChatState> emit) {
+    emit(
+      state.copyWith(currentChatNewMessageReceived: false),
+    );
   }
 
   void _textMessageChangedHandler(

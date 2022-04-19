@@ -135,23 +135,26 @@ class _ChatState extends BasePageState<ChatPage> {
               ),
             ),
           );
-        } else if (state.blocStatus is SubmissionSuccess) {
-          chatBloc.add(ResetBlocStatus());
+        }
+
+        if (state.currentChatMessagesFetched) {
+          chatBloc.add(ResetCurrentChatMessagesFetched());
 
           Future<void>.microtask(
-            () => controller
-                .animateTo(
-                  controller.position.maxScrollExtent,
-                  duration: const Duration(milliseconds: 700),
-                  curve: Curves.fastOutSlowIn,
-                )
-                .then(
-                  (_) => controller.animateTo(
-                    controller.position.maxScrollExtent,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.fastOutSlowIn,
-                  ),
-                ),
+            () => controller.jumpTo(
+              controller.position.maxScrollExtent,
+            ),
+          );
+        }
+        if (state.currentChatNewMessageReceived) {
+          chatBloc.add(ResetCurrentChatNewMessageReceived());
+
+          Future<void>.microtask(
+            () => controller.animateTo(
+              controller.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 700),
+              curve: Curves.fastOutSlowIn,
+            ),
           );
         }
 

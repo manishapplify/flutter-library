@@ -62,3 +62,7 @@ class ResetBlocState extends ChatEvent {}
 class ChatPagePopEvent extends ChatEvent {}
 
 class ViewDisposeEvent extends ChatEvent {}
+
+class ResetCurrentChatMessagesFetched extends ChatEvent {}
+
+class ResetCurrentChatNewMessageReceived extends ChatEvent {}

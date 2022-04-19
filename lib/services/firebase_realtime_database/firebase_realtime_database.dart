@@ -31,8 +31,10 @@ class FirebaseRealtimeDatabase {
     FirebaseUser? firebaseUser,
     String? firebaseId,
   }) async {
-    final String userId = user?.firebaseId ?? firebaseUser?.id ?? firebaseId!;
+    // TODO: Remove chats first.
 
+
+    final String userId = user?.firebaseId ?? firebaseUser?.id ?? firebaseId!;
     final DatabaseReference userReference =
         _database.ref(_userCollection + userId);
 
