@@ -41,5 +41,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires camera access to capture an image.</string>
+	<key>NSFileProviderDomainUsageDescription</key>
+	<string>This app requires file access to function properly.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app requires local network for notifications</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires photo library access to select a picture.</string>
 </dict>
 </plist>
