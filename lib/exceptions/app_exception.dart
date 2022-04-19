@@ -37,7 +37,10 @@ class AppException implements Exception {
     return AppException(message: 'You have no chats');
   }
   factory AppException.messageCannotBeEmpty() {
-    return AppException(message: 'Message cannot be empty'); 
+    return AppException(message: 'Message cannot be empty');
+  }
+  factory AppException.currentChatRemoved() {
+    return AppException(message: 'This chat has been removed, going back.');
   }
   factory AppException.otpCannotBeEmpty() {
     return AppException(message: 'Please enter OTP'); 

@@ -5,6 +5,16 @@ abstract class ChatEvent {}
 
 class GetChatsEvent extends ChatEvent {}
 
+class GetChatsSubscriptionEvent extends ChatEvent {}
+
+class _OnChatsEvent extends ChatEvent {
+  _OnChatsEvent({
+    required this.chats,
+  });
+
+  final Set<FirebaseChat> chats;
+}
+
 class RemoveChatEvent extends ChatEvent {
   RemoveChatEvent(this.chat);
 

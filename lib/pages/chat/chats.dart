@@ -36,6 +36,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
     currentUser = authCubit.state.user!;
     chatBloc = BlocProvider.of(context)
       ..add(GetChatsEvent())
+      ..add(GetChatsSubscriptionEvent())
       ..add(GetMessageSubscriptionsEvent());
     super.initState();
   }
@@ -52,13 +53,15 @@ class _ChatsState extends BasePageState<ChatsPage> {
       builder: (BuildContext context, ChatState state) {
         if (state.blocStatus is SubmissionFailed) {
           final SubmissionFailed failure = state.blocStatus as SubmissionFailed;
-          Future<void>.microtask(
-            () => showSnackBar(
-              SnackBar(
-                content: Text(failure.message ?? 'Failure'),
+          if (failure.message != AppException.currentChatRemoved().message) {
+            Future<void>.microtask(
+              () => showSnackBar(
+                SnackBar(
+                  content: Text(failure.message ?? 'Failure'),
+                ),
               ),
-            ),
-          );
+            );
+          }
           chatBloc.add(ResetBlocStatus());
         }
 
@@ -86,6 +89,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
                       Future<void>.microtask(
                         () => navigator.pushNamed(
                           Routes.chat,
+                          arguments: Routes.chats,
                         ),
                       );
                     },

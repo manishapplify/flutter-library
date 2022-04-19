@@ -47,7 +47,10 @@ class _UsersState extends BasePageState<UsersPage> {
       builder: (BuildContext context, UsersState state) {
         if (state.chatStatus is SubmissionSuccess) {
           Future<void>.microtask(
-            () => navigator.pushNamed(Routes.chat),
+            () => navigator.pushNamed(
+              Routes.chat,
+              arguments: Routes.users,
+            ),
           );
           chatBloc.add(ChatOpenedEvent(state.chat!));
           usersBloc.add(ResetChatState());

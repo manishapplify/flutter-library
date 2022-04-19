@@ -22,6 +22,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
         super(const ChatState()) {
     on<GetChatsEvent>(_getChatsEventHandler);
+    on<GetChatsSubscriptionEvent>(_getChatsSubscriptionEventHandler);
+    on<_OnChatsEvent>(_onChatsEventHandler);
     on<RemoveChatEvent>(_removeChatEventHandler);
     on<ChatOpenedEvent>(_chatOpenedEventHandler);
     on<GetCurrentChatMessagesEvent>(_getCurrentChatMessagesEventHandler);
@@ -65,6 +67,79 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           }
         } else {
           throw AppException.couldNotLoadChats();
+        }
+      },
+      emit: emit,
+    );
+  }
+
+  void _getChatsSubscriptionEventHandler(
+      GetChatsSubscriptionEvent event, Emitter<ChatState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
+        if (!_authCubit.state.isAuthorized) {
+          throw AppException.authenticationException;
+        }
+
+        final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
+            .getFirebaseUser(user: _authCubit.state.user);
+
+        if (firebaseUser is FirebaseUser) {
+          final Stream<Set<FirebaseChat>> chatsStream =
+              _firebaseRealtimeDatabase.getChatsStream(
+            firebaseUser: firebaseUser,
+          );
+
+          final StreamSubscription<Set<FirebaseChat>> subscription =
+              chatsStream.listen((Set<FirebaseChat> chats) {
+            add(_OnChatsEvent(chats: chats));
+          });
+          emit(state.copyWith(chatsSubscription: subscription));
+        }
+      },
+      emit: emit,
+    );
+  }
+
+  void _onChatsEventHandler(
+      _OnChatsEvent event, Emitter<ChatState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
+        if (event.chats != state.chats) {
+          final Set<String> addedChatsIds = event.chats
+              .difference(state.chats)
+              .map((FirebaseChat chat) => chat.id)
+              .toSet();
+          final Map<String, Stream<Set<FirebaseMessage>>> messageStreams =
+              _firebaseRealtimeDatabase.getMessagesStream(addedChatsIds);
+          final Map<String, StreamSubscription<Set<FirebaseMessage>>>
+              addedMessageSubscriptions =
+              _getMessageSubscriptions(messageStreams);
+
+          final Set<String> removedChatsIds = state.chats
+              .difference(event.chats)
+              .map((FirebaseChat chat) => chat.id)
+              .toSet();
+          final Map<String, StreamSubscription<Set<FirebaseMessage>>>
+              messageSubscriptions = state.messageSubscriptions;
+
+          bool isCurrentChatRemoved = false;
+          // Remove subscriptions of the chats that were removed.
+          for (final String id in removedChatsIds) {
+            messageSubscriptions.remove(id)?.cancel();
+            if (id == state.currentChat?.id) {
+              isCurrentChatRemoved = true;
+            }
+          }
+          // Add subscriptioons of the chats that were added.
+          messageSubscriptions.addAll(addedMessageSubscriptions);
+
+          emit(state.copyWith(
+              chats: event.chats, messageSubscriptions: messageSubscriptions));
+
+          if (isCurrentChatRemoved) {
+            throw AppException.currentChatRemoved();
+          }
         }
       },
       emit: emit,
@@ -134,24 +209,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             firebaseUser.chatIds!.isNotEmpty) {
           final Map<String, Stream<Set<FirebaseMessage>>> messageStreams =
               _firebaseRealtimeDatabase
-                  .getMessagesSubscription(firebaseUser.chatIds!);
+                  .getMessagesStream(firebaseUser.chatIds!);
 
-          final List<StreamSubscription<Set<FirebaseMessage>>> subscriptions =
-              <StreamSubscription<Set<FirebaseMessage>>>[];
-
-          for (final MapEntry<String, Stream<Set<FirebaseMessage>>> mapEntry
-              in messageStreams.entries) {
-            final StreamSubscription<Set<FirebaseMessage>> subscription =
-                mapEntry.value.listen((Set<FirebaseMessage> messages) {
-              add(_OnMessagesEvent(chatId: mapEntry.key, messages: messages));
-            });
-
-            subscriptions.add(subscription);
-          }
+          final Map<String, StreamSubscription<Set<FirebaseMessage>>>
+              subscriptions = _getMessageSubscriptions(messageStreams);
 
           emit(state.copyWith(
-            subscriptions: subscriptions,
-            messagesStream: messageStreams,
+            messageSubscriptions: subscriptions,
           ));
         }
       },
@@ -219,29 +283,27 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ChatPagePopEvent event, Emitter<ChatState> emit) {
     emit(ChatState(
       chats: state.chats,
-      messagesStream: state.messagesStream,
-      subscriptions: state.subscriptions,
+      chatsSubscription: state.chatsSubscription,
+      messageSubscriptions: state.messageSubscriptions,
     ));
   }
 
   void _resetBlocStateHandler(ResetBlocState event, Emitter<ChatState> emit) {
     emit(ChatState(
-      messagesStream: state.messagesStream,
-      subscriptions: state.subscriptions,
+      chatsSubscription: state.chatsSubscription,
+      messageSubscriptions: state.messageSubscriptions,
     ));
   }
 
   void _viewDisposeEventHandler(
       ViewDisposeEvent event, Emitter<ChatState> emit) {
     for (final StreamSubscription<Set<FirebaseMessage>> subscription
-        in state.subscriptions) {
+        in state.messageSubscriptions.values) {
       subscription.cancel();
     }
+    state.chatsSubscription?.cancel();
 
-    emit(state.copyWith(
-      messagesStream: <String, Stream<Set<FirebaseMessage>>>{},
-      subscriptions: <StreamSubscription<Set<FirebaseMessage>>>[],
-    ));
+    emit(const ChatState());
   }
 
   Future<void> _commonHandler({
@@ -269,4 +331,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
     }
   }
+
+  /// {chatId: subscription}
+  Map<String, StreamSubscription<Set<FirebaseMessage>>>
+      _getMessageSubscriptions(
+              Map<String, Stream<Set<FirebaseMessage>>> messageStreams) =>
+          messageStreams.map(
+            (String key, Stream<Set<FirebaseMessage>> value) =>
+                MapEntry<String, StreamSubscription<Set<FirebaseMessage>>>(
+              key,
+              value.listen(
+                (Set<FirebaseMessage> messages) {
+                  add(
+                    _OnMessagesEvent(chatId: key, messages: messages),
+                  );
+                },
+              ),
+            ),
+          );
 }

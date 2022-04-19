@@ -5,6 +5,7 @@ import 'package:components/cubits/models/user.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
 import 'package:components/pages/chat/widgets/message_tile.dart';
+import 'package:components/routes/navigation.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message.dart';
 import 'package:components/widgets/image_container.dart';
@@ -24,6 +25,7 @@ class _ChatState extends BasePageState<ChatPage> {
   late final TextEditingController textEditingController;
   late final ScrollController controller;
   bool firstBuild = true;
+  late final String routedFrom;
 
   @override
   void initState() {
@@ -34,6 +36,16 @@ class _ChatState extends BasePageState<ChatPage> {
 
     currentUser = authCubit.state.user!;
     chatBloc = BlocProvider.of(context)..add(GetCurrentChatMessagesEvent());
+
+    Future<void>.microtask(() {
+      routedFrom = routeSettings.arguments as String;
+      if (routedFrom == Routes.users) {
+        chatBloc
+          ..add(GetChatsSubscriptionEvent())
+          ..add(GetMessageSubscriptionsEvent());
+      }
+    });
+
     textEditingController = TextEditingController();
     controller = ScrollController();
     super.initState();
@@ -41,31 +53,21 @@ class _ChatState extends BasePageState<ChatPage> {
 
   @override
   void dispose() {
+    if (routedFrom == Routes.users) {
+      chatBloc.add(ViewDisposeEvent());
+    }
+
     textEditingController.dispose();
     super.dispose();
   }
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) => AppBar(
-        automaticallyImplyLeading: false,
         flexibleSpace: SafeArea(
           child: Container(
             padding: const EdgeInsets.only(right: 16),
             child: BlocBuilder<ChatBloc, ChatState>(
               builder: (BuildContext context, ChatState state) {
-                if (state.blocStatus is SubmissionFailed) {
-                  chatBloc.add(ResetBlocStatus());
-
-                  final SubmissionFailed failure =
-                      state.blocStatus as SubmissionFailed;
-                  Future<void>.microtask(
-                    () => showSnackBar(
-                      SnackBar(
-                        content: Text(failure.message ?? 'Failure'),
-                      ),
-                    ),
-                  );
-                }
                 if (state.currentChat is FirebaseChat) {
                   final FirebaseChat chat = state.currentChat!;
                   final String otherUserId = chat.participantIds.firstWhere(
@@ -74,17 +76,8 @@ class _ChatState extends BasePageState<ChatPage> {
 
                   return Row(
                     children: <Widget>[
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.black,
-                        ),
-                      ),
                       const SizedBox(
-                        width: 2,
+                        width: 60,
                       ),
                       ImageContainer(
                         height: 50,
@@ -122,6 +115,45 @@ class _ChatState extends BasePageState<ChatPage> {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (BuildContext context, ChatState state) {
         final List<FirebaseMessage> messages = state.messages.toList();
+
+        if (state.blocStatus is SubmissionFailed) {
+          chatBloc.add(ResetBlocStatus());
+
+          final SubmissionFailed failure = state.blocStatus as SubmissionFailed;
+
+          // Navigate back in case current chat is deleted.
+          if (failure.message == AppException.currentChatRemoved().message) {
+            Future<void>.microtask(
+              () => Navigator.of(context).pop(),
+            );
+          }
+
+          Future<void>.microtask(
+            () => showSnackBar(
+              SnackBar(
+                content: Text(failure.message ?? 'Failure'),
+              ),
+            ),
+          );
+        } else if (state.blocStatus is SubmissionSuccess) {
+          chatBloc.add(ResetBlocStatus());
+
+          Future<void>.microtask(
+            () => controller
+                .animateTo(
+                  controller.position.maxScrollExtent,
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.fastOutSlowIn,
+                )
+                .then(
+                  (_) => controller.animateTo(
+                    controller.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.fastOutSlowIn,
+                  ),
+                ),
+          );
+        }
 
         return WillPopScope(
           onWillPop: () async {
@@ -218,18 +250,5 @@ class _ChatState extends BasePageState<ChatPage> {
   void onMessageSend() {
     chatBloc.add(SendTextEvent());
     textEditingController.value = TextEditingValue.empty;
-    controller
-        .animateTo(
-          controller.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 700),
-          curve: Curves.fastOutSlowIn,
-        )
-        .then(
-          (_) => controller.animateTo(
-            controller.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.fastOutSlowIn,
-          ),
-        );
   }
 }

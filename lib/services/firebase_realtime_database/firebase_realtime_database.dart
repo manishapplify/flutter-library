@@ -99,6 +99,32 @@ class FirebaseRealtimeDatabase {
     return chats;
   }
 
+  /// Returns a stream of chats of the user.
+  Stream<Set<FirebaseChat>> getChatsStream({
+    User? user,
+    FirebaseUser? firebaseUser,
+    String? firebaseId,
+  }) async* {
+    final String userId = user?.firebaseId ?? firebaseUser?.id ?? firebaseId!;
+
+    final DatabaseReference userChatIds =
+        _database.ref(_userCollection + userId + '/chat_dialog_ids');
+
+    await for (final DatabaseEvent event in userChatIds.onValue) {
+      if (event.snapshot.value != null) {
+        final Set<String> chatIds =
+            (event.snapshot.value as Map<dynamic, dynamic>)
+                .keys
+                .toSet()
+                .cast<String>();
+        final Set<FirebaseChat> chats = await getChats(chatIds);
+        yield chats;
+      } else {
+        yield <FirebaseChat>{};
+      }
+    }
+  }
+
   /// Creates a new chat between [firebaseUserA] and [firebaseUserB], if not
   /// present already.
   Future<FirebaseChat> addChatIfNotExists({
@@ -217,7 +243,7 @@ class FirebaseRealtimeDatabase {
   }
 
   /// Returns a map of streams according to the following scheme {ChatId: Stream}
-  Map<String, Stream<Set<FirebaseMessage>>> getMessagesSubscription(
+  Map<String, Stream<Set<FirebaseMessage>>> getMessagesStream(
       Set<String> chatIds) {
     final Map<String, Stream<Set<FirebaseMessage>>> streams =
         <String, Stream<Set<FirebaseMessage>>>{};
