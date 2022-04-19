@@ -82,7 +82,7 @@ class ProfileRepository {
     final User user =
         _authCubit.state.user!.copyWithJson(response.data['data']);
     _authCubit.signupOrLogin(user);
-    _firebaseRealtimeDatabase.addUser(user);
+    _firebaseRealtimeDatabase.updateUser(user: user);
   }
 
   Future<void> updateProfile({
@@ -127,6 +127,6 @@ class ProfileRepository {
     final User user =
         _authCubit.state.user!.copyWithJson(response.data['data']);
     _authCubit.signupOrLogin(user);
-    _firebaseRealtimeDatabase.addUser(user);
+    _firebaseRealtimeDatabase.updateUser(user: user);
   }
 }

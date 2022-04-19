@@ -39,11 +39,11 @@ class FirebaseRealtimeDatabase {
     await userReference.remove();
   }
 
-  Future<void> updateUser(FirebaseUser firebaseUser) async {
+  Future<void> updateUser({User? user, FirebaseUser? firebaseUser}) async {
     final DatabaseReference userReference =
-        _database.ref(_userCollection + firebaseUser.id);
+        _database.ref(_userCollection + (user?.firebaseId ?? firebaseUser!.id));
 
-    await userReference.set(firebaseUser.toMap());
+    await userReference.set(user?.toFirebaseMap() ?? firebaseUser!.toMap());
   }
 
   Future<FirebaseUser?> getFirebaseUser({
@@ -171,8 +171,8 @@ class FirebaseRealtimeDatabase {
         id: chatId,
         participantIds: <String>{_firebaseUserA.id, _firebaseUserB.id},
         participantNames: <String, String>{
-          _firebaseUserA.id: _firebaseUserA.name ?? 'anonymous',
-          _firebaseUserB.id: _firebaseUserB.name ?? 'anonymous',
+          _firebaseUserA.id: _firebaseUserA.name ?? _firebaseUserA.id,
+          _firebaseUserB.id: _firebaseUserB.name ?? _firebaseUserB.id,
         },
         participantProfileImages: participantProfileImages,
       );
@@ -184,7 +184,7 @@ class FirebaseRealtimeDatabase {
 
       // Update users.
       await updateUser(
-        _firebaseUserA.copyWith(
+        firebaseUser: _firebaseUserA.copyWith(
           chatIds: <String>{
             ..._firebaseUserA.chatIds ?? <String>{},
             chat.id,
@@ -192,7 +192,7 @@ class FirebaseRealtimeDatabase {
         ),
       );
       await updateUser(
-        _firebaseUserB.copyWith(
+        firebaseUser: _firebaseUserB.copyWith(
           chatIds: <String>{
             ..._firebaseUserB.chatIds ?? <String>{},
             chat.id,
@@ -227,7 +227,8 @@ class FirebaseRealtimeDatabase {
           user.chatIds!.isNotEmpty &&
           user.chatIds!.contains(_chatId)) {
         final Set<String> updatedChatList = user.chatIds!..remove(_chatId);
-        await updateUser(user.copyWith(
+        await updateUser(
+            firebaseUser: user.copyWith(
           chatIds: updatedChatList,
         ));
       }
