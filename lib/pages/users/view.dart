@@ -3,6 +3,7 @@ import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/exceptions/app_exception.dart';
+import 'package:components/pages/chat/bloc/bloc.dart';
 import 'package:components/pages/users/widgets/user_tile.dart';
 import 'package:components/pages/users/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
@@ -20,6 +21,7 @@ class UsersPage extends BasePage {
 class _UsersState extends BasePageState<UsersPage> {
   late final UsersBloc usersBloc;
   late final User user;
+  late final ChatBloc chatBloc;
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) => AppBar(
@@ -29,6 +31,7 @@ class _UsersState extends BasePageState<UsersPage> {
   @override
   void initState() {
     usersBloc = BlocProvider.of(context)..add(GetUsersEvent());
+    chatBloc = BlocProvider.of(context);
     final AuthCubit authCubit = BlocProvider.of(context);
     if (!authCubit.state.isAuthorized) {
       throw AppException.authenticationException;
@@ -44,11 +47,9 @@ class _UsersState extends BasePageState<UsersPage> {
       builder: (BuildContext context, UsersState state) {
         if (state.chatStatus is SubmissionSuccess) {
           Future<void>.microtask(
-            () => navigator.pushNamed(
-              Routes.chat,
-              arguments: state.chat,
-            ),
+            () => navigator.pushNamed(Routes.chat),
           );
+          chatBloc.add(ChatOpenedEvent(state.chat!));
           usersBloc.add(ResetChatState());
         } else if (state.chatStatus is SubmissionFailed) {
           final SubmissionFailed failure = state.chatStatus as SubmissionFailed;

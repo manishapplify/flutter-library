@@ -1,6 +1,7 @@
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/dependencies/composition_root.dart';
+import 'package:components/pages/chat/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/theme/style.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,13 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<PasswordAuthCubit>(
           create: (_) => compositionRoot.passwordAuthCubit,
+        ),
+        BlocProvider<ChatBloc>(
+          create: (_) => ChatBloc(
+            authCubit: compositionRoot.authCubit,
+            firebaseRealtimeDatabase: compositionRoot.firebaseRealtimeDatabase,
+            imageBaseUrl: compositionRoot.s3imageUpload.s3BaseUrl + 'users/',
+          ),
         ),
       ],
       child: MaterialApp(

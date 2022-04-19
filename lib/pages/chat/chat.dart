@@ -22,6 +22,8 @@ class _ChatState extends BasePageState<ChatPage> {
   late final ChatBloc chatBloc;
   late final User currentUser;
   late final TextEditingController textEditingController;
+  late final ScrollController controller;
+  bool firstBuild = true;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _ChatState extends BasePageState<ChatPage> {
     currentUser = authCubit.state.user!;
     chatBloc = BlocProvider.of(context)..add(GetCurrentChatMessagesEvent());
     textEditingController = TextEditingController();
+    controller = ScrollController();
     super.initState();
   }
 
@@ -63,48 +66,51 @@ class _ChatState extends BasePageState<ChatPage> {
                     ),
                   );
                 }
+                if (state.currentChat is FirebaseChat) {
+                  final FirebaseChat chat = state.currentChat!;
+                  final String otherUserId = chat.participantIds.firstWhere(
+                    (String id) => id != currentUser.firebaseId,
+                  );
 
-                final FirebaseChat chat = state.currentChat!;
-                final String otherUserId = chat.participantIds.firstWhere(
-                  (String id) => id != currentUser.firebaseId,
-                );
-
-                return Row(
-                  children: <Widget>[
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
+                  return Row(
+                    children: <Widget>[
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 2,
-                    ),
-                    ImageContainer(
-                      height: 50,
-                      width: 50,
-                      imageUrl: chatBloc.imageBaseUrl +
-                          (chat.participantProfileImages?[otherUserId] ?? ''),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(chat.participantNames[otherUserId] ?? ''),
-                          const SizedBox(height: 6),
-                          const Text("Online"),
-                        ],
+                      const SizedBox(
+                        width: 2,
                       ),
-                    ),
-                  ],
-                );
+                      ImageContainer(
+                        height: 50,
+                        width: 50,
+                        imageUrl: chatBloc.imageBaseUrl +
+                            (chat.participantProfileImages?[otherUserId] ?? ''),
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(chat.participantNames[otherUserId] ?? ''),
+                            const SizedBox(height: 6),
+                            const Text("Online"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox();
+                }
               },
             ),
           ),
@@ -117,87 +123,93 @@ class _ChatState extends BasePageState<ChatPage> {
       builder: (BuildContext context, ChatState state) {
         final List<FirebaseMessage> messages = state.messages.toList();
 
-        return Stack(
-          children: <Widget>[
-            ListView.builder(
-              itemCount: messages.length,
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                return MessageTile(
-                  message: messages[index].message,
-                  color: messages[index]
-                          .isSentByCurrentUser(currentUser.firebaseId)
-                      ? Colors.blue
-                      : Colors.grey,
-                  alignment: messages[index]
-                          .isSentByCurrentUser(currentUser.firebaseId)
-                      ? Alignment.topRight
-                      : Alignment.topLeft,
-                );
-              },
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                height: 60,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(30),
+        return WillPopScope(
+          onWillPop: () async {
+            chatBloc.add(ChatPagePopEvent());
+            return Future<bool>.value(true);
+          },
+          child: Stack(
+            children: <Widget>[
+              ListView.builder(
+                controller: controller,
+                itemCount: messages.length,
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(top: 2, bottom: 60),
+                itemBuilder: (BuildContext context, int index) {
+                  return MessageTile(
+                    message: messages[index].message,
+                    color: messages[index]
+                            .isSentByCurrentUser(currentUser.firebaseId)
+                        ? Colors.blue
+                        : Colors.grey,
+                    alignment: messages[index]
+                            .isSentByCurrentUser(currentUser.firebaseId)
+                        ? Alignment.topRight
+                        : Alignment.topLeft,
+                  );
+                },
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                  height: 60,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {},
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: TextField(
+                          controller: textEditingController,
+                          decoration: const InputDecoration(
+                            hintText: "Write message...",
+                          ),
+                          onChanged: (String message) =>
+                              chatBloc.add(TextMessageChanged(message)),
+                          onSubmitted: (_) => onMessageSend(),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      IconButton(
+                        onPressed: onMessageSend,
+                        icon: const Icon(
+                          Icons.send,
+                          color: Colors.black,
                           size: 20,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: TextField(
-                        controller: textEditingController,
-                        decoration: const InputDecoration(
-                          hintText: "Write message...",
-                        ),
-                        onChanged: (String message) =>
-                            chatBloc.add(TextMessageChanged(message)),
-                        onSubmitted: (_) => onMessageSend(),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    IconButton(
-                      onPressed: onMessageSend,
-                      icon: const Icon(
-                        Icons.send,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Visibility(
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-              visible: state.blocStatus is FormSubmitting,
-            )
-          ],
+              Visibility(
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                visible: state.blocStatus is FormSubmitting,
+              )
+            ],
+          ),
         );
       },
     );
@@ -206,5 +218,18 @@ class _ChatState extends BasePageState<ChatPage> {
   void onMessageSend() {
     chatBloc.add(SendTextEvent());
     textEditingController.value = TextEditingValue.empty;
+    controller
+        .animateTo(
+          controller.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.fastOutSlowIn,
+        )
+        .then(
+          (_) => controller.animateTo(
+            controller.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+          ),
+        );
   }
 }

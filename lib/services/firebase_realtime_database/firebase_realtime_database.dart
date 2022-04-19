@@ -19,10 +19,11 @@ class FirebaseRealtimeDatabase {
   Future<void> addUser(User user) async {
     final DatabaseReference userReference =
         _database.ref(_userCollection + user.firebaseId);
-
-    await userReference.set(
-      user.toFirebaseMap(),
-    );
+    if (!(await userReference.once()).snapshot.exists) {
+      await userReference.set(
+        user.toFirebaseMap(),
+      );
+    }
   }
 
   Future<void> removeUser({
@@ -181,15 +182,18 @@ class FirebaseRealtimeDatabase {
 
     final DatabaseReference chatReference =
         _database.ref(_chatsCollection + _chatId);
+    final DatabaseReference messagesReference =
+        _database.ref(_messagesCollection + _chatId);
 
     await chatReference.remove();
+    await messagesReference.remove();
 
     final List<String> userIds = _chatId.split(',');
 
     for (String userId in userIds) {
       final FirebaseUser? user = await getFirebaseUser(firebaseId: userId);
       if (user is FirebaseUser &&
-          user.chatIds is List<String> &&
+          user.chatIds is Set<String> &&
           user.chatIds!.isNotEmpty &&
           user.chatIds!.contains(_chatId)) {
         final Set<String> updatedChatList = user.chatIds!..remove(_chatId);
@@ -205,23 +209,22 @@ class FirebaseRealtimeDatabase {
         _database.ref(_messagesCollection + chatId);
 
     final DatabaseEvent event = await messagesReference.once();
-    Set<FirebaseMessage> messages = <FirebaseMessage>{};
-    if (event.snapshot.value != null) {
-      final Map<dynamic, dynamic> map =
-          event.snapshot.value as Map<dynamic, dynamic>;
+    return _parseMessagesDatabaseEvent(event);
+  }
 
-      final List<FirebaseMessage> _messages = map.entries
-          .map(
-            (MapEntry<dynamic, dynamic> e) => FirebaseMessage.fromMap(e.value),
-          )
-          .toList()
-        ..sort(((FirebaseMessage a, FirebaseMessage b) =>
-            a.messageTime.compareTo(b.messageTime)));
-
-      messages = _messages.toSet();
+  /// Returns a map of streams according to the following scheme {ChatId: Stream}
+  Map<String, Stream<Set<FirebaseMessage>>> getMessagesSubscription(
+      Set<String> chatIds) {
+    final Map<String, Stream<Set<FirebaseMessage>>> streams =
+        <String, Stream<Set<FirebaseMessage>>>{};
+    for (final String chatId in chatIds) {
+      streams[chatId] = _database
+          .ref(_messagesCollection + chatId)
+          .onValue
+          .map(_parseMessagesDatabaseEvent);
     }
 
-    return messages;
+    return streams;
   }
 
   Future<FirebaseMessage> sendMessage({
@@ -294,5 +297,25 @@ class FirebaseRealtimeDatabase {
         _database.ref(_notificationsCollection + message.messageId);
 
     await notificationsReference.set(message.toMap());
+  }
+
+  Set<FirebaseMessage> _parseMessagesDatabaseEvent(DatabaseEvent event) {
+    Set<FirebaseMessage> messages = <FirebaseMessage>{};
+    if (event.snapshot.value != null) {
+      final Map<dynamic, dynamic> map =
+          event.snapshot.value as Map<dynamic, dynamic>;
+
+      final List<FirebaseMessage> _messages = map.entries
+          .map(
+            (MapEntry<dynamic, dynamic> e) => FirebaseMessage.fromMap(e.value),
+          )
+          .toList()
+        ..sort(((FirebaseMessage a, FirebaseMessage b) =>
+            a.messageTime.compareTo(b.messageTime)));
+
+      messages = _messages.toSet();
+    }
+
+    return messages;
   }
 }
