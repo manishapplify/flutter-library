@@ -8,7 +8,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1069074406208:android:ac04e5ca494c58efc538a5",
+        "mobilesdk_app_id": "1:1069074406208:android:75a57cd4e4dbabd3c538a5",
         "android_client_info": {
           "package_name": "applify.components.components"
         }
@@ -20,6 +20,14 @@
           "android_info": {
             "package_name": "applify.components.components",
             "certificate_hash": "bbe13f111d4560d391d60c697d153d97d75ec1b9"
+          }
+        },
+        {
+          "client_id": "1069074406208-7d5dasips4gionubr2pduk89rphin649.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "applify.components.components",
+            "certificate_hash": "e49c3821c48b1d4bbc60aa67e5b208109e193e4d"
           }
         },
         {
@@ -40,10 +48,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1069074406208-qedortc39jijebuokdc2990h7a7prml1.apps.googleusercontent.com",
+              "client_id": "1069074406208-1bejg222usfko52v0herbb9teegvp5ir.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "applify.components.components"
+                "bundle_id": "applify.co"
               }
             }
           ]
@@ -76,10 +84,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1069074406208-qedortc39jijebuokdc2990h7a7prml1.apps.googleusercontent.com",
+              "client_id": "1069074406208-1bejg222usfko52v0herbb9teegvp5ir.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "applify.components.components"
+                "bundle_id": "applify.co"
               }
             }
           ]

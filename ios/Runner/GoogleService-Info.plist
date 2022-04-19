@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>126290914735-mtd1h5qjt8sj9ripmnbb4ali5ocl8qf1.apps.googleusercontent.com</string>
+	<string>1069074406208-qedortc39jijebuokdc2990h7a7prml1.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.126290914735-mtd1h5qjt8sj9ripmnbb4ali5ocl8qf1</string>
+	<string>com.googleusercontent.apps.1069074406208-qedortc39jijebuokdc2990h7a7prml1</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1069074406208-48r1vks6hku1g0s162st69cmc25erodc.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDHVtng0UERvDxixFFbdrKVLt_az64SXY8</string>
+	<string>AIzaSyDFZ9KvOva4TG9LpuA04VGxC41Ho0vTVTw</string>
 	<key>GCM_SENDER_ID</key>
-	<string>126290914735</string>
+	<string>1069074406208</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>applify.components.components</string>
 	<key>PROJECT_ID</key>
-	<string>components-37540</string>
+	<string>demoapplication-f2e12</string>
 	<key>STORAGE_BUCKET</key>
-	<string>components-37540.appspot.com</string>
+	<string>demoapplication-f2e12.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:126290914735:ios:e6306fac84fcba7cc2135a</string>
+	<string>1:1069074406208:ios:54ce77554740e1cec538a5</string>
+	<key>DATABASE_URL</key>
+	<string>https://demoapplication-f2e12-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>

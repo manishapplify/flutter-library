@@ -1,6 +1,7 @@
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/dependencies/composition_root.dart';
+import 'package:components/firebase_options.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/theme/style.dart';
@@ -10,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final CompositionRoot compositionRoot = await configureDependencies();
   runApp(
     MyApp(
