@@ -41,7 +41,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB03-4_K1hBfa6XG5ZnWpYOYX-3v8jDNuQ',
-    appId: '1:1069074406208:android:75a57cd4e4dbabd3c538a5',
+    appId: '1:1069074406208:android:f687637386887775c538a5',
     messagingSenderId: '1069074406208',
     projectId: 'demoapplication-f2e12',
     databaseURL: 'https://demoapplication-f2e12-default-rtdb.firebaseio.com',
@@ -50,13 +50,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDFZ9KvOva4TG9LpuA04VGxC41Ho0vTVTw',
-    appId: '1:1069074406208:ios:54ce77554740e1cec538a5',
+    appId: '1:1069074406208:ios:0643c9477516b96cc538a5',
     messagingSenderId: '1069074406208',
     projectId: 'demoapplication-f2e12',
     databaseURL: 'https://demoapplication-f2e12-default-rtdb.firebaseio.com',
     storageBucket: 'demoapplication-f2e12.appspot.com',
     androidClientId: '1069074406208-48r1vks6hku1g0s162st69cmc25erodc.apps.googleusercontent.com',
-    iosClientId: '1069074406208-qedortc39jijebuokdc2990h7a7prml1.apps.googleusercontent.com',
-    iosBundleId: 'applify.components.components',
+    iosClientId: '1069074406208-bguqeh1qeit9d1pv0dvvk3ro4bc64tj3.apps.googleusercontent.com',
+    iosBundleId: 'com.applify.components',
   );
 }

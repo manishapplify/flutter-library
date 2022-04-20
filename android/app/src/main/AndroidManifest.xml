@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="applify.components.components">
+    package="com.applify.components">
    <uses-permission android:name="android.permission.INTERNET"/>
    <queries>
         <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />

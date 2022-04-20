@@ -41,6 +41,31 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>fb667938674322483</string>
+			<string>com.googleusercontent.apps.1069074406208-bguqeh1qeit9d1pv0dvvk3ro4bc64tj3</string>
+		</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>667938674322483</string>
+	<key>FacebookClientToken</key>
+	<string>684d7b059b15c33ecc0874340262f3ac</string>
+	<key>FacebookDisplayName</key>
+	<string>Components</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	  <string>fbapi</string>
+	  <string>fb-messenger-share-api</string>
+	  <string>fbauth2</string>
+	  <string>fbshareextension</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires camera access to capture an image.</string>
 	<key>NSFileProviderDomainUsageDescription</key>
