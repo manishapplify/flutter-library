@@ -41,10 +41,10 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
     emit(state.copyWith(formStatus: FormSubmitting()));
 
     try {
-      if(state.isOtpValid==false){
-        if(state.isOtpEmpty == true){
-        throw AppException.otpCannotBeEmpty();
-      }
+      if (!state.isOtpValid) {
+        if (state.isOtpEmpty) {
+          throw AppException.otpCannotBeEmpty();
+        }
         throw AppException.otpvalid();
       }
       if (state.screenType == Screen.forgotPassword) {

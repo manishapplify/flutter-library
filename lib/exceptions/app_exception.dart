@@ -42,8 +42,11 @@ class AppException implements Exception {
   factory AppException.currentChatRemoved() {
     return AppException(message: 'This chat has been removed, going back.');
   }
+  factory AppException.imageCannotBeEmpty() {
+    return AppException(message: 'Image cannot be empty'); 
+  }
   factory AppException.otpCannotBeEmpty() {
-    return AppException(message: 'Please enter OTP'); 
+    return AppException(message: 'Please Enter OTP'); 
   }
   factory AppException.otpvalid() {
     return AppException(message: 'Please enter valid otp'); 

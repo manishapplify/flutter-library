@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:components/authentication/form_submission.dart';
@@ -8,6 +9,7 @@ import 'package:components/services/firebase_realtime_database/firebase_realtime
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
+import 'package:components/services/firebase_storage_services.dart';
 import 'package:meta/meta.dart';
 
 part 'event.dart';
@@ -18,8 +20,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required this.imageBaseUrl,
     required AuthCubit authCubit,
     required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
+    required FirebaseStorageServices firebaseStorageServices,
   })  : _authCubit = authCubit,
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
+        _firebaseStorageServices = firebaseStorageServices,
         super(const ChatState()) {
     on<GetChatsEvent>(_getChatsEventHandler);
     on<GetChatsSubscriptionEvent>(_getChatsSubscriptionEventHandler);
@@ -35,8 +39,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _resetCurrentChatNewMessageReceivedHandler);
     on<TextMessageChanged>(_textMessageChangedHandler);
     on<_ClearTextMessageEvent>(_clearTextMessageEventHandler);
+    on<ClearImageMessageEvent>(_clearImageMessageEventHandler);
     on<SendTextEvent>(_sendTextEventHandler);
     on<SendImageEvent>(_sendImageEventHandler);
+    on<ImageEvent>(_imageEventHandler);
     on<SendDocEvent>(_sendDocEventHandler);
     on<ResetBlocStatus>(_resetBlocStatusHandler);
     on<ChatPagePopEvent>(_chatPagePopEventHandler);
@@ -47,6 +53,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final String imageBaseUrl;
   final AuthCubit _authCubit;
   final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
+  final FirebaseStorageServices _firebaseStorageServices;
 
   void _getChatsEventHandler(
       GetChatsEvent event, Emitter<ChatState> emit) async {
@@ -272,33 +279,81 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(state.copyWith(message: ''));
   }
 
+  void _clearImageMessageEventHandler(
+      ClearImageMessageEvent event, Emitter<ChatState> emit) {
+    emit(ChatState(
+        blocStatus: state.blocStatus,
+        chats: state.chats,
+        currentChat: state.currentChat,
+        message: state.message,
+        messages: state.messages,
+        messagesStream: state.messagesStream,
+        subscriptions: state.subscriptions));
+  }
+
   void _sendTextEventHandler(
       SendTextEvent event, Emitter<ChatState> emit) async {
     await _commonHandler(
       handlerJob: () async {
-        if (state.message.isNotEmpty) {
-          if (!_authCubit.state.isAuthorized) {
-            throw AppException.authenticationException;
-          }
-
-          _firebaseRealtimeDatabase.sendMessage(
+        if (!_authCubit.state.isAuthorized) {
+          throw AppException.authenticationException;
+        }
+        final String? messageId = _firebaseRealtimeDatabase.getNewMessgeId(
+            chatId: state.currentChat!.id);
+        if (messageId == null) {
+          throw AppException.firebaseCouldNotGenerateKey();
+        }
+        if (state.message.isEmpty) {
+          throw AppException.messageCannotBeEmpty();
+        }
+        _firebaseRealtimeDatabase.sendMessage(
             textMessage: state.message,
             chatId: state.currentChat!.id,
             senderId: _authCubit.state.user!.firebaseId,
-          );
+            messageId: messageId,
+            messageType: 1);
 
-          add(_ClearTextMessageEvent());
-        } else {
-          throw AppException.messageCannotBeEmpty();
-        }
+        add(_ClearTextMessageEvent());
       },
       emit: emit,
     );
   }
 
-  void _sendImageEventHandler(SendImageEvent event, Emitter<ChatState> emit) {
-    // TODO: Implement handler
-    throw UnimplementedError();
+  void _sendImageEventHandler(
+      SendImageEvent event, Emitter<ChatState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
+        if (!_authCubit.state.isAuthorized) {
+          throw AppException.authenticationException;
+        }
+        final String? messageId = _firebaseRealtimeDatabase.getNewMessgeId(
+            chatId: state.currentChat!.id);
+        if (messageId == null) {
+          throw AppException.firebaseCouldNotGenerateKey();
+        }
+        final String? imageUrl = await _firebaseStorageServices.uploadImageFile(
+            state.imageFile, messageId);
+        if (imageUrl == null) {
+          throw AppException.imageCannotBeEmpty();
+        }
+        _firebaseRealtimeDatabase.sendMessage(
+            textMessage: state.message,
+            chatId: state.currentChat!.id,
+            senderId: _authCubit.state.user!.firebaseId,
+            imageUrl: imageUrl,
+            messageId: messageId,
+            messageType: 2);
+
+        add(ClearImageMessageEvent());
+      },
+      emit: emit,
+    );
+  }
+
+  void _imageEventHandler(ImageEvent event, Emitter<ChatState> emit) async {
+    emit(
+      state.copyWith(imageFile: event.imageFile),
+    );
   }
 
   void _sendDocEventHandler(SendDocEvent event, Emitter<ChatState> emit) {

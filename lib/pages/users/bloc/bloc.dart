@@ -48,10 +48,10 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           blocStatus: SubmissionSuccess(),
         ));
       },
-      onFailure: () {
+      onFailure: (FormSubmissionStatus status) {
         emit(
           state.copyWith(
-            blocStatus: SubmissionFailed(exception: Exception('Failure')),
+            blocStatus: status,
           ),
         );
       },
@@ -75,10 +75,10 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           chatStatus: SubmissionSuccess(),
         ));
       },
-      onFailure: () {
+      onFailure: (FormSubmissionStatus status) {
         emit(
           state.copyWith(
-            chatStatus: SubmissionFailed(exception: Exception('Failure')),
+            chatStatus: status,
           ),
         );
       },
@@ -88,7 +88,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   Future<void> _commonHandler(
       {required Future<void> Function() handlerJob,
-      required Function() onFailure,
+      required Function(FormSubmissionStatus status) onFailure,
       required Emitter<UsersState> emit}) async {
     try {
       await handlerJob();
@@ -101,19 +101,16 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         exception = AppException.api400Exception();
       }
 
-      emit(
-        state.copyWith(
-          blocStatus: SubmissionFailed(
-            exception: exception,
-            message: exception.message,
-          ),
+      onFailure(
+        SubmissionFailed(
+          exception: exception,
+          message: exception.message,
         ),
       );
     } on AppException catch (e) {
-      emit(state.copyWith(
-          blocStatus: SubmissionFailed(exception: e, message: e.message)));
+      onFailure(SubmissionFailed(exception: e, message: e.message));
     } on Exception catch (_) {
-      onFailure();
+      onFailure(SubmissionFailed(exception: Exception('Failure')));
     }
   }
 

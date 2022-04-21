@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:components/authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
+import 'package:components/dialogs/dialogs.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
+import 'package:components/pages/chat/widgets/image_tile.dart';
 import 'package:components/pages/chat/widgets/message_tile.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
@@ -171,24 +175,32 @@ class _ChatState extends BasePageState<ChatPage> {
                 shrinkWrap: true,
                 padding: const EdgeInsets.only(top: 2, bottom: 60),
                 itemBuilder: (BuildContext context, int index) {
-                  return MessageTile(
-                    message: messages[index].message,
-                    color: messages[index]
-                            .isSentByCurrentUser(currentUser.firebaseId)
-                        ? Colors.blue
-                        : Colors.grey,
-                    alignment: messages[index]
-                            .isSentByCurrentUser(currentUser.firebaseId)
-                        ? Alignment.topRight
-                        : Alignment.topLeft,
-                  );
+                  return messages[index].messageType == 2
+                      ? ImageTile(
+                          alignment: messages[index]
+                                  .isSentByCurrentUser(currentUser.firebaseId)
+                              ? Alignment.topRight
+                              : Alignment.topLeft,
+                          imageUrl: messages[index].attachmentUrl!,
+                        )
+                      : MessageTile(
+                          message: messages[index].message,
+                          color: messages[index]
+                                  .isSentByCurrentUser(currentUser.firebaseId)
+                              ? Colors.blue
+                              : Colors.grey,
+                          alignment: messages[index]
+                                  .isSentByCurrentUser(currentUser.firebaseId)
+                              ? Alignment.topRight
+                              : Alignment.topLeft,
+                        );
                 },
               ),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Container(
                   padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                  height: 60,
+                  //height: 100,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -197,7 +209,19 @@ class _ChatState extends BasePageState<ChatPage> {
                   child: Row(
                     children: <Widget>[
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          showImagePickerPopup(
+                            context: context,
+                            onImagePicked: (File file) {
+                              if (!chatBloc.isClosed) {
+                                chatBloc.add(ImageEvent(imageFile: file));
+                              }
+                              if (mounted) {
+                                Navigator.pop(context);
+                              }
+                            },
+                          );
+                        },
                         child: Container(
                           height: 30,
                           width: 30,
@@ -214,19 +238,44 @@ class _ChatState extends BasePageState<ChatPage> {
                       ),
                       const SizedBox(width: 15),
                       Expanded(
-                        child: TextField(
-                          controller: textEditingController,
-                          decoration: const InputDecoration(
-                            hintText: "Write message...",
-                          ),
-                          onChanged: (String message) =>
-                              chatBloc.add(TextMessageChanged(message)),
-                          onSubmitted: (_) => onMessageSend(),
-                        ),
+                        child: state.imageFile != null
+                            ? Stack(
+                                alignment: Alignment.topRight,
+                                children: <Widget>[
+                                  ImageContainer(
+                                    height: 150,
+                                    circularDecoration: false,
+                                    //width: 60,
+                                    imagePath: state.imageFile?.path,
+                                    //imageUrl: state.profilePicUrlPath,
+                                  ),
+                                  IconButton(
+                                      icon: const Icon(Icons.close_rounded,
+                                          color: Colors.red),
+                                      onPressed: () {
+                                        chatBloc.add(
+                                          ClearImageMessageEvent(),
+                                        );
+                                      }),
+                                ],
+                              )
+                            : TextField(
+                                controller: textEditingController,
+                                decoration: const InputDecoration(
+                                  hintText: "Write message...",
+                                ),
+                                onChanged: (String message) =>
+                                    chatBloc.add(TextMessageChanged(message)),
+                                onSubmitted: (_) => onMessageSend(),
+                              ),
                       ),
                       const SizedBox(width: 15),
                       IconButton(
-                        onPressed: onMessageSend,
+                        onPressed: () {
+                          state.imageFile != null
+                              ? onImageSend()
+                              : onMessageSend();
+                        },
                         icon: const Icon(
                           Icons.send,
                           color: Colors.black,
@@ -253,5 +302,9 @@ class _ChatState extends BasePageState<ChatPage> {
   void onMessageSend() {
     chatBloc.add(SendTextEvent());
     textEditingController.value = TextEditingValue.empty;
+  }
+
+  void onImageSend() {
+    chatBloc.add(SendImageEvent());
   }
 }

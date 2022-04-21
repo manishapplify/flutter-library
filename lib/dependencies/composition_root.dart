@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:components/services/firebase_storage_services.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class CompositionRoot {
     required this.passwordAuthCubit,
     required this.navigation,
     required this.firebaseRealtimeDatabase,
+    required this.firebaseStorageServices,
     required this.s3imageUpload,
   });
 
@@ -33,6 +35,7 @@ class CompositionRoot {
   final PasswordAuthCubit passwordAuthCubit;
   final Navigation navigation;
   final FirebaseRealtimeDatabase firebaseRealtimeDatabase;
+  final FirebaseStorageServices firebaseStorageServices;
   final S3ImageUpload s3imageUpload;
 }
 
@@ -76,6 +79,7 @@ Future<CompositionRoot> configureDependencies() async {
   );
   final FirebaseRealtimeDatabase firebaseRealtimeDatabase =
       FirebaseRealtimeDatabase();
+  final FirebaseStorageServices firebaseStorageServices = FirebaseStorageServices();    
   final AuthRepository authRepository = AuthRepository(
     api: api,
     config: config,
@@ -127,6 +131,7 @@ Future<CompositionRoot> configureDependencies() async {
       firebaseRealtimeDatabase: firebaseRealtimeDatabase,
     ),
     firebaseRealtimeDatabase: firebaseRealtimeDatabase,
+    firebaseStorageServices: firebaseStorageServices,
     s3imageUpload: s3imageUpload,
   );
 }
