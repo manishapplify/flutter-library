@@ -93,7 +93,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
                         ),
                       );
                     },
-                    onTileLongPress: () => onChatTileLongPress(
+                    onTileDismissed: () => onChatTileDismissed(
                       context: context,
                       chat: chat,
                     ),
@@ -114,7 +114,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
     );
   }
 
-  void onChatTileLongPress({
+  Future<bool?> onChatTileDismissed({
     required BuildContext context,
     required FirebaseChat chat,
   }) =>
@@ -133,7 +133,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
               TextButton(
                 onPressed: () {
                   chatBloc.add(RemoveChatEvent(chat));
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                 },
                 child: const Text(
                   'Okay',
@@ -143,7 +143,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
                 ),
               ),
               TextButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => Navigator.of(context).pop(false),
                 child: const Text(
                   'Cancel',
                   style: TextStyle(

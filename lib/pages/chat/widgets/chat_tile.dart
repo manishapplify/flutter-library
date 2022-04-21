@@ -8,7 +8,7 @@ class ChatTile extends StatelessWidget {
     required this.currentUserFirebaseId,
     required this.imageBaseUrl,
     required this.onTileTap,
-    required this.onTileLongPress,
+    required this.onTileDismissed,
     Key? key,
   }) : super(key: key);
 
@@ -16,7 +16,7 @@ class ChatTile extends StatelessWidget {
   final String imageBaseUrl;
   final String currentUserFirebaseId;
   final VoidCallback onTileTap;
-  final VoidCallback onTileLongPress;
+  final Future<bool?> Function() onTileDismissed;
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +28,32 @@ class ChatTile extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTileTap,
-      onLongPress: onTileLongPress,
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(otherUserName ?? otherUserId),
-        leading: ImageContainer(
-          imageUrl: (otherUserProfilePic is String)
-              ? (imageBaseUrl + otherUserProfilePic)
-              : null,
+      child: Dismissible(
+        key: ValueKey<String>(chat.id),
+        direction: DismissDirection.startToEnd,
+        dismissThresholds: const <DismissDirection, double>{
+          DismissDirection.startToEnd: 0.3,
+        },
+        confirmDismiss: (_) => onTileDismissed(),
+        background: Container(
+          color: Colors.red,
+          child: const Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(left: 10),
         ),
-        trailing: Text(chat.lastMessage ?? ''),
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(otherUserName ?? otherUserId),
+          leading: ImageContainer(
+            imageUrl: (otherUserProfilePic is String)
+                ? (imageBaseUrl + otherUserProfilePic)
+                : null,
+          ),
+          trailing: Text(chat.lastMessage ?? ''),
+        ),
       ),
     );
   }
