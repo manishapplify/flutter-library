@@ -142,8 +142,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               isCurrentChatRemoved = true;
             }
           }
-          // Add subscriptioons of the chats that were added.
-          messageSubscriptions.addAll(addedMessageSubscriptions);
+          if (addedMessageSubscriptions.isNotEmpty) {
+            // Add subscriptioons of the chats that were added.
+            messageSubscriptions.addAll(addedMessageSubscriptions);
+          }
 
           emit(state.copyWith(
               chats: event.chats, messageSubscriptions: messageSubscriptions));
