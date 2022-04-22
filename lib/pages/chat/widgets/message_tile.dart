@@ -14,17 +14,15 @@ class MessageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
-      child: Align(
-        alignment: alignment,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: color,
-          ),
-          padding: const EdgeInsets.all(16),
-          child: Text(message),
+      padding: const EdgeInsets.only(bottom: 8.0),
+      alignment: alignment,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: color,
         ),
+        padding: const EdgeInsets.all(12.0),
+        child: Text(message),
       ),
     );
   }

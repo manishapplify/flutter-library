@@ -287,8 +287,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         currentChat: state.currentChat,
         message: state.message,
         messages: state.messages,
-        messagesStream: state.messagesStream,
-        subscriptions: state.subscriptions));
+        chatsSubscription: state.chatsSubscription,
+        messageSubscriptions: state.messageSubscriptions,
+        currentChatMessagesFetched: state.currentChatMessagesFetched,
+        currentChatNewMessageReceived: state.currentChatNewMessageReceived
+        ));
   }
 
   void _sendTextEventHandler(

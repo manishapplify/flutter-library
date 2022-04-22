@@ -7,7 +7,6 @@ import 'package:components/cubits/models/user.dart';
 import 'package:components/dialogs/dialogs.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
-import 'package:components/pages/chat/widgets/image_tile.dart';
 import 'package:components/pages/chat/widgets/message_tile.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
@@ -167,34 +166,41 @@ class _ChatState extends BasePageState<ChatPage> {
             chatBloc.add(ChatPagePopEvent());
             return Future<bool>.value(true);
           },
-          child: Stack(
+          child: Column(
             children: <Widget>[
-              ListView.builder(
-                controller: controller,
-                itemCount: messages.length,
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 2, bottom: 60),
-                itemBuilder: (BuildContext context, int index) {
-                  return messages[index].messageType == 2
-                      ? ImageTile(
-                          alignment: messages[index]
-                                  .isSentByCurrentUser(currentUser.firebaseId)
-                              ? Alignment.topRight
-                              : Alignment.topLeft,
-                          imageUrl: messages[index].attachmentUrl!,
-                        )
-                      : MessageTile(
-                          message: messages[index].message,
-                          color: messages[index]
-                                  .isSentByCurrentUser(currentUser.firebaseId)
-                              ? Colors.blue
-                              : Colors.grey,
-                          alignment: messages[index]
-                                  .isSentByCurrentUser(currentUser.firebaseId)
-                              ? Alignment.topRight
-                              : Alignment.topLeft,
-                        );
-                },
+              Expanded(
+                child: ListView.builder(
+                  controller: controller,
+                  itemCount: messages.length,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return messages[index].messageType == 2
+                        ? Container(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                            alignment: messages[index]
+                                    .isSentByCurrentUser(currentUser.firebaseId)
+                                ? Alignment.topRight
+                                : Alignment.topLeft,
+                            child: ImageContainer(
+                              height: 200.0,
+                              width: 150.0,
+                              circularDecoration: false,
+                              imageUrl: messages[index].attachmentUrl,
+                            ),
+                          )
+                        : MessageTile(
+                            message: messages[index].message,
+                            color: messages[index]
+                                    .isSentByCurrentUser(currentUser.firebaseId)
+                                ? const Color.fromARGB(255, 77, 192, 129)
+                                : Colors.grey,
+                            alignment: messages[index]
+                                    .isSentByCurrentUser(currentUser.firebaseId)
+                                ? Alignment.topRight
+                                : Alignment.topLeft,
+                          );
+                  },
+                ),
               ),
               Align(
                 alignment: Alignment.bottomLeft,
@@ -239,25 +245,16 @@ class _ChatState extends BasePageState<ChatPage> {
                       const SizedBox(width: 15),
                       Expanded(
                         child: state.imageFile != null
-                            ? Stack(
-                                alignment: Alignment.topRight,
-                                children: <Widget>[
-                                  ImageContainer(
-                                    height: 150,
-                                    circularDecoration: false,
-                                    //width: 60,
-                                    imagePath: state.imageFile?.path,
-                                    //imageUrl: state.profilePicUrlPath,
-                                  ),
-                                  IconButton(
-                                      icon: const Icon(Icons.close_rounded,
-                                          color: Colors.red),
-                                      onPressed: () {
-                                        chatBloc.add(
-                                          ClearImageMessageEvent(),
-                                        );
-                                      }),
-                                ],
+                            ? ImageContainer(
+                                height: 150,
+                                circularDecoration: false,
+                                imagePath: state.imageFile?.path,
+                                iconAlignment: Alignment.topRight,
+                                onContainerTap: () {
+                                  chatBloc.add(
+                                    ClearImageMessageEvent(),
+                                  );
+                                },
                               )
                             : TextField(
                                 controller: textEditingController,

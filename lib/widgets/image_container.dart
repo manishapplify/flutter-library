@@ -10,6 +10,7 @@ class ImageContainer extends StatelessWidget {
     this.imagePath,
     this.imageUrl,
     this.onContainerTap,
+    this.iconAlignment = Alignment.bottomRight,
     this.circularDecoration = true,
     this.overlayIcon = const Icon(
       Icons.camera_enhance_rounded,
@@ -23,6 +24,7 @@ class ImageContainer extends StatelessWidget {
   final Icon overlayIcon;
   final double? width;
   final double? height;
+  final Alignment? iconAlignment;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class ImageContainer extends StatelessWidget {
       child: Container(
         height: height,
         width: width,
-        alignment: Alignment.bottomRight,
+        alignment: iconAlignment,
         child: onContainerTap is VoidCallback ? overlayIcon : null,
         decoration: BoxDecoration(
           shape: circularDecoration ? BoxShape.circle : BoxShape.rectangle,

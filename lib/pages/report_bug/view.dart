@@ -159,6 +159,7 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                           height: 200.0,
                           child: ImageContainer(
                             imagePath: state.screenShot!.path,
+                            iconAlignment: Alignment.topRight,
                             circularDecoration: false,
                             onContainerTap: () => reportBugBloc.add(
                               ReportBugScreenShotRemoved(),
