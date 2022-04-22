@@ -50,7 +50,9 @@ class _ChatsState extends BasePageState<ChatsPage> {
   @override
   void dispose() {
     chatBloc.add(ViewDisposeEvent());
-    isSearchBarOpenNotifier.dispose();
+    isSearchBarOpenNotifier
+      ..removeListener(onNotifierValue)
+      ..dispose();
     super.dispose();
   }
 
