@@ -176,7 +176,7 @@ class _ChatState extends BasePageState<ChatPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return messages[index].messageType == 2
                         ? Container(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                            padding: const EdgeInsets.only(bottom: 8.0),
                             alignment: messages[index]
                                     .isSentByCurrentUser(currentUser.firebaseId)
                                 ? Alignment.topRight
@@ -244,27 +244,38 @@ class _ChatState extends BasePageState<ChatPage> {
                       ),
                       const SizedBox(width: 15),
                       Expanded(
-                        child: state.imageFile != null
-                            ? ImageContainer(
-                                height: 150,
-                                circularDecoration: false,
-                                imagePath: state.imageFile?.path,
-                                iconAlignment: Alignment.topRight,
-                                onContainerTap: () {
-                                  chatBloc.add(
-                                    ClearImageMessageEvent(),
-                                  );
-                                },
-                              )
-                            : TextField(
-                                controller: textEditingController,
-                                decoration: const InputDecoration(
-                                  hintText: "Write message...",
+                        child: Stack(
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              state.imageFile != null
+                                  ? ImageContainer(
+                                      height: 150,
+                                      circularDecoration: false,
+                                      imagePath: state.imageFile?.path,
+                                      iconAlignment: Alignment.topRight,
+                                      overlayIcon: const Icon(Icons.cancel),
+                                      onContainerTap: () {
+                                        chatBloc.add(
+                                          ClearImageMessageEvent(),
+                                        );
+                                      },
+                                    )
+                                  : TextField(
+                                      controller: textEditingController,
+                                      decoration: const InputDecoration(
+                                        hintText: "Write message...",
+                                      ),
+                                      onChanged: (String message) => chatBloc
+                                          .add(TextMessageChanged(message)),
+                                      onSubmitted: (_) => onMessageSend(),
+                                    ),
+                              Visibility(
+                                child: const Center(
+                                  child: CircularProgressIndicator(),
                                 ),
-                                onChanged: (String message) =>
-                                    chatBloc.add(TextMessageChanged(message)),
-                                onSubmitted: (_) => onMessageSend(),
-                              ),
+                                visible: state.blocStatus is FormSubmitting,
+                              )
+                            ]),
                       ),
                       const SizedBox(width: 15),
                       IconButton(
@@ -283,12 +294,6 @@ class _ChatState extends BasePageState<ChatPage> {
                   ),
                 ),
               ),
-              Visibility(
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                visible: state.blocStatus is FormSubmitting,
-              )
             ],
           ),
         );
