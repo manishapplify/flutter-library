@@ -29,6 +29,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<GetChatsSubscriptionEvent>(_getChatsSubscriptionEventHandler);
     on<_OnChatsEvent>(_onChatsEventHandler);
     on<RemoveChatEvent>(_removeChatEventHandler);
+    on<ChatCreatedEvent>(_chatCreatedEventHandler);
     on<ChatOpenedEvent>(_chatOpenedEventHandler);
     on<GetCurrentChatMessagesEvent>(_getCurrentChatMessagesEventHandler);
     on<ResetCurrentChatMessagesFetched>(
@@ -178,6 +179,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       },
       emit: emit,
     );
+  }
+
+  void _chatCreatedEventHandler(
+      ChatCreatedEvent event, Emitter<ChatState> emit) async {
+    // TODO: implement handler.
   }
 
   void _chatOpenedEventHandler(
