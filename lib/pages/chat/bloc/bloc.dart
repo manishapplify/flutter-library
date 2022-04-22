@@ -30,6 +30,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<GetChatsSubscriptionEvent>(_getChatsSubscriptionEventHandler);
     on<_OnChatsEvent>(_onChatsEventHandler);
     on<RemoveChatEvent>(_removeChatEventHandler);
+    on<ChatCreatedEvent>(_chatCreatedEventHandler);
     on<ChatOpenedEvent>(_chatOpenedEventHandler);
     on<GetCurrentChatMessagesEvent>(_getCurrentChatMessagesEventHandler);
     on<ResetCurrentChatMessagesFetched>(
@@ -135,7 +136,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               .map((FirebaseChat chat) => chat.id)
               .toSet();
           final Map<String, StreamSubscription<Set<FirebaseMessage>>>
-              messageSubscriptions = state.messageSubscriptions;
+              // Fix unmodifiable map error.
+              messageSubscriptions = state.messageSubscriptions.isEmpty
+                  ? <String, StreamSubscription<Set<FirebaseMessage>>>{}
+                  : state.messageSubscriptions;
 
           bool isCurrentChatRemoved = false;
           // Remove subscriptions of the chats that were removed.
@@ -145,8 +149,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               isCurrentChatRemoved = true;
             }
           }
-          // Add subscriptioons of the chats that were added.
-          messageSubscriptions.addAll(addedMessageSubscriptions);
+          if (addedMessageSubscriptions.isNotEmpty) {
+            // Add subscriptioons of the chats that were added.
+            messageSubscriptions.addAll(addedMessageSubscriptions);
+          }
 
           emit(state.copyWith(
               chats: event.chats, messageSubscriptions: messageSubscriptions));
@@ -176,6 +182,27 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               ),
           ),
         );
+      },
+      emit: emit,
+    );
+  }
+
+  void _chatCreatedEventHandler(
+      ChatCreatedEvent event, Emitter<ChatState> emit) async {
+    // Clear previous chat, if present.
+    if (state.currentChat is FirebaseChat) {
+      add(ChatPagePopEvent());
+    }
+    await _commonHandler(
+      handlerJob: () async {
+        final FirebaseChat chat =
+            await _firebaseRealtimeDatabase.addChatIfNotExists(
+          firebaseUserA: event.firebaseUserA,
+          firebaseUserB: event.firebaseUserB,
+        );
+
+        emit(state.copyWith(currentChat: chat));
+        add(GetCurrentChatMessagesEvent());
       },
       emit: emit,
     );
@@ -295,7 +322,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         messageSubscriptions: state.messageSubscriptions,
         currentChatMessagesFetched: state.currentChatMessagesFetched,
         currentChatNewMessageReceived: state.currentChatNewMessageReceived));
-  }
+      }
 
   void _clearDocMessageEventHandler(
       ClearDocMessageEvent event, Emitter<ChatState> emit) {
@@ -310,6 +337,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         messageSubscriptions: state.messageSubscriptions,
         currentChatMessagesFetched: state.currentChatMessagesFetched,
         currentChatNewMessageReceived: state.currentChatNewMessageReceived));
+
   }
 
   void _sendTextEventHandler(

@@ -219,14 +219,7 @@ class Navigation {
       case Routes.users:
         return MaterialPageRoute<UsersPage>(
           settings: settings,
-          builder: (_) => BlocProvider<UsersBloc>(
-            create: (_) => UsersBloc(
-              firebaseRealtimeDatabase: _firebaseRealtimeDatabase,
-              authCubit: _authCubit,
-              imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
-            ),
-            child: const UsersPage(),
-          ),
+          builder: (_) => const UsersPage(),
         );
       case Routes.chats:
         return MaterialPageRoute<ChatsPage>(

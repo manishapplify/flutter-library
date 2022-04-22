@@ -3,6 +3,7 @@ import 'package:components/cubits/password_auth.dart';
 import 'package:components/dependencies/composition_root.dart';
 import 'package:components/firebase_options.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
+import 'package:components/pages/users/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/theme/style.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,13 @@ class MyApp extends StatelessWidget {
             authCubit: compositionRoot.authCubit,
             firebaseRealtimeDatabase: compositionRoot.firebaseRealtimeDatabase,
             firebaseStorageServices: compositionRoot.firebaseStorageServices,
+            imageBaseUrl: compositionRoot.s3imageUpload.s3BaseUrl + 'users/',
+          ),
+        ),
+        BlocProvider<UsersBloc>(
+          create: (_) => UsersBloc(
+            firebaseRealtimeDatabase: compositionRoot.firebaseRealtimeDatabase,
+            authCubit: compositionRoot.authCubit,
             imageBaseUrl: compositionRoot.s3imageUpload.s3BaseUrl + 'users/',
           ),
         ),

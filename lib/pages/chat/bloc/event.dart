@@ -21,6 +21,17 @@ class RemoveChatEvent extends ChatEvent {
   final FirebaseChat chat;
 }
 
+/// Fired when the user searches for other users and taps on the message icon. 
+class ChatCreatedEvent extends ChatEvent {
+  ChatCreatedEvent({
+    required this.firebaseUserA,
+    required this.firebaseUserB,
+  });
+
+  final FirebaseUser firebaseUserA;
+  final FirebaseUser firebaseUserB;
+}
+
 class ChatOpenedEvent extends ChatEvent {
   ChatOpenedEvent(this.chat);
 

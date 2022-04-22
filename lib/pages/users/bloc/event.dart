@@ -15,4 +15,10 @@ class MessageIconTapEvent extends UsersEvent {
   final FirebaseUser firebaseUserB;
 }
 
+class QueryChangedEvent extends UsersEvent {
+  QueryChangedEvent({required this.query});
+
+  final String query;
+}
+
 class ResetChatState extends UsersEvent {}

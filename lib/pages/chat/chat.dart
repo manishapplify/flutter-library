@@ -361,12 +361,6 @@ class _ChatState extends BasePageState<ChatPage> {
                   ),
                 ],
               ),
-              Visibility(
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                visible: state.blocStatus is FormSubmitting,
-              )
             ],
           ),
         );

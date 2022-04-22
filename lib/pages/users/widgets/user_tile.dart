@@ -17,6 +17,7 @@ class UserTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      tileColor: Colors.grey[200],
       contentPadding: EdgeInsets.zero,
       title: Text(user.name ?? user.id),
       leading: ImageContainer(

@@ -21,6 +21,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         super(const UsersState()) {
     on<GetUsersEvent>(_getUsersEventHandler);
     on<MessageIconTapEvent>(_messageIconTapHandler);
+    on<QueryChangedEvent>(_queryChangedEventHandler);
     on<ResetChatState>(_resetChatStateHandler);
   }
 
@@ -45,6 +46,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
         emit(state.copyWith(
           users: users,
+          usersMatchingQuery: users,
           blocStatus: SubmissionSuccess(),
         ));
       },
@@ -83,6 +85,23 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         );
       },
       emit: emit,
+    );
+  }
+
+  void _queryChangedEventHandler(
+      QueryChangedEvent event, Emitter<UsersState> emit) {
+    final List<FirebaseUser> usersMatchingQuery = event.query.isEmpty
+        ? state.users
+        : state.users
+            .where((FirebaseUser user) =>
+                user.name?.toLowerCase().contains(event.query.toLowerCase()) ??
+                false)
+            .toList();
+
+    emit(
+      state.copyWith(
+        usersMatchingQuery: usersMatchingQuery,
+      ),
     );
   }
 
