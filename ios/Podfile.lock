@@ -24,6 +24,9 @@ PODS:
   - Firebase/Messaging (8.14.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 8.14.0)
+  - Firebase/Storage (8.14.0):
+    - Firebase/CoreOnly
+    - FirebaseStorage (~> 8.14.0)
   - firebase_core (1.14.1):
     - Firebase/CoreOnly (= 8.14.0)
     - Flutter
@@ -33,6 +36,10 @@ PODS:
     - Flutter
   - firebase_messaging (11.2.13):
     - Firebase/Messaging (= 8.14.0)
+    - firebase_core
+    - Flutter
+  - firebase_storage (10.2.12):
+    - Firebase/Storage (= 8.14.0)
     - firebase_core
     - Flutter
   - FirebaseCore (8.14.0):
@@ -61,6 +68,9 @@ PODS:
     - GoogleUtilities/Reachability (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
     - nanopb (~> 2.30908.0)
+  - FirebaseStorage (8.14.0):
+    - FirebaseCore (~> 8.0)
+    - GTMSessionFetcher/Core (~> 1.5)
   - Flutter (1.0.0)
   - flutter_facebook_auth (3.5.3):
     - FBSDKCoreKit (~> 13.0.0)
@@ -124,6 +134,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
+  - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
@@ -146,6 +157,7 @@ SPEC REPOS:
     - FirebaseDatabase
     - FirebaseInstallations
     - FirebaseMessaging
+    - FirebaseStorage
     - GoogleDataTransport
     - GoogleSignIn
     - GoogleUtilities
@@ -166,6 +178,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_database/ios"
   firebase_messaging:
     :path: ".symlinks/plugins/firebase_messaging/ios"
+  firebase_storage:
+    :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
   flutter_facebook_auth:
@@ -194,11 +208,13 @@ SPEC CHECKSUMS:
   firebase_core: cdef02fcf55872191eb0568d4c31a7a700e38582
   firebase_database: 48b46c2d73ad0b85a1d8a35a66a9af62c8cb4d46
   firebase_messaging: 57f89047ec0084a4049e253ce84cea39becadad4
+  firebase_storage: 4a9711df9392778a9f8641d5ce4cb7a228c0472c
   FirebaseCore: b84a44ee7ba999e0f9f76d198a9c7f60a797b848
   FirebaseCoreDiagnostics: 92e07a649aeb66352b319d43bdd2ee3942af84cb
   FirebaseDatabase: 8bfbe7bb8d355f9727507bcf4a2116cb3aabdc5e
   FirebaseInstallations: 40bd9054049b2eae9a2c38ef1c3dd213df3605cd
   FirebaseMessaging: 5ebc42d281567658a2cb72b9ef3506e4a1a1a6e4
+  FirebaseStorage: 32ab036ce11eb7e94c279a238a65efa24f81593d
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_facebook_auth: b3d0ccff602c4a24c1fd5972e5740e420c4b5071
   google_sign_in_ios: ed71c0dbddfba8b1ea9aa210dbda695f46bf51bd

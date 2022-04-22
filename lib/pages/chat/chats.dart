@@ -10,9 +10,9 @@ import 'package:components/pages/users/widgets/user_tile.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
+import 'package:components/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
 class ChatsPage extends BasePage {
   const ChatsPage({Key? key}) : super(key: key);
@@ -25,6 +25,9 @@ class _ChatsState extends BasePageState<ChatsPage> {
   late final ChatBloc chatBloc;
   late final UsersBloc usersBloc;
   late final User currentUser;
+  late final ValueNotifier<bool> isSearchBarOpenNotifier;
+
+  OverlayEntry? usersOverlayEntry;
 
   @override
   void initState() {
@@ -39,24 +42,45 @@ class _ChatsState extends BasePageState<ChatsPage> {
       ..add(GetChatsSubscriptionEvent())
       ..add(GetMessageSubscriptionsEvent());
     usersBloc = BlocProvider.of(context)..add(GetUsersEvent());
+    isSearchBarOpenNotifier = ValueNotifier<bool>(false)
+      ..addListener(onNotifierValue);
     super.initState();
   }
 
   @override
   void dispose() {
     chatBloc.add(ViewDisposeEvent());
+    isSearchBarOpenNotifier.dispose();
     super.dispose();
   }
 
   @override
-  EdgeInsets get padding => EdgeInsets.zero;
+  PreferredSizeWidget? appBar(BuildContext context) => AppBar(
+        title: const Text('Chats'),
+        actions: <Widget>[
+          SearchBar(
+            onQueryChanged: (String query) => usersBloc.add(
+              QueryChangedEvent(query: query),
+            ),
+            isSearchBarOpenNotifier: isSearchBarOpenNotifier,
+          )
+        ],
+      );
 
   @override
   Widget body(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        chatBloc.add(ResetBlocState());
-        return Future<bool>.value(true);
+        if (usersOverlayEntry == null) {
+          chatBloc.add(ResetBlocState());
+
+          return Future<bool>.value(true);
+        } else {
+          isSearchBarOpenNotifier.value = false;
+          hideOverlayEntry();
+
+          return Future<bool>.value(false);
+        }
       },
       child: Stack(
         children: <Widget>[
@@ -80,122 +104,44 @@ class _ChatsState extends BasePageState<ChatsPage> {
 
               final List<FirebaseChat> chats = state.chats.toList();
 
-              return Padding(
-                padding: const EdgeInsets.only(top: kToolbarHeight + 10),
-                child: ListView.separated(
-                  separatorBuilder: (_, __) => const SizedBox(
-                    height: 8,
-                  ),
-                  itemBuilder: (BuildContext context, int i) {
-                    final FirebaseChat chat = chats[i];
+              return ListView.separated(
+                separatorBuilder: (_, __) => const SizedBox(
+                  height: 8,
+                ),
+                itemBuilder: (BuildContext context, int i) {
+                  final FirebaseChat chat = chats[i];
 
-                    return ChatTile(
-                      chat: chat,
-                      imageBaseUrl: chatBloc.imageBaseUrl,
-                      currentUserFirebaseId: currentUser.firebaseId,
-                      onTileTap: () {
-                        chatBloc.add(ChatOpenedEvent(chat));
-                        Future<void>.microtask(
-                          () => navigator.pushNamed(
-                            Routes.chat,
-                            arguments: Routes.chats,
-                          ),
-                        );
-                      },
-                      onTileDismissed: () => onChatTileDismissed(
-                        context: context,
-                        chat: chat,
-                      ),
-                    );
-                  },
-                  itemCount: chats.length,
-                ),
-              );
-            },
-          ),
-          FloatingSearchBar(
-            hint: 'Search a user...',
-            scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
-            transitionCurve: Curves.fastOutSlowIn,
-            physics: const BouncingScrollPhysics(),
-            openAxisAlignment: 0.0,
-            width: 500,
-            debounceDelay: const Duration(milliseconds: 200),
-            onQueryChanged: (String query) =>
-                usersBloc.add(QueryChangedEvent(query: query)),
-            // Specify a custom transition to be used for
-            // animating between opened and closed stated.
-            transition: CircularFloatingSearchBarTransition(),
-            actions: <FloatingSearchBarAction>[
-              FloatingSearchBarAction(
-                child: CircularButton(
-                  icon: const Icon(Icons.account_circle),
-                  onPressed: () {},
-                ),
-              ),
-              FloatingSearchBarAction.searchToClear(
-                showIfClosed: false,
-              ),
-            ],
-            builder: (BuildContext context, Animation<double> transition) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(3),
-                child: Material(
-                  color: Colors.white,
-                  elevation: 4.0,
-                  child: BlocBuilder<UsersBloc, UsersState>(
-                    builder: (BuildContext context, UsersState state) {
-                      final List<FirebaseUser> usersMatchingQuery =
-                          state.usersMatchingQuery;
-                      return ListView.separated(
-                        padding:
-                            const EdgeInsets.only(top: 8, right: 8, bottom: 8),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        separatorBuilder: (_, __) => const SizedBox(
-                          height: 8,
+                  return ChatTile(
+                    chat: chat,
+                    imageBaseUrl: chatBloc.imageBaseUrl,
+                    currentUserFirebaseId: currentUser.firebaseId,
+                    onTileTap: () {
+                      chatBloc.add(ChatOpenedEvent(chat));
+                      Future<void>.microtask(
+                        () => navigator.pushNamed(
+                          Routes.chat,
+                          arguments: Routes.chats,
                         ),
-                        itemBuilder: (BuildContext context, int i) {
-                          final FirebaseUser otherUser = usersMatchingQuery[i];
-
-                          return UserTile(
-                            user: otherUser,
-                            imageBaseUrl: usersBloc.imageBaseUrl,
-                            onMessageIconTap: () {
-                              final FirebaseUser firebaseUserA =
-                                  FirebaseUser.fromMap(
-                                currentUser.toFirebaseMap(),
-                              );
-
-                              usersBloc.add(
-                                MessageIconTapEvent(
-                                  firebaseUserA: firebaseUserA,
-                                  firebaseUserB: otherUser,
-                                ),
-                              );
-
-                              chatBloc.add(
-                                ChatCreatedEvent(
-                                  firebaseUserA: firebaseUserA,
-                                  firebaseUserB: otherUser,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        itemCount: usersMatchingQuery.length,
                       );
                     },
-                  ),
-                ),
+                    onTileDismissed: () => onChatTileDismissed(
+                      context: context,
+                      chat: chat,
+                    ),
+                  );
+                },
+                itemCount: chats.length,
               );
             },
           ),
           BlocBuilder<ChatBloc, ChatState>(
             builder: (BuildContext context, ChatState state) {
               return Visibility(
-                child: const Center(
-                  child: CircularProgressIndicator(),
+                child: const Material(
+                  color: Colors.transparent,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
                 visible: state.blocStatus is FormSubmitting,
               );
@@ -204,6 +150,117 @@ class _ChatsState extends BasePageState<ChatsPage> {
         ],
       ),
     );
+  }
+
+  void onNotifierValue() {
+    // true -> show overlay.
+    // false -> hide overlay, clear input
+
+    if (isSearchBarOpenNotifier.value) {
+      showOverlay(
+        context: context,
+        onMessageIconTapped: () {
+          navigator.pushNamed(
+            Routes.chat,
+            arguments: Routes.chats,
+          );
+        },
+      );
+    } else {
+      hideOverlayEntry();
+      usersBloc.add(QueryChangedEvent(query: ''));
+    }
+  }
+
+  void showOverlay(
+      {required BuildContext context,
+      required VoidCallback onMessageIconTapped}) async {
+    // Declaring and Initializing OverlayState
+    // and OverlayEntry objects
+    final OverlayState? overlayState = Overlay.of(context);
+    if (overlayState is OverlayState) {
+      usersOverlayEntry = OverlayEntry(
+        builder: (BuildContext context) {
+          // You can return any widget you like here
+          // to be displayed on the Overlay
+          final double screenWidth = MediaQuery.of(context).size.width;
+          final double screenHeight = MediaQuery.of(context).size.height;
+
+          return Positioned(
+            left: screenWidth * 0.025,
+            top: screenHeight * 0.12,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: const BorderRadius.all(Radius.circular(3)),
+              ),
+              width: screenWidth * 0.95,
+              height: screenHeight * 0.85,
+              child: BlocBuilder<UsersBloc, UsersState>(
+                builder: (BuildContext context, UsersState state) {
+                  final List<FirebaseUser> usersMatchingQuery =
+                      state.usersMatchingQuery;
+                  return Material(
+                    color: Colors.grey[200],
+                    child: usersMatchingQuery.isEmpty
+                        ? const Center(child: Text('No users found!'))
+                        : ListView.separated(
+                            padding: const EdgeInsets.only(
+                                top: 8, right: 8, bottom: 8),
+                            separatorBuilder: (_, __) => const SizedBox(
+                              height: 8,
+                            ),
+                            itemBuilder: (BuildContext context, int i) {
+                              final FirebaseUser otherUser =
+                                  usersMatchingQuery[i];
+
+                              return UserTile(
+                                user: otherUser,
+                                imageBaseUrl: usersBloc.imageBaseUrl,
+                                onMessageIconTap: () {
+                                  final FirebaseUser firebaseUserA =
+                                      FirebaseUser.fromMap(
+                                    currentUser.toFirebaseMap(),
+                                  );
+
+                                  usersBloc.add(
+                                    MessageIconTapEvent(
+                                      firebaseUserA: firebaseUserA,
+                                      firebaseUserB: otherUser,
+                                    ),
+                                  );
+
+                                  chatBloc.add(
+                                    ChatCreatedEvent(
+                                      firebaseUserA: firebaseUserA,
+                                      firebaseUserB: otherUser,
+                                    ),
+                                  );
+                                  isSearchBarOpenNotifier.value = false;
+                                  onMessageIconTapped();
+                                },
+                              );
+                            },
+                            itemCount: usersMatchingQuery.length,
+                          ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      );
+
+      overlayState.insert(usersOverlayEntry!);
+    } else {
+      // Could not display overlay, close search bar.
+      isSearchBarOpenNotifier.value = false;
+    }
+  }
+
+  void hideOverlayEntry() {
+    usersOverlayEntry?.remove();
+    usersOverlayEntry = null;
   }
 
   Future<bool?> onChatTileDismissed({
@@ -220,7 +277,8 @@ class _ChatsState extends BasePageState<ChatsPage> {
             ),
             title: const Text('Delete chat'),
             content: const Text(
-                'Are you sure? The chat will be deleted for both the users.'),
+              'Are you sure? The chat will be deleted for both the users.',
+            ),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
