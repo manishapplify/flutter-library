@@ -49,12 +49,17 @@ class TextMessageChanged extends ChatEvent {
 
 class _ClearTextMessageEvent extends ChatEvent {}
 class ClearImageMessageEvent extends ChatEvent {}
+class ClearDocMessageEvent extends ChatEvent {}
 
 class SendTextEvent extends ChatEvent {}
 
 class ImageEvent extends ChatEvent {
   ImageEvent({required this.imageFile});
   final File imageFile;
+}
+class PdfEvent extends ChatEvent {
+  PdfEvent({required this.pdfFile});
+  final PlatformFile pdfFile;
 }
 class SendImageEvent extends ChatEvent {}
 

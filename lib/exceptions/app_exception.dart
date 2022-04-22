@@ -45,6 +45,9 @@ class AppException implements Exception {
   factory AppException.imageCannotBeEmpty() {
     return AppException(message: 'Image cannot be empty'); 
   }
+  factory AppException.docCannotBeEmpty() {
+    return AppException(message: 'Document cannot be empty'); 
+  }
   factory AppException.otpCannotBeEmpty() {
     return AppException(message: 'Please Enter OTP'); 
   }

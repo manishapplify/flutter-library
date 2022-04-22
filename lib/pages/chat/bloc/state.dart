@@ -14,6 +14,7 @@ class ChatState {
     this.currentChat,
     this.currentChatMessagesFetched = false,
     this.imageFile,
+    this.pdfFile
   });
 
   final Set<FirebaseChat> chats;
@@ -29,6 +30,7 @@ class ChatState {
       messageSubscriptions;
   final FormSubmissionStatus blocStatus;
   final File? imageFile;
+  final PlatformFile? pdfFile;
 
   ChatState copyWith({
     Set<FirebaseChat>? chats,
@@ -41,6 +43,7 @@ class ChatState {
     FirebaseChat? currentChat,
     bool? currentChatMessagesFetched,
     File? imageFile,
+    PlatformFile? pdfFile,
   }) {
     return ChatState(
       chats: chats ?? this.chats,
@@ -55,6 +58,7 @@ class ChatState {
       currentChatMessagesFetched:
           currentChatMessagesFetched ?? this.currentChatMessagesFetched,
       imageFile: imageFile ?? this.imageFile,
+      pdfFile: pdfFile ?? this.pdfFile,
     );
   }
 }
