@@ -54,7 +54,7 @@ class _SearchBarState extends State<SearchBar>
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Container(
-              height: _searchBarHeight,
+              height: widthDx > 0 ? _searchBarHeight : 0,
               width: widthDx,
               alignment: Alignment.center,
               padding: const EdgeInsets.only(
@@ -104,7 +104,7 @@ class _SearchBarState extends State<SearchBar>
           contentPadding: EdgeInsets.only(bottom: 10),
           border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.black45,
+              color: Colors.transparent,
             ),
           ),
           hintStyle: TextStyle(
