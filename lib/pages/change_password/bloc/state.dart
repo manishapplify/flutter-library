@@ -15,9 +15,11 @@ class ChangePasswordState {
   final String newPassword;
   String? get newPasswordValidator => newPassword.isEmpty
       ? 'New password is required'
-      : !validators.isValidPassword(newPassword)
-          ? 'Must contain at least 7 characters'
-          : null;
+      : newPassword == currentPassword
+          ? 'Must be different than current password'
+          : !validators.isValidPassword(newPassword)
+              ? 'Must contain at least 7 characters'
+              : null;
 
   final String confirmNewPassword;
   String? get confirmNewPasswordValidator => confirmNewPassword.isEmpty
