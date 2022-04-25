@@ -191,14 +191,14 @@ class _ChatsState extends BasePageState<ChatsPage> {
 
           return Positioned(
             left: screenWidth * 0.025,
-            top: screenHeight * 0.12,
+            top: kToolbarHeight + screenHeight * 0.05,
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: const BorderRadius.all(Radius.circular(3)),
               ),
               width: screenWidth * 0.95,
-              height: screenHeight * 0.85,
+              height: screenHeight * 0.9 - kToolbarHeight,
               child: BlocBuilder<UsersBloc, UsersState>(
                 builder: (BuildContext context, UsersState state) {
                   final List<FirebaseUser> usersMatchingQuery =
