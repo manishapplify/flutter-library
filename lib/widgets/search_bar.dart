@@ -54,16 +54,16 @@ class _SearchBarState extends State<SearchBar>
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Container(
-              height: widthDx > 0 ? _searchBarHeight : 0,
+              height: _searchBarHeight,
               width: widthDx,
               alignment: Alignment.center,
               padding: const EdgeInsets.only(
                 left: 10,
               ),
               child: _child,
-              decoration: BoxDecoration(
-                color: widthDx > 0 ? Colors.white : Colors.transparent,
-                borderRadius: const BorderRadius.all(Radius.circular(3)),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(3)),
               ),
             ),
             IconButton(
@@ -107,15 +107,10 @@ class _SearchBarState extends State<SearchBar>
               color: Colors.transparent,
             ),
           ),
-          hintStyle: TextStyle(
-            color: Colors.black45,
-            fontSize: 16.0,
-            fontWeight: FontWeight.w300,
-          ),
-          labelStyle: TextStyle(
-            color: Colors.black87,
-            fontSize: 16.0,
-            fontWeight: FontWeight.w500,
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.transparent,
+            ),
           ),
         ),
         onSubmitted: (_) => _notifier.value = false,
