@@ -70,17 +70,16 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
             ),
           );
         } else if (state.formStatus is SubmissionFailed) {
-                //feedbackBloc.add(ResetFormStatus());
-                final SubmissionFailed failure =
-                    state.formStatus as SubmissionFailed;
-                Future<void>.microtask(
-                  () => showSnackBar(
-                    SnackBar(
-                      content: Text(failure.message ?? 'Failure'),
-                    ),
-                  ),
-                );
-              }
+          final SubmissionFailed failure = state.formStatus as SubmissionFailed;
+          Future<void>.microtask(
+            () => showSnackBar(
+              SnackBar(
+                content: Text(failure.message ?? 'Failure'),
+              ),
+            ),
+          );
+          changePasswordBloc.add(ResetFormState());
+        }
 
         return Column(
           children: <Widget>[
@@ -97,7 +96,8 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               obscureText: true,
               style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
-                hintText: 'Current Password',
+                labelText: 'Current Password',
+                hintText: 'Enter current password',
                 errorStyle: TextStyle(height: 0.5),
                 prefixIcon: Icon(
                   Icons.lock,
