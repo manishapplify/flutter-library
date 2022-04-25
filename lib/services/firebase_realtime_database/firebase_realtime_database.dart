@@ -32,7 +32,6 @@ class FirebaseRealtimeDatabase {
   }) async {
     // TODO: Remove chats first.
 
-
     final String userId = user?.firebaseId ?? firebaseUser?.id ?? firebaseId!;
     final DatabaseReference userReference =
         _database.ref(_userCollection + userId);
@@ -44,7 +43,16 @@ class FirebaseRealtimeDatabase {
     final DatabaseReference userReference =
         _database.ref(_userCollection + (user?.firebaseId ?? firebaseUser!.id));
 
-    await userReference.set(user?.toFirebaseMap() ?? firebaseUser!.toMap());
+    final DatabaseEvent event = await userReference.once();
+    if (user is User && event.snapshot.exists) {
+      final FirebaseUser _user =
+          FirebaseUser.fromMap(event.snapshot.value as Map<dynamic, dynamic>)
+            ..copyWith(name: user.fullName, pic: user.profilePic);
+
+      userReference.set(_user.toMap());
+    } else {
+      await userReference.set(user?.toFirebaseMap() ?? firebaseUser!.toMap());
+    }
   }
 
   Future<FirebaseUser?> getFirebaseUser({
