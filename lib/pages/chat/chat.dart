@@ -193,11 +193,15 @@ class _ChatState extends BasePageState<ChatPage> {
                             ),
                           );
                         } else if (messages[index].messageType == 3) {
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 10.0,left: 100.0),
-                            height: 60.0,
-                            width: 60.0,
-                            color: Colors.red,
+                          return Align(
+                            alignment: messages[index]
+                                    .isSentByCurrentUser(currentUser.firebaseId)
+                                ? Alignment.topRight
+                                : Alignment.topLeft,
+                            child: const Icon(
+                              Icons.picture_as_pdf,
+                              size: 80.0,
+                            ),
                           );
                         } else {
                           return MessageTile(
@@ -311,7 +315,13 @@ class _ChatState extends BasePageState<ChatPage> {
                                       const SizedBox(
                                         width: 6.0,
                                       ),
-                                      Text(state.pdfFile!.name),
+                                      SizedBox(
+                                        child: Text(
+                                          state.pdfFile!.name,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        width: 100.0,
+                                      )
                                     ],
                                   )
                                 : state.imageFile != null
@@ -361,6 +371,15 @@ class _ChatState extends BasePageState<ChatPage> {
                   ),
                 ],
               ),
+              Visibility(
+                child: const Material(
+                  color: Colors.transparent,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                visible: state.blocStatus is FormSubmitting,
+              )
             ],
           ),
         );

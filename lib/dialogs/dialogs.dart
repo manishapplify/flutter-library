@@ -114,29 +114,49 @@ dynamic showChatAttachmentPicker({
   void Function()? onImagePicked,
   void Function()? onPdfPicked,
 }) {
-  showModalBottomSheet(
-      context: context,
-      isScrollControlled: false,
-      enableDrag: false,
-      elevation: 5.0,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
-      ),
-      builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-                leading: const Icon(Icons.photo),
-                title: const Text('Image'),
-                onTap: onImagePicked),
-            ListTile(
-              leading: const Icon(Icons.picture_as_pdf),
-              title: const Text('Document'),
-              onTap: onPdfPicked
+  showCupertinoModalPopup(
+    barrierColor: Colors.black45,
+    context: context,
+    builder: (BuildContext context) => CupertinoActionSheet(
+      actions: <Widget>[
+        CupertinoActionSheetAction(
+          child: const Text(
+            "Image",
+            style: TextStyle(
+              color: Colors.black,
             ),
-          ],
-        );
-      });
+          ),
+          onPressed: onImagePicked!,
+        ),
+        CupertinoActionSheetAction(
+            child: const Text(
+              "Document",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+            onPressed: onPdfPicked!)
+      ],
+      cancelButton: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(
+            Radius.circular(16.0),
+          ),
+        ),
+        child: CupertinoActionSheetAction(
+          child: const Text(
+            "Cancel",
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
+          isDefaultAction: true,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    ),
+  );
 }
