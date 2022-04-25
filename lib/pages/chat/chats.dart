@@ -91,8 +91,9 @@ class _ChatsState extends BasePageState<ChatsPage> {
               if (state.blocStatus is SubmissionFailed) {
                 final SubmissionFailed failure =
                     state.blocStatus as SubmissionFailed;
-                if (failure.message !=
-                    AppException.currentChatRemoved().message) {
+                if (failure.message == AppException.noChatsPresent().message ||
+                    failure.message ==
+                        AppException.couldNotLoadChats().message) {
                   Future<void>.microtask(
                     () => showSnackBar(
                       SnackBar(
