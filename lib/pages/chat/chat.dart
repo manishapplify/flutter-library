@@ -287,7 +287,6 @@ class _ChatState extends BasePageState<ChatPage> {
                           Expanded(
                             child: state.pdfFile != null
                                 ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
                                       IconButton(
                                         icon: const Icon(
@@ -315,13 +314,13 @@ class _ChatState extends BasePageState<ChatPage> {
                                       const SizedBox(
                                         width: 6.0,
                                       ),
-                                      SizedBox(
+                                      Flexible(
                                         child: Text(
                                           state.pdfFile!.name,
                                           overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
                                         ),
-                                        width: 100.0,
-                                      )
+                                      ),
                                     ],
                                   )
                                 : state.imageFile != null
