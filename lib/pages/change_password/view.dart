@@ -78,7 +78,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               ),
             ),
           );
-          changePasswordBloc.add(ResetFormState());
+          changePasswordBloc.add(ResetFormStatus());
         }
 
         return Column(

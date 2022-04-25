@@ -25,6 +25,7 @@ class ChangePasswordBloc
         (ResetFormState event, Emitter<ChangePasswordState> emit) {
       emit(ChangePasswordState());
     });
+    on<ResetFormStatus>(_resetFormStatusHandler);
     on<ChangePasswordSubmitted>(_changePasswordEventHandler);
   }
 
@@ -72,6 +73,14 @@ class ChangePasswordBloc
       emit: emit,
     );
   }
+
+  void _resetFormStatusHandler(
+          ResetFormStatus event, Emitter<ChangePasswordState> emit) =>
+      emit(
+        state.copyWith(
+          formStatus: const InitialFormStatus(),
+        ),
+      );
 
   Future<void> _commonHandler(
       {required Future<void> Function() handlerJob,

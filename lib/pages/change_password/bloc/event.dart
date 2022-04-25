@@ -22,4 +22,6 @@ class ConfirmNewPasswordChanged extends ChangePasswordEvent {
 
 class ResetFormState extends ChangePasswordEvent {}
 
+class ResetFormStatus extends ChangePasswordEvent {}
+
 class ChangePasswordSubmitted extends ChangePasswordEvent {}
