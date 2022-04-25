@@ -47,7 +47,7 @@ class FirebaseRealtimeDatabase {
     if (user is User && event.snapshot.exists) {
       final FirebaseUser _user =
           FirebaseUser.fromMap(event.snapshot.value as Map<dynamic, dynamic>)
-            ..copyWith(name: user.fullName, pic: user.profilePic);
+              .copyWith(name: user.fullName, pic: user.profilePic);
 
       userReference.set(_user.toMap());
     } else {
