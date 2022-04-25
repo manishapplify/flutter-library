@@ -219,24 +219,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _getCurrentChatMessagesEventHandler(
       GetCurrentChatMessagesEvent event, Emitter<ChatState> emit) async {
-    await _commonHandler(
-      handlerJob: () async {
-        final Set<FirebaseMessage> messages =
-            await _firebaseRealtimeDatabase.getMessages(state.currentChat!.id);
+    if (state.currentChat is FirebaseChat) {
+      await _commonHandler(
+        handlerJob: () async {
+          final Set<FirebaseMessage> messages = await _firebaseRealtimeDatabase
+              .getMessages(state.currentChat!.id);
 
-        emit(
-          state.copyWith(
-            messages: messages,
-          ),
-        );
-        emit(
-          state.copyWith(
-            currentChatMessagesFetched: true,
-          ),
-        );
-      },
-      emit: emit,
-    );
+          emit(
+            state.copyWith(
+              messages: messages,
+            ),
+          );
+          emit(
+            state.copyWith(
+              currentChatMessagesFetched: true,
+            ),
+          );
+        },
+        emit: emit,
+      );
+    }
   }
 
   void _resetCurrentChatMessagesFetchedHandler(
@@ -322,7 +324,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         messageSubscriptions: state.messageSubscriptions,
         currentChatMessagesFetched: state.currentChatMessagesFetched,
         currentChatNewMessageReceived: state.currentChatNewMessageReceived));
-      }
+  }
 
   void _clearDocMessageEventHandler(
       ClearDocMessageEvent event, Emitter<ChatState> emit) {
@@ -337,7 +339,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         messageSubscriptions: state.messageSubscriptions,
         currentChatMessagesFetched: state.currentChatMessagesFetched,
         currentChatNewMessageReceived: state.currentChatNewMessageReceived));
-
   }
 
   void _sendTextEventHandler(
