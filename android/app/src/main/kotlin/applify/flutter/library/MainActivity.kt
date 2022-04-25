@@ -1,4 +1,4 @@
-package com.applify.components
+package com.applify.flutter.library
 
 import io.flutter.embedding.android.FlutterActivity
 
