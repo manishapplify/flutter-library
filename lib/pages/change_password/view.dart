@@ -52,133 +52,130 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
 
   @override
   Widget body(BuildContext context) {
-    return SingleChildScrollView(
-        child: Form(
-      key: _formkey,
-      child: BlocBuilder<ChangePasswordBloc, ChangePasswordState>(
-          builder: (BuildContext context, ChangePasswordState state) {
-        if (state.formStatus is SubmissionSuccess) {
-          changePasswordBloc.add(ResetFormState());
-          currentPasswordTextController.value = TextEditingValue.empty;
-          newPasswordTextController.value = TextEditingValue.empty;
-          confirmNewPasswordTextController.value = TextEditingValue.empty;
-          Future<void>.microtask(
-            () => showSnackBar(
-              const SnackBar(
-                content: Text('Successfully updated password'),
+    return Center(
+      child: SingleChildScrollView(
+          child: Form(
+        key: _formkey,
+        child: BlocBuilder<ChangePasswordBloc, ChangePasswordState>(
+            builder: (BuildContext context, ChangePasswordState state) {
+          if (state.formStatus is SubmissionSuccess) {
+            changePasswordBloc.add(ResetFormState());
+            currentPasswordTextController.value = TextEditingValue.empty;
+            newPasswordTextController.value = TextEditingValue.empty;
+            confirmNewPasswordTextController.value = TextEditingValue.empty;
+            Future<void>.microtask(
+              () => showSnackBar(
+                const SnackBar(
+                  content: Text('Successfully updated password'),
+                ),
               ),
-            ),
-          );
-        } else if (state.formStatus is SubmissionFailed) {
-          final SubmissionFailed failure = state.formStatus as SubmissionFailed;
-          Future<void>.microtask(
-            () => showSnackBar(
-              SnackBar(
-                content: Text(failure.message ?? 'Failure'),
+            );
+          } else if (state.formStatus is SubmissionFailed) {
+            final SubmissionFailed failure =
+                state.formStatus as SubmissionFailed;
+            Future<void>.microtask(
+              () => showSnackBar(
+                SnackBar(
+                  content: Text(failure.message ?? 'Failure'),
+                ),
               ),
-            ),
-          );
-          changePasswordBloc.add(ResetFormStatus());
-        }
+            );
+            changePasswordBloc.add(ResetFormStatus());
+          }
 
-        return Column(
-          children: <Widget>[
-            Text(
-              "Your password must be at least 6 characters",
-              style: textTheme.headline2,
-            ),
-            const SizedBox(
-              height: 16.0,
-            ),
-            TextFormField(
-              controller: currentPasswordTextController,
-              focusNode: currentPasswordFocusNode,
-              obscureText: true,
-              style: const TextStyle(color: Colors.black),
-              decoration: const InputDecoration(
-                labelText: 'Current Password',
-                hintText: 'Enter current password',
-                errorStyle: TextStyle(height: 0.5),
-                prefixIcon: Icon(
-                  Icons.lock,
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                controller: currentPasswordTextController,
+                focusNode: currentPasswordFocusNode,
+                obscureText: true,
+                style: const TextStyle(color: Colors.black),
+                decoration: const InputDecoration(
+                  labelText: 'Current Password',
+                  hintText: 'Enter current password',
+                  errorStyle: TextStyle(height: 0.5),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                  ),
                 ),
+                validator: (_) => state.currentPasswordValidator,
+                onChanged: (String value) => changePasswordBloc
+                    .add(CurrentPasswordChanged(currentPassword: value)),
+                onFieldSubmitted: (_) => newPasswordFocusNode.requestFocus(),
+                textInputAction: TextInputAction.next,
               ),
-              validator: (_) => state.currentPasswordValidator,
-              onChanged: (String value) => changePasswordBloc
-                  .add(CurrentPasswordChanged(currentPassword: value)),
-              onFieldSubmitted: (_) => newPasswordFocusNode.requestFocus(),
-              textInputAction: TextInputAction.next,
-            ),
-            const SizedBox(
-              height: 16.0,
-            ),
-            TextFormField(
-              controller: newPasswordTextController,
-              focusNode: newPasswordFocusNode,
-              obscureText: true,
-              style: const TextStyle(color: Colors.black),
-              decoration: const InputDecoration(
-                errorStyle: TextStyle(height: 0.5),
-                labelText: 'New Password',
-                hintText: 'Enter new password',
-                prefixIcon: Icon(
-                  Icons.lock,
+              const SizedBox(
+                height: 16.0,
+              ),
+              TextFormField(
+                controller: newPasswordTextController,
+                focusNode: newPasswordFocusNode,
+                obscureText: true,
+                style: const TextStyle(color: Colors.black),
+                decoration: const InputDecoration(
+                  errorStyle: TextStyle(height: 0.5),
+                  labelText: 'New Password',
+                  hintText: 'Enter new password',
+                  prefixIcon: Icon(
+                    Icons.lock,
+                  ),
                 ),
-              ),
-              validator: (_) => state.newPasswordValidator,
-              onChanged: (String value) => changePasswordBloc.add(
-                NewPasswordChanged(newPassword: value),
-              ),
-              onFieldSubmitted: (_) =>
-                  confirmNewPasswordFocusNode.requestFocus(),
-              textInputAction: TextInputAction.next,
-            ),
-            const SizedBox(
-              height: 16.0,
-            ),
-            TextFormField(
-              controller: confirmNewPasswordTextController,
-              focusNode: confirmNewPasswordFocusNode,
-              obscureText: true,
-              style: const TextStyle(color: Colors.black),
-              decoration: const InputDecoration(
-                errorStyle: TextStyle(height: 0.5),
-                labelText: 'Confirm New Password',
-                hintText: 'Enter new password again',
-                prefixIcon: Icon(
-                  Icons.lock,
+                validator: (_) => state.newPasswordValidator,
+                onChanged: (String value) => changePasswordBloc.add(
+                  NewPasswordChanged(newPassword: value),
                 ),
+                onFieldSubmitted: (_) =>
+                    confirmNewPasswordFocusNode.requestFocus(),
+                textInputAction: TextInputAction.next,
               ),
-              validator: (_) => state.confirmNewPasswordValidator,
-              onChanged: (String value) => changePasswordBloc.add(
-                ConfirmNewPasswordChanged(confirmNewPassword: value),
+              const SizedBox(
+                height: 16.0,
               ),
-              onFieldSubmitted: (_) => onFormSubmitted(),
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            state.formStatus is FormSubmitting
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: () {
-                      onFormSubmitted();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
-                      child: Text(
-                        'Submit',
-                        style: textTheme.headline2,
+              TextFormField(
+                controller: confirmNewPasswordTextController,
+                focusNode: confirmNewPasswordFocusNode,
+                obscureText: true,
+                style: const TextStyle(color: Colors.black),
+                decoration: const InputDecoration(
+                  errorStyle: TextStyle(height: 0.5),
+                  labelText: 'Confirm New Password',
+                  hintText: 'Enter new password again',
+                  prefixIcon: Icon(
+                    Icons.lock,
+                  ),
+                ),
+                validator: (_) => state.confirmNewPasswordValidator,
+                onChanged: (String value) => changePasswordBloc.add(
+                  ConfirmNewPasswordChanged(confirmNewPassword: value),
+                ),
+                onFieldSubmitted: (_) => onFormSubmitted(),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              state.formStatus is FormSubmitting
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: () {
+                        onFormSubmitted();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        child: Text(
+                          'Submit',
+                          style: textTheme.headline2,
+                        ),
                       ),
                     ),
-                  ),
-          ],
-        );
-      }),
-    ));
+            ],
+          );
+        }),
+      )),
+    );
   }
 
   void onFormSubmitted() {

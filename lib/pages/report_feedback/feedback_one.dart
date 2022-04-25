@@ -140,7 +140,7 @@ class _FeedbackScreenOneState extends BasePageState<FeedbackScreenOne> {
                         maxLines: 10,
                         validator: (String? value) => state.isValidfeebackIssue
                             ? null
-                            : "Minimum 10 characters",
+                            : "Minimum 10 characters required",
                         onChanged: (String? value) => context
                             .read<FeedbackOneBloc>()
                             .add(FeedbackIssueChanged(feebackIssue: value)),

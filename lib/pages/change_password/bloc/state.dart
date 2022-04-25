@@ -6,7 +6,6 @@ class ChangePasswordState {
     this.newPassword = '',
     this.confirmNewPassword = '',
     this.formStatus = const InitialFormStatus(),
-    //this.isLoginSuccessful,
   });
 
   final String currentPassword;
@@ -17,7 +16,7 @@ class ChangePasswordState {
   String? get newPasswordValidator => newPassword.isEmpty
       ? 'New password is required'
       : !validators.isValidPassword(newPassword)
-          ? 'New password is too short'
+          ? 'Must contain at least 7 characters'
           : null;
 
   final String confirmNewPassword;
@@ -28,7 +27,6 @@ class ChangePasswordState {
           : null;
 
   final FormSubmissionStatus formStatus;
-  //final bool? isLoginSuccessful;
 
   ChangePasswordState copyWith({
     String? currentPassword,

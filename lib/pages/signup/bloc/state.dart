@@ -26,7 +26,7 @@ class SignUpState {
   String? get passwordValidator => !validators.notEmptyValidator(password)
       ? 'Password is required'
       : !validators.isValidPassword(password)
-          ? 'Password is too short'
+          ? 'Must contain at least 7 characters'
           : null;
 
   final String confirmPassword;

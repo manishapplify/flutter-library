@@ -11,7 +11,7 @@ class ResetPasswordState {
   String? get newPasswordValidator => newPassword.isEmpty
       ? 'New password is required'
       : !validators.isValidPassword(newPassword)
-          ? 'New password is too short'
+          ? 'Must contain at least 7 characters'
           : null;
 
   final String confirmNewPassword;
