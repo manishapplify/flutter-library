@@ -6,6 +6,8 @@ class ChatState {
     this.blocStatus = const InitialFormStatus(),
     this.chats = const <FirebaseChat>{},
     this.chatsSubscription,
+    this.chatUpdateSubscriptions =
+        const <String, StreamSubscription<FirebaseChat?>>{},
     this.message = '',
     this.messageSubscriptions =
         const <String, StreamSubscription<Set<FirebaseMessage>>>{},
@@ -14,11 +16,17 @@ class ChatState {
     this.currentChat,
     this.currentChatMessagesFetched = false,
     this.imageFile,
-    this.pdfFile
+    this.pdfFile,
   });
 
   final Set<FirebaseChat> chats;
+
+  /// Keeps track of new and removed chats.
   final StreamSubscription<Set<FirebaseChat>>? chatsSubscription;
+
+  /// Keeps track of latest messages received in a particular chat.
+  final Map<String, StreamSubscription<FirebaseChat?>> chatUpdateSubscriptions;
+
   final FirebaseChat? currentChat;
   final bool currentChatMessagesFetched;
   final String message;
@@ -35,6 +43,7 @@ class ChatState {
   ChatState copyWith({
     Set<FirebaseChat>? chats,
     StreamSubscription<Set<FirebaseChat>>? chatsSubscription,
+    Map<String, StreamSubscription<FirebaseChat?>>? chatUpdateSubscriptions,
     String? message,
     Set<FirebaseMessage>? messages,
     Map<String, StreamSubscription<Set<FirebaseMessage>>>? messageSubscriptions,
@@ -48,6 +57,8 @@ class ChatState {
     return ChatState(
       chats: chats ?? this.chats,
       chatsSubscription: chatsSubscription ?? this.chatsSubscription,
+      chatUpdateSubscriptions:
+          chatUpdateSubscriptions ?? this.chatUpdateSubscriptions,
       messages: messages ?? this.messages,
       messageSubscriptions: messageSubscriptions ?? this.messageSubscriptions,
       currentChatNewMessageReceived:
