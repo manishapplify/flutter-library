@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:components/authentication/form_submission.dart';
 import 'package:components/base/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
@@ -26,6 +28,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
   late final UsersBloc usersBloc;
   late final User currentUser;
   late final ValueNotifier<bool> isSearchBarOpenNotifier;
+  Timer? debounceTimer;
 
   OverlayEntry? usersOverlayEntry;
 
@@ -61,9 +64,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
         title: const Text('Chats'),
         actions: <Widget>[
           SearchBar(
-            onQueryChanged: (String query) => usersBloc.add(
-              QueryChangedEvent(query: query),
-            ),
+            onQueryChanged: onQueryChanged,
             isSearchBarOpenNotifier: isSearchBarOpenNotifier,
           )
         ],
@@ -153,6 +154,18 @@ class _ChatsState extends BasePageState<ChatsPage> {
         ],
       ),
     );
+  }
+
+  void onQueryChanged(String query) {
+    if (debounceTimer?.isActive ?? false) {
+      debounceTimer?.cancel();
+    }
+
+    debounceTimer = Timer(const Duration(milliseconds: 200), () {
+      usersBloc.add(
+        QueryChangedEvent(query: query),
+      );
+    });
   }
 
   void onNotifierValue() {
