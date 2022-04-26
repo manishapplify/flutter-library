@@ -290,28 +290,30 @@ class FirebaseRealtimeDatabase {
     return messageReference.key;
   }
 
-  Future<FirebaseMessage> sendMessage(
-      {required String textMessage,
-      required String chatId,
-      required String senderId,
-      required int messageType,
-      required String messageId,
-      String? imageUrl}) async {
+  Future<FirebaseMessage> sendMessage({
+    required String textMessage,
+    required String chatId,
+    required String senderId,
+    required int messageType,
+    required String messageId,
+    String? imageUrl,
+  }) async {
     final DateTime dateTime = DateTime.now().toUtc();
     final String receiverId =
         chatId.split(',').firstWhere((String id) => id != senderId);
 
     final FirebaseMessage message = FirebaseMessage(
-        message: textMessage,
-        chatDialogId: chatId,
-        messageId: messageId,
-        messageTime: dateTime,
-        firebaseMessageTime: dateTime,
-        messageReadStatus: receiverId,
-        messageType: messageType,
-        receiverId: receiverId,
-        senderId: senderId,
-        attachmentUrl: imageUrl);
+      message: textMessage,
+      chatDialogId: chatId,
+      messageId: messageId,
+      messageTime: dateTime,
+      firebaseMessageTime: dateTime,
+      messageReadStatus: receiverId,
+      messageType: messageType,
+      receiverId: receiverId,
+      senderId: senderId,
+      attachmentUrl: imageUrl,
+    );
     final DatabaseReference messageReference =
         _database.ref(_messagesCollection + chatId + '/' + messageId);
     // Update message reference.

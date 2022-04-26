@@ -9,7 +9,7 @@ import 'package:components/services/firebase_realtime_database/firebase_realtime
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
-import 'package:components/services/firebase_storage_services.dart';
+import 'package:components/services/firebase_storage_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:meta/meta.dart';
 
@@ -21,10 +21,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required this.imageBaseUrl,
     required AuthCubit authCubit,
     required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
-    required FirebaseStorageServices firebaseStorageServices,
+    required FirebaseStorageService firebaseStorageService,
   })  : _authCubit = authCubit,
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
-        _firebaseStorageServices = firebaseStorageServices,
+        _firebaseStorageService = firebaseStorageService,
         super(const ChatState()) {
     on<GetChatsEvent>(_getChatsEventHandler);
     on<GetChatsSubscriptionEvent>(_getChatsSubscriptionEventHandler);
@@ -58,7 +58,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final String imageBaseUrl;
   final AuthCubit _authCubit;
   final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
-  final FirebaseStorageServices _firebaseStorageServices;
+  final FirebaseStorageService _firebaseStorageService;
 
   void _getChatsEventHandler(
       GetChatsEvent event, Emitter<ChatState> emit) async {
@@ -390,7 +390,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _clearDocMessageEventHandler(
       ClearDocMessageEvent event, Emitter<ChatState> emit) {
-    emit(ChatState(
+    emit(
+      ChatState(
         blocStatus: state.blocStatus,
         chats: state.chats,
         imageFile: state.imageFile,
@@ -401,7 +402,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         chatUpdateSubscriptions: state.chatUpdateSubscriptions,
         messageSubscriptions: state.messageSubscriptions,
         currentChatMessagesFetched: state.currentChatMessagesFetched,
-        currentChatNewMessageReceived: state.currentChatNewMessageReceived));
+        currentChatNewMessageReceived: state.currentChatNewMessageReceived,
+      ),
+    );
   }
 
   void _sendTextEventHandler(
@@ -446,8 +449,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (messageId == null) {
           throw AppException.firebaseCouldNotGenerateKey();
         }
-        final String? imageUrl = await _firebaseStorageServices.uploadImageFile(
-            state.imageFile, messageId);
+        final String? imageUrl = await _firebaseStorageService.uploadImage(
+          file: state.imageFile!,
+          messageId: messageId,
+        );
         _firebaseRealtimeDatabase.sendMessage(
             textMessage: state.message,
             chatId: state.currentChat!.id,
@@ -490,15 +495,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (messageId == null) {
           throw AppException.firebaseCouldNotGenerateKey();
         }
-        final String? imageUrl = await _firebaseStorageServices.uploadPdfFile(
-            File(state.pdfFile!.path!), messageId);
+        final String? imageUrl = await _firebaseStorageService.uploadPdf(
+          file: File(state.pdfFile!.path!),
+          messageId: messageId,
+        );
         _firebaseRealtimeDatabase.sendMessage(
-            textMessage: state.message,
-            chatId: state.currentChat!.id,
-            senderId: _authCubit.state.user!.firebaseId,
-            imageUrl: imageUrl,
-            messageId: messageId,
-            messageType: 3);
+          textMessage: state.message,
+          chatId: state.currentChat!.id,
+          senderId: _authCubit.state.user!.firebaseId,
+          imageUrl: imageUrl,
+          messageId: messageId,
+          messageType: 3,
+        );
 
         add(ClearDocMessageEvent());
       },

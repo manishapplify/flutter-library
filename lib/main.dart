@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           create: (_) => ChatBloc(
             authCubit: compositionRoot.authCubit,
             firebaseRealtimeDatabase: compositionRoot.firebaseRealtimeDatabase,
-            firebaseStorageServices: compositionRoot.firebaseStorageServices,
+            firebaseStorageService: compositionRoot.firebaseStorageService,
             imageBaseUrl: compositionRoot.s3imageUpload.s3BaseUrl + 'users/',
           ),
         ),
