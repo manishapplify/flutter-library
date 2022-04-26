@@ -111,6 +111,10 @@ class _ChatsState extends BasePageState<ChatsPage> {
               return ListView.separated(
                 separatorBuilder: (_, __) => const SizedBox(
                   height: 8,
+                  child: Divider(
+                    thickness: 2,
+                    indent: 90,
+                  ),
                 ),
                 itemBuilder: (BuildContext context, int i) {
                   final FirebaseChat chat = chats[i];

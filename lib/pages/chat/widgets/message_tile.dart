@@ -14,6 +14,8 @@ class MessageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints:
+          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
       padding: const EdgeInsets.only(bottom: 8.0),
       alignment: alignment,
       child: Container(
