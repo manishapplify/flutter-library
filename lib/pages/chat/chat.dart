@@ -253,7 +253,7 @@ class _ChatState extends BasePageState<ChatPage> {
                           onTap: () {
                             showChatAttachmentPicker(
                                 context: context,
-                                onImagePicked: () {
+                                onImageOptionPressed: () {
                                   Navigator.pop(context);
                                   showImagePickerPopup(
                                     context: context,
@@ -268,7 +268,7 @@ class _ChatState extends BasePageState<ChatPage> {
                                     },
                                   );
                                 },
-                                onPdfPicked: () async {
+                                onPdfOptionPressed: () async {
                                   final FilePickerResult? result =
                                       await FilePicker.platform.pickFiles(
                                     type: FileType.custom,
