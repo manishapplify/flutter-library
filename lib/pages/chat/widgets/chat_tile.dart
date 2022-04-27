@@ -87,9 +87,9 @@ class ChatTile extends StatelessWidget {
                       const SizedBox(
                         height: 8,
                       ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Flexible(
+                      Flexible(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
                           child: Text(
                             chat.lastMessage ?? '',
                             overflow: TextOverflow.ellipsis,
@@ -117,9 +117,13 @@ class ChatTile extends StatelessWidget {
     }
 
     final DateTime now = DateTime.now();
-    if (now.difference(time).compareTo(const Duration(days: 1)) < 0) {
+    if (now.difference(time).compareTo(const Duration(days: 1)) < 0 &&
+        now.day == time.day) {
       return '${time.hour % 12}:${time.minute < 10 ? '0${time.minute}' : time.minute} ${time.hour > 11 ? 'PM' : 'AM'}';
-    } else if (now.difference(time).compareTo(const Duration(days: 7)) < 0) {
+    }
+
+    // TODO: Also check if both the timestamps are in the same week.
+    else if (now.difference(time).compareTo(const Duration(days: 7)) < 0) {
       return _mapDay[time.weekday]!;
     } else if (now.difference(time).compareTo(const Duration(days: 365)) < 0) {
       return '${time.day} ${_mapMonth[_mapMonth]}';
