@@ -427,13 +427,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (messageId == null) {
           throw AppException.firebaseCouldNotGenerateKey();
         }
-        final String? imageUrl = await _firebaseStorageServices.uploadPdfFile(
+        final String? pdfUrl = await _firebaseStorageServices.uploadPdfFile(
             File(state.pdfFile!.path!), messageId);
         _firebaseRealtimeDatabase.sendMessage(
-            textMessage: state.message,
+            textMessage: state.pdfFile!.name,
             chatId: state.currentChat!.id,
             senderId: _authCubit.state.user!.firebaseId,
-            imageUrl: imageUrl,
+            imageUrl: pdfUrl,
             messageId: messageId,
             messageType: 3);
 

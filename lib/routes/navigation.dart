@@ -6,6 +6,7 @@ import 'package:components/pages/change_password/bloc/bloc.dart';
 import 'package:components/pages/change_password/view.dart';
 import 'package:components/pages/chat/chat.dart';
 import 'package:components/pages/chat/chats.dart';
+import 'package:components/pages/chat/widgets/pdf_viewer.dart';
 import 'package:components/pages/feedback/bloc/bloc.dart';
 import 'package:components/pages/feedback/view.dart';
 import 'package:components/pages/forgot_password/bloc/bloc.dart';
@@ -32,7 +33,6 @@ import 'package:components/pages/signup/bloc/bloc.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/pages/splash/view.dart';
-import 'package:components/pages/users/bloc/bloc.dart';
 import 'package:components/pages/users/view.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
@@ -254,6 +254,13 @@ class Navigation {
           settings: settings,
           builder: (_) => const FeedbackScreenThird(),
         );
+      case Routes.pdfViewerPage:
+        final Map<String, dynamic> map = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => PdfViewerPage(
+            filePath: map['filePath'],
+          ),
+        );
     }
 
     return MaterialPageRoute<LoginPage>(
@@ -324,4 +331,5 @@ class Routes {
   static const String feedbackScreens = "/feedbackScreens";
   static const String feedbackOne = "/feedbackOneScreen";
   static const String feedbackThird = "/feedbackThirdScreen";
+  static const String pdfViewerPage = "/pdfViewerPage";
 }

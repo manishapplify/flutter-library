@@ -18,18 +18,17 @@ class FirebaseStorageServices {
     }
     return url;
   }
- Future<String?> uploadPdfFile(File? filePath, String messageId) async {
+
+  Future<String?> uploadPdfFile(File? filePath, String messageId) async {
     String? url;
     try {
-      final Reference reference = storage.ref("chat_uploads/files/$messageId");
-
-      await reference.putFile(File(filePath!.path));
-
+      final Reference reference =
+          storage.ref("chat_uploads/files/$messageId.pdf");
+      await reference.putData(filePath!.readAsBytesSync());
       url = await reference.getDownloadURL();
     } on FirebaseException catch (e) {
       print(e);
     }
     return url;
   }
-
 }

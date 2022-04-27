@@ -9,7 +9,9 @@ import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
 
 import 'package:components/pages/chat/widgets/message_tile.dart';
+import 'package:components/pages/chat/widgets/pdf_tile.dart';
 import 'package:components/routes/navigation.dart';
+import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message.dart';
 import 'package:components/widgets/image_container.dart';
@@ -31,10 +33,12 @@ class _ChatState extends BasePageState<ChatPage> {
   late final ScrollController controller;
   bool firstBuild = true;
   late final String routedFrom;
+  late final Api api;
 
   @override
   void initState() {
     final AuthCubit authCubit = BlocProvider.of(context);
+    api = Api();
     if (!authCubit.state.isAuthorized) {
       throw AppException.authenticationException;
     }
@@ -196,10 +200,14 @@ class _ChatState extends BasePageState<ChatPage> {
                                 .isSentByCurrentUser(currentUser.firebaseId)
                             ? Alignment.topRight
                             : Alignment.topLeft,
-                        child: const Icon(
-                          Icons.picture_as_pdf,
-                          size: 80.0,
-                        ),
+                        child: InkWell(
+                            onTap: () => openPdf(
+                                pdfUrl: messages[index].attachmentUrl!,
+                                filename: messages[index].message),
+                            child: PdfTile(
+                              fileName: messages[index].message,
+                              closeButton: false,
+                            )),
                       );
                     } else {
                       return MessageTile(
@@ -210,8 +218,8 @@ class _ChatState extends BasePageState<ChatPage> {
                             : Colors.grey,
                         alignment: messages[index]
                                 .isSentByCurrentUser(currentUser.firebaseId)
-                            ? Alignment.topRight
-                            : Alignment.topLeft,
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
                       );
                     }
                   },
@@ -283,42 +291,14 @@ class _ChatState extends BasePageState<ChatPage> {
                         const SizedBox(width: 15),
                         Expanded(
                           child: state.pdfFile != null
-                              ? Row(
-                                  children: <Widget>[
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.cancel,
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () {
-                                        chatBloc.add(
-                                          ClearDocMessageEvent(),
-                                        );
-                                      },
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                          color: Colors.red),
-                                      padding: const EdgeInsets.all(8),
-                                      child: Text(
-                                        '.${state.pdfFile!.extension!}',
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 6.0,
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        state.pdfFile!.name,
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: true,
-                                      ),
-                                    ),
-                                  ],
+                              ? PdfTile(
+                                  fileName: state.pdfFile!.name,
+                                  closeButton: true,
+                                  onPressed: () {
+                                    chatBloc.add(
+                                      ClearDocMessageEvent(),
+                                    );
+                                  },
                                 )
                               : state.imageFile != null
                                   ? ImageContainer(
@@ -348,13 +328,15 @@ class _ChatState extends BasePageState<ChatPage> {
                         ),
                         const SizedBox(width: 15),
                         IconButton(
-                          onPressed: () {
-                            state.imageFile != null
-                                ? onImageSend()
-                                : state.pdfFile != null
-                                    ? onDocSend()
-                                    : onMessageSend();
-                          },
+                          onPressed: state.blocStatus is FormSubmitting
+                              ? null
+                              : () {
+                                  state.imageFile != null
+                                      ? onImageSend()
+                                      : state.pdfFile != null
+                                          ? onDocSend()
+                                          : onMessageSend();
+                                },
                           icon: const Icon(
                             Icons.send,
                             color: Colors.black,
@@ -393,5 +375,15 @@ class _ChatState extends BasePageState<ChatPage> {
 
   void onDocSend() {
     chatBloc.add(SendDocEvent());
+  }
+
+  Future<dynamic> openPdf({required String pdfUrl, String? filename}) async {
+    final String filePath = await api.downloadFile(pdfUrl, filename!);
+
+    Navigator.pushNamed(
+      context,
+      Routes.pdfViewerPage,
+      arguments: {"filePath": filePath},
+    );
   }
 }

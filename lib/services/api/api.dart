@@ -15,6 +15,7 @@ import 'package:components/pages/signup/models/request.dart';
 import 'package:components/services/api/models/report_item.dart';
 import 'package:components/services/s3_image_upload/request.dart';
 import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Api {
   Api({
@@ -54,6 +55,23 @@ class Api {
 
   void removeAuthorizationHeader() {
     dio.options.headers = <String, dynamic>{};
+  }
+
+  Future<String> downloadFile(String url, String name) async {
+    final Directory appStorage = await getApplicationDocumentsDirectory();
+    final File file = File('${appStorage.path}/$name');
+    try {
+      final Response<dynamic> response = await Dio().get(url,
+          options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+          ));
+      final RandomAccessFile raf = file.openSync(mode: FileMode.write)..writeFromSync(response.data);
+      await raf.close();
+      return file.path;
+    } on Exception catch (_) {
+      return '';
+    }
   }
 
   Future<Response<dynamic>> signup(SignupRequest signupRequest) async {
