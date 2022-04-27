@@ -1,4 +1,4 @@
-import 'package:components/base/base_response.dart';
+import 'package:components/common_models/base_response.dart';
 import 'package:components/cubits/models/user.dart';
 
 class SignupResponse extends BaseResponse {
