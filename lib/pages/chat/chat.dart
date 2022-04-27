@@ -183,6 +183,7 @@ class _ChatState extends BasePageState<ChatPage> {
                   child: ListView.builder(
                     controller: controller,
                     itemCount: messages.length,
+                    padding: const EdgeInsets.all(16),
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int index) {
                       if (messages[index].messageType == 2) {
