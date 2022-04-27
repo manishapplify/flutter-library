@@ -186,15 +186,6 @@ class _ChatState extends BasePageState<ChatPage> {
           },
           child: Stack(
             children: <Widget>[
-              Visibility(
-                child: const Material(
-                  color: Colors.transparent,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-                visible: state.pdfViewerStatus is InProgress,
-              ),
               Column(
                 children: <Widget>[
                   Expanded(
@@ -258,7 +249,6 @@ class _ChatState extends BasePageState<ChatPage> {
                       ),
                     ),
                   ),
-<<<<<<< HEAD
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -274,179 +264,127 @@ class _ChatState extends BasePageState<ChatPage> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child:
-                          Stack(alignment: Alignment.center, children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            InkWell(
-                              onTap: () {
-                                showChatAttachmentPicker(
-=======
-                  child: Stack(alignment: Alignment.center, children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            showChatAttachmentPicker(
-                                context: context,
-                                onImageOptionPressed: () {
-                                  Navigator.pop(context);
-                                  showImagePickerPopup(
->>>>>>> 7d7b51186991e856c0247bc4fa2c61c6fa2f93a6
-                                    context: context,
-                                    onImagePicked: () {
-                                      Navigator.pop(context);
-                                      showImagePickerPopup(
-                                        context: context,
-                                        onImagePicked: (File file) {
-                                          if (!chatBloc.isClosed) {
-                                            chatBloc.add(ImageUpdateEvent(
-                                                imageFile: file));
-                                          }
-                                          if (mounted) {
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                      );
-                                    },
-                                    onPdfPicked: () async {
-                                      final FilePickerResult? result =
-                                          await FilePicker.platform.pickFiles(
-                                        type: FileType.custom,
-                                        allowedExtensions: <String>['pdf'],
-                                      );
-
-                                      if (result == null) {
-                                        return;
-                                      }
-
-                                      chatBloc.add(PdfUpdateEvent(
-                                          pdfFile: result.files.single));
-                                      if (mounted) {
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                  showChatAttachmentPicker(
+                                      context: context,
+                                      onImageOptionPressed: () {
                                         Navigator.pop(context);
-                                      }
-<<<<<<< HEAD
-                                    });
-                              },
-                              child: Container(
-                                height: 30,
-                                width: 30,
-                                decoration: BoxDecoration(
+                                        showImagePickerPopup(
+                                            context: context,
+                                            onImagePicked: (File file) {
+                                              if (!chatBloc.isClosed) {
+                                                chatBloc.add(ImageUpdateEvent(
+                                                    imageFile: file));
+                                              }
+                                              if (mounted) {
+                                                Navigator.pop(context);
+                                              }
+                                            });
+                                      },
+                                      onPdfOptionPressed: () async {
+                                        final FilePickerResult? result =
+                                            await FilePicker.platform.pickFiles(
+                                          type: FileType.custom,
+                                          allowedExtensions: <String>['pdf'],
+                                        );
+
+                                        if (result == null) {
+                                          return;
+                                        }
+
+                                        chatBloc.add(PdfUpdateEvent(
+                                            pdfFile: result.files.single));
+                                        if (mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                      });
+                                },
+                              ),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: state.pdfFile != null
+                                    ? PdfTile(
+                                        fileName: state.pdfFile!.name,
+                                        closeButton: true,
+                                        onPressed: () {
+                                          chatBloc.add(
+                                            ClearDocMessageEvent(),
+                                          );
+                                        },
+                                      )
+                                    : state.imageFile != null
+                                        ? ImageContainer(
+                                            height: 150,
+                                            circularDecoration: false,
+                                            imagePath: state.imageFile?.path,
+                                            iconAlignment: Alignment.topRight,
+                                            overlayIcon: const Icon(
+                                              Icons.close,
+                                              color: Colors.red,
+                                            ),
+                                            onContainerTap: () {
+                                              chatBloc.add(
+                                                ClearImageMessageEvent(),
+                                              );
+                                            },
+                                          )
+                                        : TextField(
+                                            controller: textEditingController,
+                                            decoration: const InputDecoration(
+                                              hintText: "Write message...",
+                                            ),
+                                            onChanged: (String message) =>
+                                                chatBloc.add(TextMessageChanged(
+                                                    message)),
+                                            onSubmitted: (_) => onMessageSend(),
+                                          ),
+                              ),
+                              const SizedBox(width: 15),
+                              IconButton(
+                                onPressed: () {
+                                  state.imageFile != null
+                                      ? onImageSend()
+                                      : state.pdfFile != null
+                                          ? onDocSend()
+                                          : onMessageSend();
+                                },
+                                icon: const Icon(
+                                  Icons.send,
                                   color: Colors.black,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
                                   size: 20,
                                 ),
                               ),
-=======
-                                    },
-                                  );
-                                },
-                                onPdfOptionPressed: () async {
-                                  final FilePickerResult? result =
-                                      await FilePicker.platform.pickFiles(
-                                    type: FileType.custom,
-                                    allowedExtensions: <String>['pdf'],
-                                  );
-
-                                  if (result == null) {
-                                    return;
-                                  }
-
-                                  chatBloc.add(PdfUpdateEvent(
-                                      pdfFile: result.files.single));
-                                  if (mounted) {
-                                    Navigator.pop(context);
-                                  }
-                                });
-                          },
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 20,
->>>>>>> 7d7b51186991e856c0247bc4fa2c61c6fa2f93a6
-                            ),
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: state.pdfFile != null
-                                  ? PdfTile(
-                                      fileName: state.pdfFile!.name,
-                                      closeButton: true,
-                                      onPressed: () {
-                                        chatBloc.add(
-                                          ClearDocMessageEvent(),
-                                        );
-                                      },
-                                    )
-                                  : state.imageFile != null
-                                      ? ImageContainer(
-                                          height: 150,
-                                          circularDecoration: false,
-                                          imagePath: state.imageFile?.path,
-                                          iconAlignment: Alignment.topRight,
-                                          overlayIcon: const Icon(
-                                            Icons.close,
-                                            color: Colors.red,
-                                          ),
-                                          onContainerTap: () {
-                                            chatBloc.add(
-                                              ClearImageMessageEvent(),
-                                            );
-                                          },
-                                        )
-                                      : TextField(
-                                          controller: textEditingController,
-                                          decoration: const InputDecoration(
-                                            hintText: "Write message...",
-                                          ),
-                                          onChanged: (String message) =>
-                                              chatBloc.add(
-                                                  TextMessageChanged(message)),
-                                          onSubmitted: (_) => onMessageSend(),
-                                        ),
-                            ),
-                            const SizedBox(width: 15),
-                            IconButton(
-                              onPressed: state.blocStatus is InProgress
-                                  ? null
-                                  : () {
-                                      state.imageFile != null
-                                          ? onImageSend()
-                                          : state.pdfFile != null
-                                              ? onDocSend()
-                                              : onMessageSend();
-                                    },
-                              icon: const Icon(
-                                Icons.send,
-                                color: Colors.black,
-                                size: 20,
+                            ],
+                          ),
+                          Visibility(
+                            child: const Material(
+                              color: Colors.transparent,
+                              child: Center(
+                                child: CircularProgressIndicator(),
                               ),
                             ),
-                          ],
-                        ),
-                        Visibility(
-                          child: const Material(
-                            color: Colors.transparent,
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                          visible: state.blocStatus is InProgress,
-                        )
-                      ]),
+                            visible: state.blocStatus is InProgress,
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ],
+              ),
+              Visibility(
+                child: const Material(
+                  color: Colors.transparent,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                visible: state.pdfViewerStatus is InProgress,
               ),
             ],
           ),

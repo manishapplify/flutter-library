@@ -20,19 +20,6 @@ class FirebaseStorageService {
   }) =>
       _uploadFile(file: file, messageId: messageId, path: _documentPath);
 
-  Future<String?> uploadDocFile(File? filePath, String messageId) async {
-    String? url;
-    try {
-      final Reference reference =
-          _storage.ref("chat_uploads/files/$messageId.pdf");
-      await reference.putData(filePath!.readAsBytesSync());
-      url = await reference.getDownloadURL();
-    } on FirebaseException catch (e) {
-      print(e);
-    }
-    return url;
-  }
-
   Future<String?> _uploadFile({
     required File file,
     required String messageId,
