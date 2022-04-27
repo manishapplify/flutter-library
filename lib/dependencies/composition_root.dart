@@ -128,7 +128,6 @@ Future<CompositionRoot> configureDependencies() async {
       config: config,
       persistence: persistence,
       s3imageUpload: s3imageUpload,
-      firebaseRealtimeDatabase: firebaseRealtimeDatabase,
     ),
     firebaseRealtimeDatabase: firebaseRealtimeDatabase,
     firebaseStorageService: firebaseStorageService,

@@ -235,6 +235,11 @@ class _ChatState extends BasePageState<ChatPage> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                  margin: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 8,
+                  ),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -253,8 +258,8 @@ class _ChatState extends BasePageState<ChatPage> {
                                     context: context,
                                     onImagePicked: (File file) {
                                       if (!chatBloc.isClosed) {
-                                        chatBloc
-                                            .add(ImageEvent(imageFile: file));
+                                        chatBloc.add(
+                                            ImageUpdateEvent(imageFile: file));
                                       }
                                       if (mounted) {
                                         Navigator.pop(context);
@@ -273,8 +278,8 @@ class _ChatState extends BasePageState<ChatPage> {
                                     return;
                                   }
 
-                                  chatBloc.add(
-                                      PdfEvent(pdfFile: result.files.single));
+                                  chatBloc.add(PdfUpdateEvent(
+                                      pdfFile: result.files.single));
                                   if (mounted) {
                                     Navigator.pop(context);
                                   }

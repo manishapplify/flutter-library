@@ -74,13 +74,13 @@ class ClearDocMessageEvent extends ChatEvent {}
 
 class SendTextEvent extends ChatEvent {}
 
-class ImageEvent extends ChatEvent {
-  ImageEvent({required this.imageFile});
+class ImageUpdateEvent extends ChatEvent {
+  ImageUpdateEvent({required this.imageFile});
   final File imageFile;
 }
 
-class PdfEvent extends ChatEvent {
-  PdfEvent({required this.pdfFile});
+class PdfUpdateEvent extends ChatEvent {
+  PdfUpdateEvent({required this.pdfFile});
   final PlatformFile pdfFile;
 }
 

@@ -46,8 +46,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ClearDocMessageEvent>(_clearDocMessageEventHandler);
     on<SendTextEvent>(_sendTextEventHandler);
     on<SendImageEvent>(_sendImageEventHandler);
-    on<ImageEvent>(_imageEventHandler);
-    on<PdfEvent>(_pdfEventHandler);
+    on<ImageUpdateEvent>(_imageUpdateEventHandler);
+    on<PdfUpdateEvent>(_pdfUpdateEventHandler);
     on<SendDocEvent>(_sendDocEventHandler);
     on<ResetBlocStatus>(_resetBlocStatusHandler);
     on<ChatPagePopEvent>(_chatPagePopEventHandler);
@@ -77,7 +77,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             final Set<FirebaseChat> chats =
                 await _firebaseRealtimeDatabase.getChats(firebaseUser.chatIds!);
 
-            emit(state.copyWith(chats: chats));
+            emit(state.copyWith(chats: _sortChats(chats)));
           } else {
             throw AppException.noChatsPresent();
           }
@@ -129,20 +129,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _onChatEventHandler(_OnChatEvent event, Emitter<ChatState> emit) async {
-    if (state.chats.contains(event.chat)) {
-      final Set<FirebaseChat> chats = _sortChats(
-        state.chats
-          ..remove(event.chat)
-          ..add(event.chat),
+    final Set<FirebaseChat> chats = state.chats;
+
+    if (chats.contains(event.chat)) {
+      emit(
+        state.copyWith(
+          chats: _sortChats(
+            chats
+              ..remove(event.chat)
+              ..add(event.chat),
+          ),
+        ),
       );
-      emit(state.copyWith(chats: chats));
     } else {
       emit(
         state.copyWith(
-          chats: state.chats.isEmpty
+          chats: chats.isEmpty
               ? <FirebaseChat>{event.chat}
               : _sortChats(
-                  state.chats..add(event.chat),
+                  chats..add(event.chat),
                 ),
         ),
       );
@@ -186,9 +191,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             _firebaseRealtimeDatabase.getMessageStreams(addedChatsIds),
           );
           // Add message subscription of the chats that were added.
-          if (addedMessageSubscriptions.isNotEmpty) {
-            messageSubscriptions.addAll(addedMessageSubscriptions);
-          }
+          messageSubscriptions.addAll(addedMessageSubscriptions);
 
           final Map<String, StreamSubscription<FirebaseChat?>>
               chatUpdateSubscriptions = state.chatUpdateSubscriptions.isEmpty
@@ -205,13 +208,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             _firebaseRealtimeDatabase.getChatUpdateStreams(addedChatsIds),
           );
           // Add chat update subscription of the added chats.
-          if (addedChatSubscriptions.isNotEmpty) {
-            chatUpdateSubscriptions.addAll(addedChatSubscriptions);
-          }
+          chatUpdateSubscriptions.addAll(addedChatSubscriptions);
 
           emit(
             state.copyWith(
-              chats: event.chats,
+              chats: _sortChats(event.chats),
               messageSubscriptions: messageSubscriptions,
               chatUpdateSubscriptions: chatUpdateSubscriptions,
             ),
@@ -321,12 +322,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (firebaseUser is FirebaseUser &&
             firebaseUser.chatIds is Set<String> &&
             firebaseUser.chatIds!.isNotEmpty) {
-          final Map<String, Stream<Set<FirebaseMessage>>> messageStreams =
-              _firebaseRealtimeDatabase
-                  .getMessageStreams(firebaseUser.chatIds!);
-
           final Map<String, StreamSubscription<Set<FirebaseMessage>>>
-              subscriptions = _getMessageSubscriptions(messageStreams);
+              subscriptions = _getMessageSubscriptions(_firebaseRealtimeDatabase
+                  .getMessageStreams(firebaseUser.chatIds!));
 
           emit(state.copyWith(
             messageSubscriptions: subscriptions,
@@ -374,18 +372,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _clearImageMessageEventHandler(
       ClearImageMessageEvent event, Emitter<ChatState> emit) {
-    emit(ChatState(
+    emit(
+      ChatState(
         blocStatus: state.blocStatus,
         chats: state.chats,
-        currentChat: state.currentChat,
-        message: state.message,
-        messages: state.messages,
-        pdfFile: state.pdfFile,
         chatsSubscription: state.chatsSubscription,
         chatUpdateSubscriptions: state.chatUpdateSubscriptions,
+        message: state.message,
         messageSubscriptions: state.messageSubscriptions,
         currentChatMessagesFetched: state.currentChatMessagesFetched,
-        currentChatNewMessageReceived: state.currentChatNewMessageReceived));
+        messages: state.messages,
+        currentChat: state.currentChat,
+        currentChatNewMessageReceived: state.currentChatNewMessageReceived,
+        pdfFile: state.pdfFile,
+      ),
+    );
   }
 
   void _clearDocMessageEventHandler(
@@ -407,6 +408,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
   }
 
+  // TODO: Refactor common logic into a function.
   void _sendTextEventHandler(
       SendTextEvent event, Emitter<ChatState> emit) async {
     await _commonHandler(
@@ -423,11 +425,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           throw AppException.firebaseCouldNotGenerateKey();
         }
         _firebaseRealtimeDatabase.sendMessage(
-            textMessage: state.message,
-            chatId: state.currentChat!.id,
-            senderId: _authCubit.state.user!.firebaseId,
-            messageId: messageId,
-            messageType: 1);
+          textMessage: state.message,
+          chatId: state.currentChat!.id,
+          senderId: _authCubit.state.user!.firebaseId,
+          messageId: messageId,
+          messageType: 1,
+        );
         add(_ClearTextMessageEvent());
       },
       emit: emit,
@@ -467,14 +470,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
   }
 
-  void _imageEventHandler(ImageEvent event, Emitter<ChatState> emit) async {
+  void _imageUpdateEventHandler(
+      ImageUpdateEvent event, Emitter<ChatState> emit) async {
     emit(
       state.copyWith(imageFile: event.imageFile),
     );
     add(ClearDocMessageEvent());
   }
 
-  void _pdfEventHandler(PdfEvent event, Emitter<ChatState> emit) async {
+  void _pdfUpdateEventHandler(
+      PdfUpdateEvent event, Emitter<ChatState> emit) async {
     emit(
       state.copyWith(pdfFile: event.pdfFile),
     );
