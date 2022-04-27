@@ -7,6 +7,14 @@ class GetChatsEvent extends ChatEvent {}
 
 class GetChatsSubscriptionEvent extends ChatEvent {}
 
+class _OnChatEvent extends ChatEvent {
+  _OnChatEvent({
+    required this.chat,
+  });
+
+  final FirebaseChat chat;
+}
+
 class _OnChatsEvent extends ChatEvent {
   _OnChatsEvent({
     required this.chats,
@@ -21,7 +29,7 @@ class RemoveChatEvent extends ChatEvent {
   final FirebaseChat chat;
 }
 
-/// Fired when the user searches for other users and taps on the message icon. 
+/// Fired when the user searches for other users and taps on the message icon.
 class ChatCreatedEvent extends ChatEvent {
   ChatCreatedEvent({
     required this.firebaseUserA,
@@ -59,7 +67,9 @@ class TextMessageChanged extends ChatEvent {
 }
 
 class _ClearTextMessageEvent extends ChatEvent {}
+
 class ClearImageMessageEvent extends ChatEvent {}
+
 class ClearDocMessageEvent extends ChatEvent {}
 
 class SendTextEvent extends ChatEvent {}
@@ -68,10 +78,12 @@ class ImageEvent extends ChatEvent {
   ImageEvent({required this.imageFile});
   final File imageFile;
 }
+
 class PdfEvent extends ChatEvent {
   PdfEvent({required this.pdfFile});
   final PlatformFile pdfFile;
 }
+
 class SendImageEvent extends ChatEvent {}
 
 class SendDocEvent extends ChatEvent {}

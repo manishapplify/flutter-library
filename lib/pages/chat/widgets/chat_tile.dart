@@ -44,17 +44,112 @@ class ChatTile extends StatelessWidget {
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.only(left: 10),
         ),
-        child: ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(otherUserName ?? otherUserId),
-          leading: ImageContainer(
-            imageUrl: (otherUserProfilePic is String)
-                ? (imageBaseUrl + otherUserProfilePic)
-                : null,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 4.0),
+          child: SizedBox(
+            height: kBottomNavigationBarHeight,
+            child: Row(
+              children: <Widget>[
+                ImageContainer(
+                  imageUrl: (otherUserProfilePic is String)
+                      ? (imageBaseUrl + otherUserProfilePic)
+                      : null,
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              otherUserName ?? otherUserId,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: Text(
+                              _displayMessageTime(chat.lastMessageTime),
+                              style: Theme.of(context).textTheme.headline3,
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Flexible(
+                          child: Text(
+                            chat.lastMessage ?? '',
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline3!
+                                .copyWith(fontWeight: FontWeight.w300),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          trailing: Text(chat.lastMessage ?? ''),
         ),
       ),
     );
   }
+
+  String _displayMessageTime(DateTime? time) {
+    if (time == null) {
+      return '';
+    }
+
+    final DateTime now = DateTime.now();
+    if (now.difference(time).compareTo(const Duration(days: 1)) < 0) {
+      return '${time.hour % 12}:${time.minute < 10 ? '0${time.minute}' : time.minute} ${time.hour > 11 ? 'PM' : 'AM'}';
+    } else if (now.difference(time).compareTo(const Duration(days: 7)) < 0) {
+      return _mapDay[time.weekday]!;
+    } else if (now.difference(time).compareTo(const Duration(days: 365)) < 0) {
+      return '${time.day} ${_mapMonth[_mapMonth]}';
+    } else {
+      return time.year.toString();
+    }
+  }
 }
+
+const Map<int, String> _mapDay = <int, String>{
+  1: 'Mon',
+  2: 'Tue',
+  3: 'Wed',
+  4: 'Thu',
+  5: 'Fri',
+  6: 'Sat',
+  7: 'Sun',
+};
+
+const Map<int, String> _mapMonth = <int, String>{
+  1: 'Jan',
+  2: 'Feb',
+  3: 'Mar',
+  4: 'Apr',
+  5: 'May',
+  6: 'Jun',
+  7: 'Jul',
+  8: 'Aug',
+  9: 'Sep',
+  10: 'Oct',
+  11: 'Nov',
+  12: 'Dec',
+};

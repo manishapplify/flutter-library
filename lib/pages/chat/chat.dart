@@ -71,6 +71,9 @@ class _ChatState extends BasePageState<ChatPage> {
   }
 
   @override
+  EdgeInsets get padding => EdgeInsets.zero;
+
+  @override
   PreferredSizeWidget? appBar(BuildContext context) => AppBar(
         flexibleSpace: SafeArea(
           child: Container(
@@ -175,54 +178,57 @@ class _ChatState extends BasePageState<ChatPage> {
           child: Column(
             children: <Widget>[
               Expanded(
-                child: ListView.builder(
-                  controller: controller,
-                  itemCount: messages.length,
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (messages[index].messageType == 2) {
-                      return Container(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        alignment: messages[index]
-                                .isSentByCurrentUser(currentUser.firebaseId)
-                            ? Alignment.topRight
-                            : Alignment.topLeft,
-                        child: ImageContainer(
-                          height: 200.0,
-                          width: 150.0,
-                          circularDecoration: false,
-                          imageUrl: messages[index].attachmentUrl,
-                        ),
-                      );
-                    } else if (messages[index].messageType == 3) {
-                      return Align(
-                        alignment: messages[index]
-                                .isSentByCurrentUser(currentUser.firebaseId)
-                            ? Alignment.topRight
-                            : Alignment.topLeft,
-                        child: InkWell(
-                            onTap: () => openPdf(
-                                pdfUrl: messages[index].attachmentUrl!,
-                                filename: messages[index].message),
-                            child: PdfTile(
-                              fileName: messages[index].message,
-                              closeButton: false,
-                            )),
-                      );
-                    } else {
-                      return MessageTile(
-                        message: messages[index].message,
-                        color: messages[index]
-                                .isSentByCurrentUser(currentUser.firebaseId)
-                            ? const Color.fromARGB(255, 77, 192, 129)
-                            : Colors.grey,
-                        alignment: messages[index]
-                                .isSentByCurrentUser(currentUser.firebaseId)
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                      );
-                    }
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: ListView.builder(
+                    controller: controller,
+                    itemCount: messages.length,
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (messages[index].messageType == 2) {
+                        return Container(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          alignment: messages[index]
+                                  .isSentByCurrentUser(currentUser.firebaseId)
+                              ? Alignment.topRight
+                              : Alignment.topLeft,
+                          child: ImageContainer(
+                            height: 200.0,
+                            width: 150.0,
+                            circularDecoration: false,
+                            imageUrl: messages[index].attachmentUrl,
+                          ),
+                        );
+                      } else if (messages[index].messageType == 3) {
+                        return Align(
+                          alignment: messages[index]
+                                  .isSentByCurrentUser(currentUser.firebaseId)
+                              ? Alignment.topRight
+                              : Alignment.topLeft,
+                          child: InkWell(
+                              onTap: () => openPdf(
+                                  pdfUrl: messages[index].attachmentUrl!,
+                                  filename: messages[index].message),
+                              child: PdfTile(
+                                fileName: messages[index].message,
+                                closeButton: false,
+                              )),
+                        );
+                      } else {
+                        return MessageTile(
+                          message: messages[index].message,
+                          color: messages[index]
+                                  .isSentByCurrentUser(currentUser.firebaseId)
+                              ? const Color.fromARGB(255, 77, 192, 129)
+                              : Colors.grey,
+                          alignment: messages[index]
+                                  .isSentByCurrentUser(currentUser.firebaseId)
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                        );
+                      }
+                    },
+                  ),
                 ),
               ),
               Align(

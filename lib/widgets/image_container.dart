@@ -15,6 +15,8 @@ class ImageContainer extends StatelessWidget {
     this.overlayIcon = const Icon(
       Icons.camera_enhance_rounded,
     ),
+    this.border,
+    this.borderRadius,
   }) : super(key: key);
 
   final String? imagePath;
@@ -25,6 +27,8 @@ class ImageContainer extends StatelessWidget {
   final double? width;
   final double? height;
   final Alignment? iconAlignment;
+  final BoxBorder? border;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +53,15 @@ class ImageContainer extends StatelessWidget {
                         : const AssetImage("assets/images/avtar.png"),
             fit: BoxFit.fill,
           ),
+          border: !circularDecoration
+              ? border ??
+                  Border.all(
+                    color: Colors.grey[500]!,
+                  )
+              : null,
+          borderRadius: !circularDecoration
+              ? borderRadius ?? BorderRadius.circular(3)
+              : null,
         ),
       ),
     );

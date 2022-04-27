@@ -9,7 +9,7 @@ import 'package:components/services/firebase_realtime_database/firebase_realtime
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
-import 'package:components/services/firebase_storage_services.dart';
+import 'package:components/services/firebase_storage_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:meta/meta.dart';
 
@@ -21,13 +21,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required this.imageBaseUrl,
     required AuthCubit authCubit,
     required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
-    required FirebaseStorageServices firebaseStorageServices,
+    required FirebaseStorageService firebaseStorageService,
   })  : _authCubit = authCubit,
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
-        _firebaseStorageServices = firebaseStorageServices,
+        _firebaseStorageService = firebaseStorageService,
         super(const ChatState()) {
     on<GetChatsEvent>(_getChatsEventHandler);
     on<GetChatsSubscriptionEvent>(_getChatsSubscriptionEventHandler);
+    on<_OnChatEvent>(_onChatEventHandler);
     on<_OnChatsEvent>(_onChatsEventHandler);
     on<RemoveChatEvent>(_removeChatEventHandler);
     on<ChatCreatedEvent>(_chatCreatedEventHandler);
@@ -57,7 +58,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final String imageBaseUrl;
   final AuthCubit _authCubit;
   final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
-  final FirebaseStorageServices _firebaseStorageServices;
+  final FirebaseStorageService _firebaseStorageService;
 
   void _getChatsEventHandler(
       GetChatsEvent event, Emitter<ChatState> emit) async {
@@ -105,17 +106,54 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             firebaseUser: firebaseUser,
           );
 
-          final StreamSubscription<Set<FirebaseChat>> subscription =
+          final StreamSubscription<Set<FirebaseChat>> chatsSubscription =
               chatsStream.listen((Set<FirebaseChat> chats) {
             add(_OnChatsEvent(chats: chats));
           });
-          emit(state.copyWith(chatsSubscription: subscription));
+
+          final Map<String, StreamSubscription<FirebaseChat?>>
+              chatUpdateSubscriptions = _getChatUpdateSubscriptions(
+            _firebaseRealtimeDatabase
+                .getChatUpdateStreams(firebaseUser.chatIds ?? <String>{}),
+          );
+
+          emit(state.copyWith(
+            chatsSubscription: chatsSubscription,
+            chatUpdateSubscriptions: chatUpdateSubscriptions,
+          ));
         }
       },
       emit: emit,
+      emitFailureOnly: true,
     );
   }
 
+  void _onChatEventHandler(_OnChatEvent event, Emitter<ChatState> emit) async {
+    if (state.chats.contains(event.chat)) {
+      final Set<FirebaseChat> chats = _sortChats(
+        state.chats
+          ..remove(event.chat)
+          ..add(event.chat),
+      );
+      emit(state.copyWith(chats: chats));
+    } else {
+      emit(
+        state.copyWith(
+          chats: state.chats.isEmpty
+              ? <FirebaseChat>{event.chat}
+              : _sortChats(
+                  state.chats..add(event.chat),
+                ),
+        ),
+      );
+    }
+  }
+
+  /// [_onChatsEventHandler] is called when the subscription of
+  /// `Users/<user_id>/chat_dialog_ids` emits a new [DatabaseEvent].
+  ///
+  /// Updates [state.messageSubscriptions] and [state.chatUpdateSubscriptions]
+  /// accordingly.
   void _onChatsEventHandler(
       _OnChatsEvent event, Emitter<ChatState> emit) async {
     await _commonHandler(
@@ -125,37 +163,59 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               .difference(state.chats)
               .map((FirebaseChat chat) => chat.id)
               .toSet();
-          final Map<String, Stream<Set<FirebaseMessage>>> messageStreams =
-              _firebaseRealtimeDatabase.getMessagesStream(addedChatsIds);
-          final Map<String, StreamSubscription<Set<FirebaseMessage>>>
-              addedMessageSubscriptions =
-              _getMessageSubscriptions(messageStreams);
-
           final Set<String> removedChatsIds = state.chats
               .difference(event.chats)
               .map((FirebaseChat chat) => chat.id)
               .toSet();
+          final bool isCurrentChatRemoved =
+              removedChatsIds.contains(state.currentChat?.id);
+
           final Map<String, StreamSubscription<Set<FirebaseMessage>>>
               // Fix unmodifiable map error.
               messageSubscriptions = state.messageSubscriptions.isEmpty
                   ? <String, StreamSubscription<Set<FirebaseMessage>>>{}
                   : state.messageSubscriptions;
 
-          bool isCurrentChatRemoved = false;
-          // Remove subscriptions of the chats that were removed.
+          // Remove message subscription of the chats that were removed.
           for (final String id in removedChatsIds) {
             messageSubscriptions.remove(id)?.cancel();
-            if (id == state.currentChat?.id) {
-              isCurrentChatRemoved = true;
-            }
           }
+
+          final Map<String, StreamSubscription<Set<FirebaseMessage>>>
+              addedMessageSubscriptions = _getMessageSubscriptions(
+            _firebaseRealtimeDatabase.getMessageStreams(addedChatsIds),
+          );
+          // Add message subscription of the chats that were added.
           if (addedMessageSubscriptions.isNotEmpty) {
-            // Add subscriptioons of the chats that were added.
             messageSubscriptions.addAll(addedMessageSubscriptions);
           }
 
-          emit(state.copyWith(
-              chats: event.chats, messageSubscriptions: messageSubscriptions));
+          final Map<String, StreamSubscription<FirebaseChat?>>
+              chatUpdateSubscriptions = state.chatUpdateSubscriptions.isEmpty
+                  ? <String, StreamSubscription<FirebaseChat?>>{}
+                  : state.chatUpdateSubscriptions;
+
+          // Remove chat update subscription of the removed chats.
+          for (final String id in removedChatsIds) {
+            chatUpdateSubscriptions.remove(id)?.cancel();
+          }
+
+          final Map<String, StreamSubscription<FirebaseChat?>>
+              addedChatSubscriptions = _getChatUpdateSubscriptions(
+            _firebaseRealtimeDatabase.getChatUpdateStreams(addedChatsIds),
+          );
+          // Add chat update subscription of the added chats.
+          if (addedChatSubscriptions.isNotEmpty) {
+            chatUpdateSubscriptions.addAll(addedChatSubscriptions);
+          }
+
+          emit(
+            state.copyWith(
+              chats: event.chats,
+              messageSubscriptions: messageSubscriptions,
+              chatUpdateSubscriptions: chatUpdateSubscriptions,
+            ),
+          );
 
           if (isCurrentChatRemoved) {
             throw AppException.currentChatRemoved();
@@ -163,6 +223,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
       },
       emit: emit,
+      emitFailureOnly: true,
     );
   }
 
@@ -262,7 +323,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             firebaseUser.chatIds!.isNotEmpty) {
           final Map<String, Stream<Set<FirebaseMessage>>> messageStreams =
               _firebaseRealtimeDatabase
-                  .getMessagesStream(firebaseUser.chatIds!);
+                  .getMessageStreams(firebaseUser.chatIds!);
 
           final Map<String, StreamSubscription<Set<FirebaseMessage>>>
               subscriptions = _getMessageSubscriptions(messageStreams);
@@ -321,6 +382,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         messages: state.messages,
         pdfFile: state.pdfFile,
         chatsSubscription: state.chatsSubscription,
+        chatUpdateSubscriptions: state.chatUpdateSubscriptions,
         messageSubscriptions: state.messageSubscriptions,
         currentChatMessagesFetched: state.currentChatMessagesFetched,
         currentChatNewMessageReceived: state.currentChatNewMessageReceived));
@@ -328,7 +390,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _clearDocMessageEventHandler(
       ClearDocMessageEvent event, Emitter<ChatState> emit) {
-    emit(ChatState(
+    emit(
+      ChatState(
         blocStatus: state.blocStatus,
         chats: state.chats,
         imageFile: state.imageFile,
@@ -336,9 +399,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         message: state.message,
         messages: state.messages,
         chatsSubscription: state.chatsSubscription,
+        chatUpdateSubscriptions: state.chatUpdateSubscriptions,
         messageSubscriptions: state.messageSubscriptions,
         currentChatMessagesFetched: state.currentChatMessagesFetched,
-        currentChatNewMessageReceived: state.currentChatNewMessageReceived));
+        currentChatNewMessageReceived: state.currentChatNewMessageReceived,
+      ),
+    );
   }
 
   void _sendTextEventHandler(
@@ -383,8 +449,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (messageId == null) {
           throw AppException.firebaseCouldNotGenerateKey();
         }
-        final String? imageUrl = await _firebaseStorageServices.uploadImageFile(
-            state.imageFile, messageId);
+        final String? imageUrl = await _firebaseStorageService.uploadImage(
+          file: state.imageFile!,
+          messageId: messageId,
+        );
         _firebaseRealtimeDatabase.sendMessage(
             textMessage: state.message,
             chatId: state.currentChat!.id,
@@ -427,7 +495,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (messageId == null) {
           throw AppException.firebaseCouldNotGenerateKey();
         }
-        final String? pdfUrl = await _firebaseStorageServices.uploadPdfFile(
+        final String? pdfUrl = await _firebaseStorageService.uploadDocFile(
             File(state.pdfFile!.path!), messageId);
         _firebaseRealtimeDatabase.sendMessage(
             textMessage: state.pdfFile!.name,
@@ -451,6 +519,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ChatPagePopEvent event, Emitter<ChatState> emit) {
     emit(ChatState(
       chats: state.chats,
+      chatUpdateSubscriptions: state.chatUpdateSubscriptions,
       chatsSubscription: state.chatsSubscription,
       messageSubscriptions: state.messageSubscriptions,
     ));
@@ -458,6 +527,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _resetBlocStateHandler(ResetBlocState event, Emitter<ChatState> emit) {
     emit(ChatState(
+      chatUpdateSubscriptions: state.chatUpdateSubscriptions,
       chatsSubscription: state.chatsSubscription,
       messageSubscriptions: state.messageSubscriptions,
     ));
@@ -470,6 +540,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       subscription.cancel();
     }
     state.chatsSubscription?.cancel();
+
+    final Map<String, StreamSubscription<FirebaseChat?>>? subscriptionsMap =
+        state.chatUpdateSubscriptions;
+    if (subscriptionsMap != null) {
+      for (final StreamSubscription<FirebaseChat?> subscription
+          in subscriptionsMap.values) {
+        subscription.cancel();
+      }
+    }
 
     emit(const ChatState());
   }
@@ -517,4 +596,39 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               ),
             ),
           );
+
+  Map<String, StreamSubscription<FirebaseChat?>> _getChatUpdateSubscriptions(
+          Map<String, Stream<FirebaseChat?>> chatStreams) =>
+      chatStreams.map(
+        (String key, Stream<FirebaseChat?> value) =>
+            MapEntry<String, StreamSubscription<FirebaseChat?>>(
+          key,
+          value.listen(
+            (FirebaseChat? chat) {
+              if (chat is FirebaseChat) {
+                add(_OnChatEvent(chat: chat));
+              }
+            },
+          ),
+        ),
+      );
+
+  Set<FirebaseChat> _sortChats(Set<FirebaseChat> chats) {
+    final List<FirebaseChat> list = chats.toList()
+      ..sort(
+        ((FirebaseChat a, FirebaseChat b) {
+          if (a.lastMessageTime is DateTime && b.lastMessageTime is DateTime) {
+            return b.lastMessageTime!.compareTo(a.lastMessageTime!);
+          } else if (a.lastMessageTime is DateTime) {
+            return -1;
+          } else if (b.lastMessageTime is DateTime) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }),
+      );
+
+    return list.toSet();
+  }
 }

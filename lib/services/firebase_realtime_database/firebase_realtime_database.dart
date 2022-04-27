@@ -112,9 +112,10 @@ class FirebaseRealtimeDatabase {
   Stream<Set<FirebaseChat>> getChatsStream({
     User? user,
     FirebaseUser? firebaseUser,
-    String? firebaseId,
+    String? userFirebaseId,
   }) async* {
-    final String userId = user?.firebaseId ?? firebaseUser?.id ?? firebaseId!;
+    final String userId =
+        user?.firebaseId ?? firebaseUser?.id ?? userFirebaseId!;
 
     final DatabaseReference userChatIds =
         _database.ref(_userCollection + userId + '/chat_dialog_ids');
@@ -132,6 +133,20 @@ class FirebaseRealtimeDatabase {
         yield <FirebaseChat>{};
       }
     }
+  }
+
+  /// Returns a map of streams according to the following scheme {ChatId: Stream}
+  Map<String, Stream<FirebaseChat?>> getChatUpdateStreams(Set<String> chatIds) {
+    final Map<String, Stream<FirebaseChat?>> streams =
+        <String, Stream<FirebaseChat?>>{};
+    for (final String chatId in chatIds) {
+      streams[chatId] = _database
+          .ref(_chatsCollection + chatId)
+          .onValue
+          .map(_parseChatDatabaseEvent);
+    }
+
+    return streams;
   }
 
   /// Creates a new chat between [firebaseUserA] and [firebaseUserB], if not
@@ -253,7 +268,7 @@ class FirebaseRealtimeDatabase {
   }
 
   /// Returns a map of streams according to the following scheme {ChatId: Stream}
-  Map<String, Stream<Set<FirebaseMessage>>> getMessagesStream(
+  Map<String, Stream<Set<FirebaseMessage>>> getMessageStreams(
       Set<String> chatIds) {
     final Map<String, Stream<Set<FirebaseMessage>>> streams =
         <String, Stream<Set<FirebaseMessage>>>{};
@@ -275,28 +290,30 @@ class FirebaseRealtimeDatabase {
     return messageReference.key;
   }
 
-  Future<FirebaseMessage> sendMessage(
-      {required String textMessage,
-      required String chatId,
-      required String senderId,
-      required int messageType,
-      required String messageId,
-      String? imageUrl}) async {
+  Future<FirebaseMessage> sendMessage({
+    required String textMessage,
+    required String chatId,
+    required String senderId,
+    required int messageType,
+    required String messageId,
+    String? imageUrl,
+  }) async {
     final DateTime dateTime = DateTime.now().toUtc();
     final String receiverId =
         chatId.split(',').firstWhere((String id) => id != senderId);
 
     final FirebaseMessage message = FirebaseMessage(
-        message: textMessage,
-        chatDialogId: chatId,
-        messageId: messageId,
-        messageTime: dateTime,
-        firebaseMessageTime: dateTime,
-        messageReadStatus: receiverId,
-        messageType: messageType,
-        receiverId: receiverId,
-        senderId: senderId,
-        attachmentUrl: imageUrl);
+      message: textMessage,
+      chatDialogId: chatId,
+      messageId: messageId,
+      messageTime: dateTime,
+      firebaseMessageTime: dateTime,
+      messageReadStatus: receiverId,
+      messageType: messageType,
+      receiverId: receiverId,
+      senderId: senderId,
+      attachmentUrl: imageUrl,
+    );
     final DatabaseReference messageReference =
         _database.ref(_messagesCollection + chatId + '/' + messageId);
     // Update message reference.
