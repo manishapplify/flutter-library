@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:components/pages/splash/models/response.dart';
 import 'package:components/services/api/api.dart';
-import 'package:components/utils/config.dart';
+import 'package:components/common_models/config.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 

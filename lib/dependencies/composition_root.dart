@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:components/Authentication/repo.dart';
+import 'package:components/common_models/config.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/enums/platform.dart' as enums;
@@ -13,7 +14,6 @@ import 'package:components/services/firebase_realtime_database/firebase_realtime
 import 'package:components/services/firebase_storage_service.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
-import 'package:components/utils/config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
