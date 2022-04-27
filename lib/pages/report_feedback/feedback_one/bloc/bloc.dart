@@ -1,4 +1,4 @@
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
@@ -32,11 +32,11 @@ class FeedbackOneBloc extends Bloc<FeedbackEvent, FeedbackOneState> {
     });
     on<FeedbackSubmitted>(
         (FeedbackSubmitted event, Emitter<FeedbackOneState> emit) async {
-      emit(state.copyWith(formStatus: FormSubmitting()));
+      emit(state.copyWith(formStatus: InProgress()));
       try {
         await _authRepository.feedbackSubmit(
             feedbackissue: state.feebackIssue, feedbackreasons: state.reasons);
-        emit(state.copyWith(formStatus: SubmissionSuccess()));
+        emit(state.copyWith(formStatus: Success()));
       } on DioError catch (e) {
         late final AppException exception;
 
@@ -48,7 +48,7 @@ class FeedbackOneBloc extends Bloc<FeedbackEvent, FeedbackOneState> {
 
         emit(
           state.copyWith(
-            formStatus: SubmissionFailed(
+            formStatus: Failure(
               exception: exception,
               message: exception.message,
             ),
@@ -56,11 +56,11 @@ class FeedbackOneBloc extends Bloc<FeedbackEvent, FeedbackOneState> {
         );
       } on AppException catch (e) {
         emit(state.copyWith(
-            formStatus: SubmissionFailed(exception: e, message: e.message)));
+            formStatus: Failure(exception: e, message: e.message)));
       } on Exception catch (_) {
         emit(
           state.copyWith(
-            formStatus: SubmissionFailed(exception: Exception('Failure')),
+            formStatus: Failure(exception: Exception('Failure')),
           ),
         );
       }

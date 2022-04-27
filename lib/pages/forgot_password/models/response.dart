@@ -1,4 +1,4 @@
-import 'package:components/base/base_response.dart';
+import 'package:components/common_models/base_response.dart';
 
 class ForgotPasswordResponse extends BaseResponse {
   ForgotPasswordResponse({

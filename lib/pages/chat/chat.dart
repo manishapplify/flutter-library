@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:components/authentication/form_submission.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/common_models/work_status.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/dialogs/dialogs.dart';
@@ -128,10 +128,10 @@ class _ChatState extends BasePageState<ChatPage> {
       builder: (BuildContext context, ChatState state) {
         final List<FirebaseMessage> messages = state.messages.toList();
 
-        if (state.blocStatus is SubmissionFailed) {
+        if (state.blocStatus is Failure) {
           chatBloc.add(ResetBlocStatus());
 
-          final SubmissionFailed failure = state.blocStatus as SubmissionFailed;
+          final Failure failure = state.blocStatus as Failure;
 
           // Navigate back in case current chat is deleted.
           if (failure.message == AppException.currentChatRemoved().message) {
@@ -183,6 +183,7 @@ class _ChatState extends BasePageState<ChatPage> {
                   child: ListView.builder(
                     controller: controller,
                     itemCount: messages.length,
+                    padding: const EdgeInsets.all(16),
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int index) {
                       if (messages[index].messageType == 2) {
@@ -339,7 +340,7 @@ class _ChatState extends BasePageState<ChatPage> {
                         ),
                         const SizedBox(width: 15),
                         IconButton(
-                          onPressed: state.blocStatus is FormSubmitting
+                          onPressed: state.blocStatus is InProgress
                               ? null
                               : () {
                                   state.imageFile != null
@@ -363,7 +364,7 @@ class _ChatState extends BasePageState<ChatPage> {
                           child: CircularProgressIndicator(),
                         ),
                       ),
-                      visible: state.blocStatus is FormSubmitting,
+                      visible: state.blocStatus is InProgress,
                     )
                   ]),
                 ),

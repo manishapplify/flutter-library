@@ -1,5 +1,5 @@
-import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/common_models/work_status.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/pages/report_feedback/feedback_one/bloc/bloc.dart';
 import 'package:components/widgets/checkbox.dart';
 import 'package:flutter/material.dart';
@@ -177,7 +177,7 @@ class _FeedbackScreenOneState extends BasePageState<FeedbackScreenOne> {
               ],
             )),
           ),
-          state.formStatus is FormSubmitting
+          state.formStatus is InProgress
               ? const Center(child: CircularProgressIndicator())
               : ElevatedButton(
                   onPressed: () {

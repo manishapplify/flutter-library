@@ -7,7 +7,7 @@ class SignUpState {
     this.phoneNumber = '',
     this.confirmPassword = '',
     this.countryCode = '+91',
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
   });
 
   final String phoneNumber;
@@ -36,7 +36,7 @@ class SignUpState {
           ? 'Should match the password'
           : null;
 
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
 
   SignUpState copyWith({
     String? phoneNumber,
@@ -44,7 +44,7 @@ class SignUpState {
     String? email,
     String? password,
     String? confirmPassword,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return SignUpState(
       phoneNumber: phoneNumber ?? this.phoneNumber,

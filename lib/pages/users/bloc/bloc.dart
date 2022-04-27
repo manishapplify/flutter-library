@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
@@ -31,7 +31,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   void _getUsersEventHandler(
       GetUsersEvent event, Emitter<UsersState> emit) async {
-    emit(state.copyWith(blocStatus: FormSubmitting()));
+    emit(state.copyWith(blocStatus: InProgress()));
     await _commonHandler(
       handlerJob: () async {
         final List<FirebaseUser> users =
@@ -47,10 +47,10 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         emit(state.copyWith(
           users: users,
           usersMatchingQuery: users,
-          blocStatus: SubmissionSuccess(),
+          blocStatus: Success(),
         ));
       },
-      onFailure: (FormSubmissionStatus status) {
+      onFailure: (WorkStatus status) {
         emit(
           state.copyWith(
             blocStatus: status,
@@ -63,7 +63,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   void _messageIconTapHandler(
       MessageIconTapEvent event, Emitter<UsersState> emit) async {
-    emit(state.copyWith(chatStatus: FormSubmitting()));
+    emit(state.copyWith(chatStatus: InProgress()));
     await _commonHandler(
       handlerJob: () async {
         final FirebaseChat chat =
@@ -74,10 +74,10 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
         emit(state.copyWith(
           chat: chat,
-          chatStatus: SubmissionSuccess(),
+          chatStatus: Success(),
         ));
       },
-      onFailure: (FormSubmissionStatus status) {
+      onFailure: (WorkStatus status) {
         emit(
           state.copyWith(
             chatStatus: status,
@@ -107,7 +107,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   Future<void> _commonHandler(
       {required Future<void> Function() handlerJob,
-      required Function(FormSubmissionStatus status) onFailure,
+      required Function(WorkStatus status) onFailure,
       required Emitter<UsersState> emit}) async {
     try {
       await handlerJob();
@@ -121,15 +121,15 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       }
 
       onFailure(
-        SubmissionFailed(
+        Failure(
           exception: exception,
           message: exception.message,
         ),
       );
     } on AppException catch (e) {
-      onFailure(SubmissionFailed(exception: e, message: e.message));
+      onFailure(Failure(exception: e, message: e.message));
     } on Exception catch (_) {
-      onFailure(SubmissionFailed(exception: Exception('Failure')));
+      onFailure(Failure(exception: Exception('Failure')));
     }
   }
 

@@ -1,9 +1,9 @@
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/pages/signup/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -175,7 +175,7 @@ class _SignupState extends BasePageState<SignupPage> {
               ),
               BlocBuilder<SignUpBloc, SignUpState>(
                 builder: (BuildContext context, SignUpState state) {
-                  if (state.formStatus is SubmissionSuccess) {
+                  if (state.formStatus is Success) {
                     Future<void>.microtask(
                       () => Navigator.popAndPushNamed(
                         context,
@@ -183,9 +183,9 @@ class _SignupState extends BasePageState<SignupPage> {
                         arguments: Screen.verifyEmail,
                       ),
                     );
-                  } else if (state.formStatus is SubmissionFailed) {
-                    final SubmissionFailed failure =
-                        state.formStatus as SubmissionFailed;
+                  } else if (state.formStatus is Failure) {
+                    final Failure failure =
+                        state.formStatus as Failure;
                     Future<void>.microtask(
                       () => showSnackBar(
                         SnackBar(
@@ -195,7 +195,7 @@ class _SignupState extends BasePageState<SignupPage> {
                     );
                   }
 
-                  return state.formStatus is FormSubmitting
+                  return state.formStatus is InProgress
                       ? const Center(child: CircularProgressIndicator())
                       : ElevatedButton(
                           onPressed: onFormSubmitted,

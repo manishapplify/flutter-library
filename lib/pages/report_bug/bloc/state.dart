@@ -5,7 +5,7 @@ class ReportBugState {
     this.title,
     this.description,
     this.screenShot,
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
   });
 
   final String? title;
@@ -19,13 +19,13 @@ class ReportBugState {
 
   final File? screenShot;
   bool get isValidScreenShot => screenShot is File;
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
 
   ReportBugState copyWith({
     String? title,
     String? description,
     File? screenShot,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return ReportBugState(
       title: title ?? this.title,

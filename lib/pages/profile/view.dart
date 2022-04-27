@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/common_models/work_status.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/dialogs/dialogs.dart';
@@ -185,7 +185,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
         child: SingleChildScrollView(
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (BuildContext context, ProfileState state) {
-              if (state.formStatus is SubmissionSuccess) {
+              if (state.formStatus is Success) {
                 profileBloc.add(ResetFormStatus());
                 if (screen == Screen.registerUser) {
                   Future<void>.microtask(
@@ -206,10 +206,10 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     ),
                   );
                 }
-              } else if (state.formStatus is SubmissionFailed) {
+              } else if (state.formStatus is Failure) {
                 profileBloc.add(ResetFormStatus());
-                final SubmissionFailed failure =
-                    state.formStatus as SubmissionFailed;
+                final Failure failure =
+                    state.formStatus as Failure;
                 Future<void>.microtask(
                   () => showSnackBar(
                     SnackBar(
@@ -490,7 +490,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  state.formStatus is FormSubmitting
+                  state.formStatus is InProgress
                       ? const CircularProgressIndicator()
                       : ElevatedButton(
                           onPressed: onFormSubmitted,

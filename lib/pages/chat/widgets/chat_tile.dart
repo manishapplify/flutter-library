@@ -119,7 +119,7 @@ class ChatTile extends StatelessWidget {
     final DateTime now = DateTime.now();
     if (now.difference(time).compareTo(const Duration(days: 1)) < 0 &&
         now.day == time.day) {
-      return '${time.hour % 12}:${time.minute < 10 ? '0${time.minute}' : time.minute} ${time.hour > 11 ? 'PM' : 'AM'}';
+      return '${time.hour <= 12 ? time.hour : time.hour % 12}:${time.minute < 10 ? '0${time.minute}' : time.minute} ${time.hour > 11 ? 'PM' : 'AM'}';
     }
 
     // TODO: Also check if both the timestamps are in the same week.

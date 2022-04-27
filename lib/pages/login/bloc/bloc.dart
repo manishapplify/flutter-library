@@ -1,5 +1,5 @@
 import 'package:components/Authentication/repo.dart';
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/api/api.dart';
 import 'package:dio/dio.dart';
@@ -29,7 +29,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           ResetFormStatus event, Emitter<LoginState> emit) =>
       emit(
         state.copyWith(
-          formStatus: const InitialFormStatus(),
+          formStatus: const Idle(),
         ),
       );
 
@@ -37,7 +37,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       LoginEmailChanged event, Emitter<LoginState> emit) {
     emit(
       state.copyWith(
-        email: event.email,       
+        email: event.email,
       ),
     );
   }
@@ -87,11 +87,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Future<void> _commonHandler(
       {required Future<void> Function() handlerJob,
       required Emitter<LoginState> emit}) async {
-    emit(state.copyWith(formStatus: FormSubmitting()));
+    emit(state.copyWith(formStatus: InProgress()));
 
     try {
       await handlerJob();
-      emit(state.copyWith(formStatus: SubmissionSuccess()));
+      emit(state.copyWith(formStatus: Success()));
     } on DioError catch (e) {
       late final AppException exception;
 
@@ -103,7 +103,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(
+          formStatus: Failure(
             exception: exception,
             message: exception.message,
           ),
@@ -111,13 +111,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
     } on AppException catch (e) {
       emit(state.copyWith(
-          formStatus: SubmissionFailed(exception: e, message: e.message)));
+          formStatus: Failure(exception: e, message: e.message)));
     } on Exception catch (_) {
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(exception: Exception('Failure')),
+          formStatus: Failure(exception: Exception('Failure')),
         ),
       );
+    } on Error catch (_) {
+      print('error');
     }
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/report_bug/models/request.dart';
@@ -64,7 +64,7 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
     if (!_authCubit.state.isAuthorized) {
       throw AppException.authenticationException;
     }
-    emit(state.copyWith(formStatus: FormSubmitting()));
+    emit(state.copyWith(formStatus: InProgress()));
 
     try {
       final String? screenShotUrl = await _s3imageUpload.uploadImage(
@@ -83,18 +83,18 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
       );
 
       await _api.reportBug(request);
-      emit(state.copyWith(formStatus: SubmissionSuccess()));
+      emit(state.copyWith(formStatus: Success()));
     } on AppException catch (e) {
       emit(state.copyWith(
-          formStatus: SubmissionFailed(exception: e, message: e.message)));
+          formStatus: Failure(exception: e, message: e.message)));
     } on Exception catch (e) {
-      emit(state.copyWith(formStatus: SubmissionFailed(exception: e)));
+      emit(state.copyWith(formStatus: Failure(exception: e)));
     }
   }
 
   void _resetFormStatusHandler(
       ResetFormStatus event, Emitter<ReportBugState> emit) {
-    emit(state.copyWith(formStatus: const InitialFormStatus()));
+    emit(state.copyWith(formStatus: const Idle()));
   }
 
   void _resetFormStateHandler(

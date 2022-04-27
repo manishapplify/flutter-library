@@ -1,7 +1,7 @@
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,5 +1,5 @@
-import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/common_models/work_status.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
@@ -51,17 +51,17 @@ class _LoginState extends BasePageState<LoginPage> {
           key: _formkey,
           child: BlocBuilder<LoginBloc, LoginState>(
             builder: (BuildContext context, LoginState state) {
-              if (state.formStatus is SubmissionSuccess) {
+              if (state.formStatus is Success) {
                 loginBloc.add(ResetFormStatus());
                 if (!authCubit.state.isAuthorized) {
                   throw AppException.authenticationException;
                 }
 
                 Navigation.navigateAfterSplashOrLogin(authCubit.state.user);
-              } else if (state.formStatus is SubmissionFailed) {
+              } else if (state.formStatus is Failure) {
                 loginBloc.add(ResetFormStatus());
-                final SubmissionFailed failure =
-                    state.formStatus as SubmissionFailed;
+                final Failure failure =
+                    state.formStatus as Failure;
                 Future<void>.microtask(
                   () => showSnackBar(
                     SnackBar(
@@ -125,7 +125,7 @@ class _LoginState extends BasePageState<LoginPage> {
                       ),
                     ),
                   ),
-                  state.formStatus is FormSubmitting
+                  state.formStatus is InProgress
                       ? const CircularProgressIndicator()
                       : ElevatedButton(
                           child: const Text(

@@ -1,5 +1,5 @@
-import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/common_models/work_status.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/pages/feedback/bloc/bloc.dart';
 import 'package:components/widgets/chip.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +66,7 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
           child: SingleChildScrollView(
             child: BlocBuilder<FeedbackBloc, FeedbackState>(
                 builder: (BuildContext context, FeedbackState state) {
-              if (state.formStatus is SubmissionSuccess) {
+              if (state.formStatus is Success) {
                 feedbackBloc.add(ResetFormState());
                 descriptionTextEditingController.value = TextEditingValue.empty;
                 Future<void>.microtask(
@@ -76,11 +76,11 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                     ),
                   ),
                 );
-              } else if (state.formStatus is SubmissionFailed) {
+              } else if (state.formStatus is Failure) {
                 feedbackBloc.add(ResetFormStatus());
 
-                final SubmissionFailed failure =
-                    state.formStatus as SubmissionFailed;
+                final Failure failure =
+                    state.formStatus as Failure;
                 Future<void>.microtask(
                   () => showSnackBar(
                     SnackBar(
@@ -178,7 +178,7 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                   ),
                   const SizedBox(height: 20.0),
                   Center(
-                    child: state.formStatus is FormSubmitting
+                    child: state.formStatus is InProgress
                         ? const Center(child: CircularProgressIndicator())
                         : ElevatedButton(
                             child: const Padding(

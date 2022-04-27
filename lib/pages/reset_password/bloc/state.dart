@@ -4,7 +4,7 @@ class ResetPasswordState {
   ResetPasswordState({
     this.newPassword = '',
     this.confirmNewPassword = '',
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
   });
 
   final String newPassword;
@@ -21,12 +21,12 @@ class ResetPasswordState {
           ? 'Should match the new password'
           : null;
 
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
 
   ResetPasswordState copyWith({
     String? newPassword,
     String? confirmNewPassword,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return ResetPasswordState(
       newPassword: newPassword ?? this.newPassword,

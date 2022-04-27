@@ -5,7 +5,7 @@ class ChangePasswordState {
     this.currentPassword = '',
     this.newPassword = '',
     this.confirmNewPassword = '',
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
   });
 
   final String currentPassword;
@@ -28,13 +28,13 @@ class ChangePasswordState {
           ? 'Should match the new password'
           : null;
 
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
 
   ChangePasswordState copyWith({
     String? currentPassword,
     String? newPassword,
     String? confirmNewPassword,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return ChangePasswordState(
       currentPassword: currentPassword ?? this.currentPassword,

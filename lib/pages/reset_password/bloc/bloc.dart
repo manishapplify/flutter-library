@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:dio/dio.dart';
@@ -29,23 +29,23 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
       emit(
         state.copyWith(
             newPassword: event.newPassword,
-            formStatus: const InitialFormStatus()),
+            formStatus: const Idle()),
       );
   void _onConfirmNewPasswordChangedHandler(
           ConfirmNewPasswordChanged event, Emitter<ResetPasswordState> emit) =>
       emit(
         state.copyWith(
             confirmNewPassword: event.confirmNewPassword,
-            formStatus: const InitialFormStatus()),
+            formStatus: const Idle()),
       );
 
   void _onResetPasswordSubmittedHandler(
       ResetPasswordSubmitted event, Emitter<ResetPasswordState> emit) async {
-    emit(state.copyWith(formStatus: FormSubmitting()));
+    emit(state.copyWith(formStatus: InProgress()));
 
     try {
       await _authRepository.resetPassword(state.newPassword);
-      emit(state.copyWith(formStatus: SubmissionSuccess()));
+      emit(state.copyWith(formStatus: Success()));
     } on DioError catch (e) {
       late final AppException exception;
 
@@ -57,7 +57,7 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
 
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(
+          formStatus: Failure(
             exception: exception,
             message: exception.message,
           ),
@@ -65,11 +65,11 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
       );
     } on AppException catch (e) {
       emit(state.copyWith(
-          formStatus: SubmissionFailed(exception: e, message: e.message)));
+          formStatus: Failure(exception: e, message: e.message)));
     } on Exception catch (_) {
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(exception: Exception('Failure')),
+          formStatus: Failure(exception: Exception('Failure')),
         ),
       );
     }

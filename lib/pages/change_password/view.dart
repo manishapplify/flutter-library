@@ -1,5 +1,5 @@
-import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/common_models/work_status.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/pages/change_password/bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,7 +58,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
         key: _formkey,
         child: BlocBuilder<ChangePasswordBloc, ChangePasswordState>(
             builder: (BuildContext context, ChangePasswordState state) {
-          if (state.formStatus is SubmissionSuccess) {
+          if (state.formStatus is Success) {
             changePasswordBloc.add(ResetFormState());
             currentPasswordTextController.value = TextEditingValue.empty;
             newPasswordTextController.value = TextEditingValue.empty;
@@ -70,9 +70,9 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
                 ),
               ),
             );
-          } else if (state.formStatus is SubmissionFailed) {
-            final SubmissionFailed failure =
-                state.formStatus as SubmissionFailed;
+          } else if (state.formStatus is Failure) {
+            final Failure failure =
+                state.formStatus as Failure;
             Future<void>.microtask(
               () => showSnackBar(
                 SnackBar(
@@ -154,7 +154,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               const SizedBox(
                 height: 20.0,
               ),
-              state.formStatus is FormSubmitting
+              state.formStatus is InProgress
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: () {

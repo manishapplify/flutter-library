@@ -1,4 +1,4 @@
-import 'package:components/base/base_page.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:flutter/material.dart';
 
 class FeedbackScreenThird extends BasePage {
