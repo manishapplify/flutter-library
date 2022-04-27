@@ -95,6 +95,8 @@ class OpenDocEvent extends ChatEvent {
   final String docFilename;
 }
 
+class OnPdfViewCloseEvent extends ChatEvent {}
+
 class ResetBlocStatus extends ChatEvent {}
 
 class ResetBlocState extends ChatEvent {}

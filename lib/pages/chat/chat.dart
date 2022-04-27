@@ -128,6 +128,15 @@ class _ChatState extends BasePageState<ChatPage> {
       builder: (BuildContext context, ChatState state) {
         final List<FirebaseMessage> messages = state.messages.toList();
 
+        if (state.pdfViewerStatus is Success) {
+          Future<void>.microtask(
+            () => Navigator.pushNamed(
+              context,
+              Routes.pdfViewerPage,
+            ),
+          );
+        }
+
         if (state.blocStatus is Failure) {
           chatBloc.add(ResetBlocStatus());
 
@@ -175,199 +184,221 @@ class _ChatState extends BasePageState<ChatPage> {
             chatBloc.add(ChatPagePopEvent());
             return Future<bool>.value(true);
           },
-          child: Column(
+          child: Stack(
             children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: ListView.builder(
-                    controller: controller,
-                    itemCount: messages.length,
-                    padding: const EdgeInsets.all(16),
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (messages[index].messageType == 2) {
-                        return Container(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          alignment: messages[index]
-                                  .isSentByCurrentUser(currentUser.firebaseId)
-                              ? Alignment.topRight
-                              : Alignment.topLeft,
-                          child: ImageContainer(
-                            height: 200.0,
-                            width: 150.0,
-                            circularDecoration: false,
-                            imageUrl: messages[index].attachmentUrl,
-                          ),
-                        );
-                      } else if (messages[index].messageType == 3) {
-                        return Align(
-                          alignment: messages[index]
-                                  .isSentByCurrentUser(currentUser.firebaseId)
-                              ? Alignment.topRight
-                              : Alignment.topLeft,
-                          child: InkWell(
-                              onTap: () => openPdf(
-                                  pdfUrl: messages[index].attachmentUrl!,
-                                  filename: messages[index].message),
-                              child: PdfTile(
-                                fileName: messages[index].message,
-                                closeButton: false,
-                              )),
-                        );
-                      } else {
-                        return MessageTile(
-                          message: messages[index].message,
-                          color: messages[index]
-                                  .isSentByCurrentUser(currentUser.firebaseId)
-                              ? const Color.fromARGB(255, 77, 192, 129)
-                              : Colors.grey,
-                          alignment: messages[index]
-                                  .isSentByCurrentUser(currentUser.firebaseId)
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                        );
-                      }
-                    },
+              Visibility(
+                child: const Material(
+                  color: Colors.transparent,
+                  child: Center(
+                    child: CircularProgressIndicator(),
                   ),
                 ),
+                visible: state.pdfViewerStatus is InProgress,
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  padding: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                  margin: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    bottom: 8,
+              Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: ListView.builder(
+                        controller: controller,
+                        itemCount: messages.length,
+                        padding: const EdgeInsets.all(16),
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (messages[index].messageType == 2) {
+                            return Container(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              alignment: messages[index].isSentByCurrentUser(
+                                      currentUser.firebaseId)
+                                  ? Alignment.topRight
+                                  : Alignment.topLeft,
+                              child: ImageContainer(
+                                height: 200.0,
+                                width: 150.0,
+                                circularDecoration: false,
+                                imageUrl: messages[index].attachmentUrl,
+                              ),
+                            );
+                          } else if (messages[index].messageType == 3) {
+                            return Align(
+                              alignment: messages[index].isSentByCurrentUser(
+                                      currentUser.firebaseId)
+                                  ? Alignment.topRight
+                                  : Alignment.topLeft,
+                              child: InkWell(
+                                  onTap: state.pdfViewerStatus is InProgress
+                                      ? null
+                                      : () {
+                                          chatBloc.add(OpenDocEvent(
+                                              docFilename:
+                                                  messages[index].message,
+                                              docUrl: messages[index]
+                                                  .attachmentUrl!));
+                                        },
+                                  child: PdfTile(
+                                    fileName: messages[index].message,
+                                    closeButton: false,
+                                  )),
+                            );
+                          } else {
+                            return MessageTile(
+                              message: messages[index].message,
+                              color: messages[index].isSentByCurrentUser(
+                                      currentUser.firebaseId)
+                                  ? const Color.fromARGB(255, 77, 192, 129)
+                                  : Colors.grey,
+                              alignment: messages[index].isSentByCurrentUser(
+                                      currentUser.firebaseId)
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                            );
+                          }
+                        },
+                      ),
+                    ),
                   ),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Stack(alignment: Alignment.center, children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            showChatAttachmentPicker(
-                                context: context,
-                                onImagePicked: () {
-                                  Navigator.pop(context);
-                                  showImagePickerPopup(
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      padding:
+                          const EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                      margin: const EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        bottom: 8,
+                      ),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child:
+                          Stack(alignment: Alignment.center, children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {
+                                showChatAttachmentPicker(
                                     context: context,
-                                    onImagePicked: (File file) {
-                                      if (!chatBloc.isClosed) {
-                                        chatBloc.add(
-                                            ImageUpdateEvent(imageFile: file));
+                                    onImagePicked: () {
+                                      Navigator.pop(context);
+                                      showImagePickerPopup(
+                                        context: context,
+                                        onImagePicked: (File file) {
+                                          if (!chatBloc.isClosed) {
+                                            chatBloc.add(ImageUpdateEvent(
+                                                imageFile: file));
+                                          }
+                                          if (mounted) {
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                      );
+                                    },
+                                    onPdfPicked: () async {
+                                      final FilePickerResult? result =
+                                          await FilePicker.platform.pickFiles(
+                                        type: FileType.custom,
+                                        allowedExtensions: <String>['pdf'],
+                                      );
+
+                                      if (result == null) {
+                                        return;
                                       }
+
+                                      chatBloc.add(PdfUpdateEvent(
+                                          pdfFile: result.files.single));
                                       if (mounted) {
                                         Navigator.pop(context);
                                       }
-                                    },
-                                  );
-                                },
-                                onPdfPicked: () async {
-                                  final FilePickerResult? result =
-                                      await FilePicker.platform.pickFiles(
-                                    type: FileType.custom,
-                                    allowedExtensions: <String>['pdf'],
-                                  );
-
-                                  if (result == null) {
-                                    return;
-                                  }
-
-                                  chatBloc.add(PdfUpdateEvent(
-                                      pdfFile: result.files.single));
-                                  if (mounted) {
-                                    Navigator.pop(context);
-                                  }
-                                });
-                          },
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(30),
+                                    });
+                              },
+                              child: Container(
+                                height: 30,
+                                width: 30,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
                             ),
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: state.pdfFile != null
-                              ? PdfTile(
-                                  fileName: state.pdfFile!.name,
-                                  closeButton: true,
-                                  onPressed: () {
-                                    chatBloc.add(
-                                      ClearDocMessageEvent(),
-                                    );
-                                  },
-                                )
-                              : state.imageFile != null
-                                  ? ImageContainer(
-                                      height: 150,
-                                      circularDecoration: false,
-                                      imagePath: state.imageFile?.path,
-                                      iconAlignment: Alignment.topRight,
-                                      overlayIcon: const Icon(
-                                        Icons.close,
-                                        color: Colors.red,
-                                      ),
-                                      onContainerTap: () {
+                            const SizedBox(width: 15),
+                            Expanded(
+                              child: state.pdfFile != null
+                                  ? PdfTile(
+                                      fileName: state.pdfFile!.name,
+                                      closeButton: true,
+                                      onPressed: () {
                                         chatBloc.add(
-                                          ClearImageMessageEvent(),
+                                          ClearDocMessageEvent(),
                                         );
                                       },
                                     )
-                                  : TextField(
-                                      controller: textEditingController,
-                                      decoration: const InputDecoration(
-                                        hintText: "Write message...",
-                                      ),
-                                      onChanged: (String message) => chatBloc
-                                          .add(TextMessageChanged(message)),
-                                      onSubmitted: (_) => onMessageSend(),
-                                    ),
+                                  : state.imageFile != null
+                                      ? ImageContainer(
+                                          height: 150,
+                                          circularDecoration: false,
+                                          imagePath: state.imageFile?.path,
+                                          iconAlignment: Alignment.topRight,
+                                          overlayIcon: const Icon(
+                                            Icons.close,
+                                            color: Colors.red,
+                                          ),
+                                          onContainerTap: () {
+                                            chatBloc.add(
+                                              ClearImageMessageEvent(),
+                                            );
+                                          },
+                                        )
+                                      : TextField(
+                                          controller: textEditingController,
+                                          decoration: const InputDecoration(
+                                            hintText: "Write message...",
+                                          ),
+                                          onChanged: (String message) =>
+                                              chatBloc.add(
+                                                  TextMessageChanged(message)),
+                                          onSubmitted: (_) => onMessageSend(),
+                                        ),
+                            ),
+                            const SizedBox(width: 15),
+                            IconButton(
+                              onPressed: state.blocStatus is InProgress
+                                  ? null
+                                  : () {
+                                      state.imageFile != null
+                                          ? onImageSend()
+                                          : state.pdfFile != null
+                                              ? onDocSend()
+                                              : onMessageSend();
+                                    },
+                              icon: const Icon(
+                                Icons.send,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 15),
-                        IconButton(
-                          onPressed: state.blocStatus is InProgress
-                              ? null
-                              : () {
-                                  state.imageFile != null
-                                      ? onImageSend()
-                                      : state.pdfFile != null
-                                          ? onDocSend()
-                                          : onMessageSend();
-                                },
-                          icon: const Icon(
-                            Icons.send,
-                            color: Colors.black,
-                            size: 20,
+                        Visibility(
+                          child: const Material(
+                            color: Colors.transparent,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
-                        ),
-                      ],
+                          visible: state.blocStatus is InProgress,
+                        )
+                      ]),
                     ),
-                    Visibility(
-                      child: const Material(
-                        color: Colors.transparent,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                      visible: state.blocStatus is InProgress,
-                    )
-                  ]),
-                ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -387,15 +418,5 @@ class _ChatState extends BasePageState<ChatPage> {
 
   void onDocSend() {
     chatBloc.add(SendDocEvent());
-  }
-
-  Future<dynamic> openPdf({required String pdfUrl, String? filename}) async {
-    final String filePath = await api.downloadFile(pdfUrl, filename!);
-
-    Navigator.pushNamed(
-      context,
-      Routes.pdfViewerPage,
-      arguments: {"filePath": filePath},
-    );
   }
 }

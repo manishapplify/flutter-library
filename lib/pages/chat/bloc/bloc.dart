@@ -18,13 +18,13 @@ part 'event.dart';
 part 'state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  ChatBloc({
-    required this.imageBaseUrl,
-    required AuthCubit authCubit,
-    required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
-    required FirebaseStorageService firebaseStorageService,
-    required Api api
-  })  : _authCubit = authCubit,
+  ChatBloc(
+      {required this.imageBaseUrl,
+      required AuthCubit authCubit,
+      required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
+      required FirebaseStorageService firebaseStorageService,
+      required Api api})
+      : _authCubit = authCubit,
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
         _firebaseStorageService = firebaseStorageService,
         _api = api,
@@ -53,6 +53,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<PdfUpdateEvent>(_pdfUpdateEventHandler);
     on<SendDocEvent>(_sendDocEventHandler);
     on<OpenDocEvent>(_openDocEventHandler);
+    on<OnPdfViewCloseEvent>(_onPdfViewCloseEventHandler);
     on<ResetBlocStatus>(_resetBlocStatusHandler);
     on<ChatPagePopEvent>(_chatPagePopEventHandler);
     on<ResetBlocState>(_resetBlocStateHandler);
@@ -505,8 +506,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (messageId == null) {
           throw AppException.firebaseCouldNotGenerateKey();
         }
-        final String? pdfUrl = await _firebaseStorageService.uploadPdf(file: 
-            File(state.pdfFile!.path!), messageId: messageId);
+        final String? pdfUrl = await _firebaseStorageService.uploadPdf(
+            file: File(state.pdfFile!.path!), messageId: messageId);
         _firebaseRealtimeDatabase.sendMessage(
             textMessage: state.pdfFile!.name,
             chatId: state.currentChat!.id,
@@ -522,28 +523,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _openDocEventHandler(OpenDocEvent event, Emitter<ChatState> emit) async {
-    // emit(
-    //   state.copyWith(docFilename: event.docFilename,docUrl: event.docUrl),
-    // );
-    await _commonHandler(
-      handlerJob: () async {
-        if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
-        }
-        if (event.docUrl == null) {
-          throw AppException.docUrlEmpty();
-        }
-       // final String filePath = await _api.downloadFile(state.docUrl!, state.docFilename!);
+    emit(state.copyWith(pdfViewerStatus: InProgress()));
+    final String? filePath =
+        await _api.downloadFile(event.docUrl, event.docFilename);
+    if (filePath == null) {
+      throw AppException.docUrlEmpty();
+    }
+    emit(state.copyWith(
+        downloadedPdfFilePath: filePath, pdfViewerStatus: Success()));
+  }
 
-    // Navigator.pushNamed(
-    //   context,
-    //   Routes.pdfViewerPage,
-    //   arguments: {"filePath": filePath},
-    // );
- 
-      },
-      emit: emit,
-    );
+  void _onPdfViewCloseEventHandler(
+      OnPdfViewCloseEvent event, Emitter<ChatState> emit) {
+    emit(state.copyWith(
+        downloadedPdfFilePath: '', pdfViewerStatus: const Idle()));
   }
 
   void _resetBlocStatusHandler(ResetBlocStatus event, Emitter<ChatState> emit) {

@@ -17,6 +17,8 @@ class ChatState {
     this.currentChatMessagesFetched = false,
     this.imageFile,
     this.pdfFile,
+    this.downloadedPdfFilePath,
+    this.pdfViewerStatus = const Idle(),
   });
 
   final Set<FirebaseChat> chats;
@@ -39,6 +41,8 @@ class ChatState {
   final WorkStatus blocStatus;
   final File? imageFile;
   final PlatformFile? pdfFile;
+  final String? downloadedPdfFilePath;
+  final WorkStatus pdfViewerStatus;
 
   ChatState copyWith({
     Set<FirebaseChat>? chats,
@@ -49,10 +53,12 @@ class ChatState {
     Map<String, StreamSubscription<Set<FirebaseMessage>>>? messageSubscriptions,
     bool? currentChatNewMessageReceived,
     WorkStatus? blocStatus,
+    WorkStatus? pdfViewerStatus,
     FirebaseChat? currentChat,
     bool? currentChatMessagesFetched,
     File? imageFile,
     PlatformFile? pdfFile,
+    String? downloadedPdfFilePath,
   }) {
     return ChatState(
       chats: chats ?? this.chats,
@@ -70,6 +76,8 @@ class ChatState {
           currentChatMessagesFetched ?? this.currentChatMessagesFetched,
       imageFile: imageFile ?? this.imageFile,
       pdfFile: pdfFile ?? this.pdfFile,
+      downloadedPdfFilePath: downloadedPdfFilePath ?? this.downloadedPdfFilePath,
+      pdfViewerStatus: pdfViewerStatus?? this.pdfViewerStatus
     );
   }
 }

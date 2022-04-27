@@ -251,11 +251,9 @@ class Navigation {
           builder: (_) => const FeedbackScreenThird(),
         );
       case Routes.pdfViewerPage:
-        final Map<String, dynamic> map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute<dynamic>(
-          builder: (_) => PdfViewerPage(
-            filePath: map['filePath'],
-          ),
+          settings: settings,
+          builder: (_) => const PdfViewerPage(),
         );
     }
 
