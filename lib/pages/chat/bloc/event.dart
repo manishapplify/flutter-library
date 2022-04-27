@@ -86,7 +86,14 @@ class PdfUpdateEvent extends ChatEvent {
 
 class SendImageEvent extends ChatEvent {}
 
-class SendDocEvent extends ChatEvent {}
+class SendDocEvent extends ChatEvent {
+}
+
+class OpenDocEvent extends ChatEvent {
+  OpenDocEvent({required this.docFilename,required this.docUrl});
+  final String docUrl;
+  final String docFilename;
+}
 
 class ResetBlocStatus extends ChatEvent {}
 

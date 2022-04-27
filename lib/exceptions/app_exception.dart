@@ -54,6 +54,9 @@ class AppException implements Exception {
   factory AppException.otpvalid() {
     return AppException(message: 'Please enter valid otp'); 
   }
+  factory AppException.docUrlEmpty() {
+    return AppException(message: 'Invalid Documnet'); 
+  }
 
   final String message;
 }

@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:components/authentication/form_submission.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
+import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message.dart';
@@ -22,9 +23,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required AuthCubit authCubit,
     required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
     required FirebaseStorageService firebaseStorageService,
+    required Api api
   })  : _authCubit = authCubit,
         _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
         _firebaseStorageService = firebaseStorageService,
+        _api = api,
         super(const ChatState()) {
     on<GetChatsEvent>(_getChatsEventHandler);
     on<GetChatsSubscriptionEvent>(_getChatsSubscriptionEventHandler);
@@ -49,6 +52,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ImageUpdateEvent>(_imageUpdateEventHandler);
     on<PdfUpdateEvent>(_pdfUpdateEventHandler);
     on<SendDocEvent>(_sendDocEventHandler);
+    on<OpenDocEvent>(_openDocEventHandler);
     on<ResetBlocStatus>(_resetBlocStatusHandler);
     on<ChatPagePopEvent>(_chatPagePopEventHandler);
     on<ResetBlocState>(_resetBlocStateHandler);
@@ -59,6 +63,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final AuthCubit _authCubit;
   final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
   final FirebaseStorageService _firebaseStorageService;
+  final Api _api;
 
   void _getChatsEventHandler(
       GetChatsEvent event, Emitter<ChatState> emit) async {
@@ -500,8 +505,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (messageId == null) {
           throw AppException.firebaseCouldNotGenerateKey();
         }
-        final String? pdfUrl = await _firebaseStorageService.uploadDocFile(
-            File(state.pdfFile!.path!), messageId);
+        final String? pdfUrl = await _firebaseStorageService.uploadPdf(file: 
+            File(state.pdfFile!.path!), messageId: messageId);
         _firebaseRealtimeDatabase.sendMessage(
             textMessage: state.pdfFile!.name,
             chatId: state.currentChat!.id,
@@ -511,6 +516,31 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             messageType: 3);
 
         add(ClearDocMessageEvent());
+      },
+      emit: emit,
+    );
+  }
+
+  void _openDocEventHandler(OpenDocEvent event, Emitter<ChatState> emit) async {
+    // emit(
+    //   state.copyWith(docFilename: event.docFilename,docUrl: event.docUrl),
+    // );
+    await _commonHandler(
+      handlerJob: () async {
+        if (!_authCubit.state.isAuthorized) {
+          throw AppException.authenticationException;
+        }
+        if (event.docUrl == null) {
+          throw AppException.docUrlEmpty();
+        }
+       // final String filePath = await _api.downloadFile(state.docUrl!, state.docFilename!);
+
+    // Navigator.pushNamed(
+    //   context,
+    //   Routes.pdfViewerPage,
+    //   arguments: {"filePath": filePath},
+    // );
+ 
       },
       emit: emit,
     );

@@ -27,6 +27,7 @@ class CompositionRoot {
     required this.navigation,
     required this.firebaseRealtimeDatabase,
     required this.firebaseStorageService,
+    required this.api,
     required this.s3imageUpload,
   });
 
@@ -35,6 +36,7 @@ class CompositionRoot {
   final Navigation navigation;
   final FirebaseRealtimeDatabase firebaseRealtimeDatabase;
   final FirebaseStorageService firebaseStorageService;
+  final Api api;
   final S3ImageUpload s3imageUpload;
 }
 
@@ -80,6 +82,7 @@ Future<CompositionRoot> configureDependencies() async {
       FirebaseRealtimeDatabase();
   final FirebaseStorageService firebaseStorageService =
       FirebaseStorageService();
+
   final AuthRepository authRepository = AuthRepository(
     api: api,
     config: config,
@@ -131,6 +134,7 @@ Future<CompositionRoot> configureDependencies() async {
     ),
     firebaseRealtimeDatabase: firebaseRealtimeDatabase,
     firebaseStorageService: firebaseStorageService,
+    api: api,
     s3imageUpload: s3imageUpload,
   );
 }

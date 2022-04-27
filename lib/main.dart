@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
             firebaseRealtimeDatabase: compositionRoot.firebaseRealtimeDatabase,
             firebaseStorageService: compositionRoot.firebaseStorageService,
             imageBaseUrl: compositionRoot.s3imageUpload.s3BaseUrl + 'users/',
+            api: compositionRoot.api
           ),
         ),
         BlocProvider<UsersBloc>(
