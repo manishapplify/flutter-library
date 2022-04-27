@@ -258,6 +258,7 @@ class _ChatState extends BasePageState<ChatPage> {
                       ),
                     ),
                   ),
+<<<<<<< HEAD
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -280,6 +281,18 @@ class _ChatState extends BasePageState<ChatPage> {
                             InkWell(
                               onTap: () {
                                 showChatAttachmentPicker(
+=======
+                  child: Stack(alignment: Alignment.center, children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () {
+                            showChatAttachmentPicker(
+                                context: context,
+                                onImageOptionPressed: () {
+                                  Navigator.pop(context);
+                                  showImagePickerPopup(
+>>>>>>> 7d7b51186991e856c0247bc4fa2c61c6fa2f93a6
                                     context: context,
                                     onImagePicked: () {
                                       Navigator.pop(context);
@@ -312,6 +325,7 @@ class _ChatState extends BasePageState<ChatPage> {
                                       if (mounted) {
                                         Navigator.pop(context);
                                       }
+<<<<<<< HEAD
                                     });
                               },
                               child: Container(
@@ -327,6 +341,40 @@ class _ChatState extends BasePageState<ChatPage> {
                                   size: 20,
                                 ),
                               ),
+=======
+                                    },
+                                  );
+                                },
+                                onPdfOptionPressed: () async {
+                                  final FilePickerResult? result =
+                                      await FilePicker.platform.pickFiles(
+                                    type: FileType.custom,
+                                    allowedExtensions: <String>['pdf'],
+                                  );
+
+                                  if (result == null) {
+                                    return;
+                                  }
+
+                                  chatBloc.add(PdfUpdateEvent(
+                                      pdfFile: result.files.single));
+                                  if (mounted) {
+                                    Navigator.pop(context);
+                                  }
+                                });
+                          },
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 20,
+>>>>>>> 7d7b51186991e856c0247bc4fa2c61c6fa2f93a6
                             ),
                             const SizedBox(width: 15),
                             Expanded(

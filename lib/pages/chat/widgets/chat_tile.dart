@@ -20,11 +20,15 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late final String otherUserId = chat.participantIds
+    final String otherUserId = chat.participantIds
         .firstWhere((String id) => id != currentUserFirebaseId);
-    late final String? otherUserName = chat.participantNames[otherUserId];
-    late final String? otherUserProfilePic =
+    final String? otherUserName = chat.participantNames[otherUserId];
+    final String? otherUserProfilePic =
         chat.participantProfileImages?[otherUserId];
+    final TextStyle messagePreviewTheme = Theme.of(context)
+        .textTheme
+        .headline3!
+        .copyWith(fontWeight: FontWeight.w300);
 
     return GestureDetector(
       onTap: onTileTap,
@@ -90,14 +94,32 @@ class ChatTile extends StatelessWidget {
                       Flexible(
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Text(
-                            chat.lastMessage ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(fontWeight: FontWeight.w300),
-                          ),
+                          child: chat.lastMessageType == null
+                              ? const SizedBox()
+                              : chat.lastMessageType! == 2
+                                  ? Row(
+                                      children: <Widget>[
+                                        ImageContainer(
+                                          height: 25,
+                                          width: 25,
+                                          circularDecoration: false,
+                                          imageUrl:
+                                              chat.lastMessageAttachmentUrl,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          'Image',
+                                          style: messagePreviewTheme,
+                                        )
+                                      ],
+                                    )
+                                  : Text(
+                                      chat.lastMessage ?? '',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: messagePreviewTheme,
+                                    ),
                         ),
                       ),
                     ],
@@ -154,6 +176,5 @@ const Map<int, String> _mapMonth = <int, String>{
   8: 'Aug',
   9: 'Sep',
   10: 'Oct',
-  11: 'Nov',
-  12: 'Dec',
+  11: 'Nov',  12: 'Dec',
 };

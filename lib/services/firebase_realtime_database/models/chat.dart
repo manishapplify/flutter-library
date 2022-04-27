@@ -6,6 +6,7 @@ class FirebaseChat {
     this.lastMessageSenderId,
     this.lastMessageTime,
     this.lastMessageType,
+    this.lastMessageAttachmentUrl,
     required this.participantIds,
     required this.participantNames,
     required this.participantProfileImages,
@@ -21,6 +22,7 @@ class FirebaseChat {
       lastMessageTime: map['last_message_time'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['last_message_time'] as int)
           : null,
+      lastMessageAttachmentUrl: map['last_message_attachment_url'],
       participantIds: (map['participant_ids'] as String).split(',').toSet(),
       participantNames: Map<String, String>.from(map['name']),
       participantProfileImages: map['profile_pic'] != null
@@ -39,6 +41,9 @@ class FirebaseChat {
   /// 2 -> Image
   /// 3 -> Document
   final int? lastMessageType;
+
+  /// To show the image preview in chat tile.
+  final String? lastMessageAttachmentUrl;
   final Set<String> participantIds;
   final Map<String, String> participantNames;
   final Map<String, String>? participantProfileImages;
@@ -64,6 +69,9 @@ class FirebaseChat {
     }
     if (lastMessageType is int) {
       data['last_message_type'] = lastMessageType;
+    }
+    if (lastMessageAttachmentUrl is String) {
+      data['last_message_attachment_url'] = lastMessageAttachmentUrl;
     }
     if (participantProfileImages is Map<String, String>) {
       data['profile_pic'] = participantProfileImages;
@@ -93,6 +101,7 @@ class FirebaseChat {
     String? lastMessageSenderId,
     DateTime? lastMessageTime,
     int? lastMessageType,
+    String? lastMessageAttachmentUrl,
     Set<String>? participantIds,
     Map<String, String>? participantNames,
     Map<String, String>? participantProfileImages,
@@ -104,6 +113,8 @@ class FirebaseChat {
       lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
       lastMessageTime: lastMessageTime ?? this.lastMessageTime,
       lastMessageType: lastMessageType ?? this.lastMessageType,
+      lastMessageAttachmentUrl:
+          lastMessageAttachmentUrl ?? this.lastMessageAttachmentUrl,
       participantIds: participantIds ?? this.participantIds,
       participantNames: participantNames ?? this.participantNames,
       participantProfileImages:

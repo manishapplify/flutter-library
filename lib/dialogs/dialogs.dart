@@ -111,8 +111,8 @@ dynamic imageCropper({
 
 dynamic showChatAttachmentPicker({
   required BuildContext context,
-  void Function()? onImagePicked,
-  void Function()? onPdfPicked,
+  required VoidCallback onImageOptionPressed,
+  required VoidCallback onPdfOptionPressed,
 }) {
   showCupertinoModalPopup(
     barrierColor: Colors.black45,
@@ -126,16 +126,17 @@ dynamic showChatAttachmentPicker({
               color: Colors.black,
             ),
           ),
-          onPressed: onImagePicked!,
+          onPressed: onImageOptionPressed,
         ),
         CupertinoActionSheetAction(
-            child: const Text(
-              "Document",
-              style: TextStyle(
-                color: Colors.black,
-              ),
+          child: const Text(
+            "Document",
+            style: TextStyle(
+              color: Colors.black,
             ),
-            onPressed: onPdfPicked!)
+          ),
+          onPressed: onPdfOptionPressed,
+        )
       ],
       cancelButton: Container(
         decoration: const BoxDecoration(
