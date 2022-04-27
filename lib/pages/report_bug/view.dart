@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/dialogs/dialogs.dart';
 import 'package:components/pages/report_bug/bloc/bloc.dart';
 import 'package:components/widgets/image_container.dart';

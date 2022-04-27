@@ -1,5 +1,5 @@
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/reset_password/bloc/bloc.dart';
 import 'package:flutter/material.dart';

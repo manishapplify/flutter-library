@@ -3,7 +3,7 @@ import 'package:components/enums/screen.dart';
 import 'package:components/pages/signup/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

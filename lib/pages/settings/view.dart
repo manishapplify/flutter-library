@@ -1,4 +1,4 @@
-import 'package:components/base/base_page.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/pages/settings/cubit/cubit.dart';
 import 'package:components/routes/navigation.dart';

@@ -1,5 +1,5 @@
 import 'package:components/Authentication/form_submission.dart';
-import 'package:components/base/base_page.dart';
+import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/exceptions/app_exception.dart';
