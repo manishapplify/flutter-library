@@ -1,4 +1,4 @@
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/pages/reset_password/bloc/bloc.dart';
@@ -57,7 +57,7 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
             children: <Widget>[
               BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
                 builder: (BuildContext context, ResetPasswordState state) {
-                  if (state.formStatus is SubmissionSuccess) {
+                  if (state.formStatus is Success) {
                     passwordAuthCubit.resetToken();
                     resetPasswordBloc.add(ResetFormState());
                     passwordTextEditingController.value =
@@ -71,9 +71,9 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                         ),
                       ),
                     );
-                  } else if (state.formStatus is SubmissionFailed) {
-                    final SubmissionFailed failure =
-                        state.formStatus as SubmissionFailed;
+                  } else if (state.formStatus is Failure) {
+                    final Failure failure =
+                        state.formStatus as Failure;
                     Future<void>.microtask(
                       () => showSnackBar(
                         SnackBar(
@@ -133,7 +133,7 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                       const SizedBox(
                         height: 16.0,
                       ),
-                      state.formStatus is FormSubmitting
+                      state.formStatus is InProgress
                           ? const CircularProgressIndicator()
                           : ElevatedButton(
                               onPressed: onFormSubmitted,

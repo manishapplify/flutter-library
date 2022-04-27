@@ -4,7 +4,7 @@ class LoginState {
   LoginState({
     this.email = '',
     this.password,
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
     this.isLoginSuccessful,
   });
 
@@ -14,13 +14,13 @@ class LoginState {
 
   final String? password;
 
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
   final bool? isLoginSuccessful;
 
   LoginState copyWith({
     String? email,
     String? password,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return LoginState(
       email: email ?? this.email,

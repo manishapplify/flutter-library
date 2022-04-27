@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/dialogs/dialogs.dart';
 import 'package:components/pages/report_bug/bloc/bloc.dart';
@@ -49,7 +49,7 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<ReportBugBloc, ReportBugState>(
       builder: (BuildContext context, ReportBugState state) {
-        if (state.formStatus is SubmissionSuccess) {
+        if (state.formStatus is Success) {
           reportBugBloc.add(ResetFormState());
           titleTextEditingController.value = TextEditingValue.empty;
           descriptionTextEditingController.value = TextEditingValue.empty;
@@ -60,9 +60,9 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
               ),
             ),
           );
-        } else if (state.formStatus is SubmissionFailed) {
+        } else if (state.formStatus is Failure) {
           reportBugBloc.add(ResetFormStatus());
-          final SubmissionFailed failure = state.formStatus as SubmissionFailed;
+          final Failure failure = state.formStatus as Failure;
           Future<void>.microtask(
             () => showSnackBar(
               SnackBar(

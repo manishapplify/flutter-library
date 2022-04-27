@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
@@ -89,9 +89,9 @@ class _ChatsState extends BasePageState<ChatsPage> {
         children: <Widget>[
           BlocBuilder<ChatBloc, ChatState>(
             builder: (BuildContext context, ChatState state) {
-              if (state.blocStatus is SubmissionFailed) {
-                final SubmissionFailed failure =
-                    state.blocStatus as SubmissionFailed;
+              if (state.blocStatus is Failure) {
+                final Failure failure =
+                    state.blocStatus as Failure;
                 if (failure.message == AppException.noChatsPresent().message ||
                     failure.message ==
                         AppException.couldNotLoadChats().message) {
@@ -151,7 +151,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
                     child: CircularProgressIndicator(),
                   ),
                 ),
-                visible: state.blocStatus is FormSubmitting,
+                visible: state.blocStatus is InProgress,
               );
             },
           ),

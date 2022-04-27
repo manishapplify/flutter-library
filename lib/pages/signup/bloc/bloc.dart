@@ -1,4 +1,4 @@
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
@@ -31,7 +31,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(
       state.copyWith(
         countryCode: event.countryCode,
-        formStatus: const InitialFormStatus(),
+        formStatus: const Idle(),
       ),
     );
   }
@@ -41,7 +41,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(
       state.copyWith(
         phoneNumber: event.phoneNumber,
-        formStatus: const InitialFormStatus(),
+        formStatus: const Idle(),
       ),
     );
   }
@@ -51,7 +51,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(
       state.copyWith(
         email: event.email,
-        formStatus: const InitialFormStatus(),
+        formStatus: const Idle(),
       ),
     );
   }
@@ -61,7 +61,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(
       state.copyWith(
         password: event.password,
-        formStatus: const InitialFormStatus(),
+        formStatus: const Idle(),
       ),
     );
   }
@@ -71,7 +71,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(
       state.copyWith(
         confirmPassword: event.confirmPassword,
-        formStatus: const InitialFormStatus(),
+        formStatus: const Idle(),
       ),
     );
   }
@@ -95,11 +95,11 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   Future<void> _commonHandler(
       {required Future<void> Function() handlerJob,
       required Emitter<SignUpState> emit}) async {
-    emit(state.copyWith(formStatus: FormSubmitting()));
+    emit(state.copyWith(formStatus: InProgress()));
 
     try {
       await handlerJob();
-      emit(state.copyWith(formStatus: SubmissionSuccess()));
+      emit(state.copyWith(formStatus: Success()));
     } on DioError catch (e) {
       late final AppException exception;
 
@@ -111,7 +111,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(
+          formStatus: Failure(
             exception: exception,
             message: exception.message,
           ),
@@ -119,11 +119,11 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       );
     } on AppException catch (e) {
       emit(state.copyWith(
-          formStatus: SubmissionFailed(exception: e, message: e.message)));
+          formStatus: Failure(exception: e, message: e.message)));
     } on Exception catch (_) {
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(exception: Exception('Failure')),
+          formStatus: Failure(exception: Exception('Failure')),
         ),
       );
     }

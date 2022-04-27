@@ -1,4 +1,4 @@
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
@@ -196,7 +196,7 @@ class _OTPState extends BasePageState<OtpPage> {
                 ),
                 BlocBuilder<OtpBloc, OtpState>(
                   builder: (_, OtpState state) {
-                    if (state.formStatus is SubmissionSuccess) {
+                    if (state.formStatus is Success) {
                       otpBloc.add(ResetFormStatus());
                       if (screen == Screen.forgotPassword) {
                         Future<void>.microtask(
@@ -210,10 +210,10 @@ class _OTPState extends BasePageState<OtpPage> {
                           ),
                         );
                       }
-                    } else if (state.formStatus is SubmissionFailed) {
+                    } else if (state.formStatus is Failure) {
                       otpBloc.add(ResetFormStatus());
-                      final SubmissionFailed failure =
-                          state.formStatus as SubmissionFailed;
+                      final Failure failure =
+                          state.formStatus as Failure;
                       Future<void>.microtask(
                         () => showSnackBar(
                           SnackBar(
@@ -223,7 +223,7 @@ class _OTPState extends BasePageState<OtpPage> {
                       );
                     }
 
-                    return state.formStatus is FormSubmitting
+                    return state.formStatus is InProgress
                         ? const CircularProgressIndicator()
                         : ElevatedButton(
                             onPressed: onFormSubmitted,

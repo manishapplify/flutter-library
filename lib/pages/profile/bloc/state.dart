@@ -16,7 +16,7 @@ class ProfileState {
     this.address,
     this.city,
     this.isNotificationEnabled = false,
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
   });
 
   /// Initialize when user selects a file from gallery or camera.
@@ -79,7 +79,7 @@ class ProfileState {
 
   final Screen screenType;
 
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
 
   ProfileState copyWith({
     File? profilePicFile,
@@ -95,7 +95,7 @@ class ProfileState {
     String? address,
     String? city,
     bool? isNotificationEnabled,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return ProfileState(
       profilePicFile: profilePicFile ?? this.profilePicFile,

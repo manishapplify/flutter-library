@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
@@ -31,12 +31,12 @@ class ForgotPasswordBloc
           EmailChanged event, Emitter<ForgotPasswordState> emit) =>
       emit(
         state.copyWith(
-            email: event.email, formStatus: const InitialFormStatus()),
+            email: event.email, formStatus: const Idle()),
       );
 
   void _onForgotPasswordSubmittedHandler(
       ForgotPasswordSubmitted event, Emitter<ForgotPasswordState> emit) async {
-    emit(state.copyWith(formStatus: FormSubmitting()));
+    emit(state.copyWith(formStatus: InProgress()));
 
     final ForgotPasswordRequest request = ForgotPasswordRequest(
       email: state.email,
@@ -46,7 +46,7 @@ class ForgotPasswordBloc
 
     try {
       await _authRepository.forgotPassword(request);
-      emit(state.copyWith(formStatus: SubmissionSuccess()));
+      emit(state.copyWith(formStatus: Success()));
     } on DioError catch (e) {
       late final AppException exception;
 
@@ -58,7 +58,7 @@ class ForgotPasswordBloc
 
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(
+          formStatus: Failure(
             exception: exception,
             message: exception.message,
           ),
@@ -66,11 +66,11 @@ class ForgotPasswordBloc
       );
     } on AppException catch (e) {
       emit(state.copyWith(
-          formStatus: SubmissionFailed(exception: e, message: e.message)));
+          formStatus: Failure(exception: e, message: e.message)));
     } on Exception catch (_) {
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(exception: Exception('Failure')),
+          formStatus: Failure(exception: Exception('Failure')),
         ),
       );
     }
@@ -80,7 +80,7 @@ class ForgotPasswordBloc
           ResetFormStatus event, Emitter<ForgotPasswordState> emit) =>
       emit(
         state.copyWith(
-          formStatus: const InitialFormStatus(),
+          formStatus: const Idle(),
         ),
       );
 }

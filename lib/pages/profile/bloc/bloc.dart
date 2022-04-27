@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/gender.dart';
 import 'package:components/enums/screen.dart';
@@ -153,7 +153,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   void _profileSubmittedHandler(
       ProfileSubmitted event, Emitter<ProfileState> emit) async {
     if (state.screenType == Screen.registerUser) {
-      emit(state.copyWith(formStatus: FormSubmitting()));
+      emit(state.copyWith(formStatus: InProgress()));
       try {
         await _profileRepository.registerUser(
           firstName: state.firstname,
@@ -171,7 +171,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           referralCode: state.referralCode,
           signupType: Signup.EMAIL_OR_PHONE,
         );
-        emit(state.copyWith(formStatus: SubmissionSuccess()));
+        emit(state.copyWith(formStatus: Success()));
       } on DioError catch (e) {
         late final AppException exception;
 
@@ -183,7 +183,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
         emit(
           state.copyWith(
-            formStatus: SubmissionFailed(
+            formStatus: Failure(
               exception: exception,
               message: exception.message,
             ),
@@ -191,16 +191,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         );
       } on AppException catch (e) {
         emit(state.copyWith(
-            formStatus: SubmissionFailed(exception: e, message: e.message)));
+            formStatus: Failure(exception: e, message: e.message)));
       } on Exception catch (_) {
         emit(
           state.copyWith(
-            formStatus: SubmissionFailed(exception: Exception('Failure')),
+            formStatus: Failure(exception: Exception('Failure')),
           ),
         );
       }
     } else if (state.screenType == Screen.updateProfile) {
-      emit(state.copyWith(formStatus: FormSubmitting()));
+      emit(state.copyWith(formStatus: InProgress()));
       try {
         await _profileRepository.updateProfile(
           firstName: state.firstname,
@@ -216,7 +216,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           notificationEnabled:
               state.isNotificationEnabled ? 1.toString() : 0.toString(),
         );
-        emit(state.copyWith(formStatus: SubmissionSuccess()));
+        emit(state.copyWith(formStatus: Success()));
       } on DioError catch (e) {
         late final AppException exception;
 
@@ -228,7 +228,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
         emit(
           state.copyWith(
-            formStatus: SubmissionFailed(
+            formStatus: Failure(
               exception: exception,
               message: exception.message,
             ),
@@ -236,11 +236,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         );
       } on AppException catch (e) {
         emit(state.copyWith(
-            formStatus: SubmissionFailed(exception: e, message: e.message)));
+            formStatus: Failure(exception: e, message: e.message)));
       } on Exception catch (_) {
         emit(
           state.copyWith(
-            formStatus: SubmissionFailed(exception: Exception('Failure')),
+            formStatus: Failure(exception: Exception('Failure')),
           ),
         );
       }
@@ -253,7 +253,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           ResetFormStatus event, Emitter<ProfileState> emit) =>
       emit(
         state.copyWith(
-          formStatus: const InitialFormStatus(),
+          formStatus: const Idle(),
         ),
       );
 }

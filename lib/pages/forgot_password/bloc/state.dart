@@ -4,7 +4,7 @@ part of 'bloc.dart';
 class ForgotPasswordState {
   const ForgotPasswordState({
     this.email = '',
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
     this.isLoginSuccessful,
   });
 
@@ -12,12 +12,12 @@ class ForgotPasswordState {
   String? get emailValidator =>
       !validators.notEmptyValidator(email) ? 'Email is required' : null;
 
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
   final bool? isLoginSuccessful;
 
   ForgotPasswordState copyWith({
     String? email,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return ForgotPasswordState(
       email: email ?? this.email,

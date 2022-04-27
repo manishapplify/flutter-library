@@ -5,7 +5,7 @@ class FeedbackState {
     this.title,
     this.comment,
     this.rating = 5,
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
   });
   final String? title;
   bool get isValidTitle =>
@@ -15,13 +15,13 @@ class FeedbackState {
   String? get commentValidator =>
       !validators.notEmptyValidator(comment) ? 'Description is required' : null;
 
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
 
   FeedbackState copyWith({
     String? title,
     int? rating,
     String? comment,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return FeedbackState(
       title: title ?? this.title,

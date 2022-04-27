@@ -5,8 +5,8 @@ class UsersState {
   const UsersState({
     this.users = const <FirebaseUser>[],
     this.chat,
-    this.blocStatus = const InitialFormStatus(),
-    this.chatStatus = const InitialFormStatus(),
+    this.blocStatus = const Idle(),
+    this.chatStatus = const Idle(),
     this.usersMatchingQuery = const <FirebaseUser>[],
   });
 
@@ -15,18 +15,18 @@ class UsersState {
 
   /// Chat that the user tapped on.
   final FirebaseChat? chat;
-  final FormSubmissionStatus blocStatus;
+  final WorkStatus blocStatus;
 
   /// Used to track state of loading a chat when user presses message icon.
-  final FormSubmissionStatus chatStatus;
+  final WorkStatus chatStatus;
 
   final List<FirebaseUser> usersMatchingQuery;
 
   UsersState copyWith({
     List<FirebaseUser>? users,
     FirebaseChat? chat,
-    FormSubmissionStatus? blocStatus,
-    FormSubmissionStatus? chatStatus,
+    WorkStatus? blocStatus,
+    WorkStatus? chatStatus,
     List<FirebaseUser>? usersMatchingQuery,
   }) {
     return UsersState(

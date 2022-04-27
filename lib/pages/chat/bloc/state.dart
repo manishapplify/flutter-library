@@ -3,7 +3,7 @@ part of 'bloc.dart';
 @immutable
 class ChatState {
   const ChatState({
-    this.blocStatus = const InitialFormStatus(),
+    this.blocStatus = const Idle(),
     this.chats = const <FirebaseChat>{},
     this.chatsSubscription,
     this.chatUpdateSubscriptions =
@@ -36,7 +36,7 @@ class ChatState {
   /// ChatId: Subscription object.
   final Map<String, StreamSubscription<Set<FirebaseMessage>>>
       messageSubscriptions;
-  final FormSubmissionStatus blocStatus;
+  final WorkStatus blocStatus;
   final File? imageFile;
   final PlatformFile? pdfFile;
 
@@ -48,7 +48,7 @@ class ChatState {
     Set<FirebaseMessage>? messages,
     Map<String, StreamSubscription<Set<FirebaseMessage>>>? messageSubscriptions,
     bool? currentChatNewMessageReceived,
-    FormSubmissionStatus? blocStatus,
+    WorkStatus? blocStatus,
     FirebaseChat? currentChat,
     bool? currentChatMessagesFetched,
     File? imageFile,

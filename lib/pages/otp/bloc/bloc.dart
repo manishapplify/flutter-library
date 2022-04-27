@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
@@ -38,7 +38,7 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
 
   void _onOtpSubmittedHandler(
       OtpSubmitted event, Emitter<OtpState> emit) async {
-    emit(state.copyWith(formStatus: FormSubmitting()));
+    emit(state.copyWith(formStatus: InProgress()));
 
     try {
       if (!state.isOtpValid) {
@@ -60,7 +60,7 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
           ),
         );
       }
-      emit(state.copyWith(formStatus: SubmissionSuccess()));
+      emit(state.copyWith(formStatus: Success()));
     } on DioError catch (e) {
       late final AppException exception;
 
@@ -72,7 +72,7 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
 
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(
+          formStatus: Failure(
             exception: exception,
             message: exception.message,
           ),
@@ -80,11 +80,11 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
       );
     } on AppException catch (e) {
       emit(state.copyWith(
-          formStatus: SubmissionFailed(exception: e, message: e.message)));
+          formStatus: Failure(exception: e, message: e.message)));
     } on Exception catch (_) {
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(exception: Exception('Failure')),
+          formStatus: Failure(exception: Exception('Failure')),
         ),
       );
     }
@@ -93,7 +93,7 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
   void _resetFormStatusHandler(ResetFormStatus event, Emitter<OtpState> emit) =>
       emit(
         state.copyWith(
-          formStatus: const InitialFormStatus(),
+          formStatus: const Idle(),
         ),
       );
 }

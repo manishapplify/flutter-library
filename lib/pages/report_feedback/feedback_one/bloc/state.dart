@@ -5,7 +5,7 @@ class FeedbackOneState {
     this.feebackIssue = '',
     this.reasons = const <String>['Suggestions'],
     this.feedbackEmail = '',
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
   });
   final String feebackIssue;
   bool get isValidfeebackIssue => feebackIssue.length > 9;
@@ -13,13 +13,13 @@ class FeedbackOneState {
   final List<String> reasons;
   bool get isreasonsempty => reasons.isNotEmpty;
 
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
 
   FeedbackOneState copyWith({
     String? feebackIssue,
     List<String>? reasons,
     String? feedbackEmail,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return FeedbackOneState(
       feebackIssue: feebackIssue ?? this.feebackIssue,

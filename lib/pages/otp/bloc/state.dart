@@ -5,10 +5,10 @@ class OtpState {
   const OtpState({
     required this.screenType,
     this.otp,
-    this.formStatus = const InitialFormStatus(),
+    this.formStatus = const Idle(),
   });
   final String? otp;
-  final FormSubmissionStatus formStatus;
+  final WorkStatus formStatus;
   final Screen screenType;
 
   bool get isOtpValid => otp is String && otp!.length == 4;
@@ -16,7 +16,7 @@ class OtpState {
 
   OtpState copyWith({
     String? otp,
-    FormSubmissionStatus? formStatus,
+    WorkStatus? formStatus,
   }) {
     return OtpState(
       otp: otp ?? this.otp,

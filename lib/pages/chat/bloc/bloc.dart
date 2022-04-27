@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
@@ -517,7 +517,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _resetBlocStatusHandler(ResetBlocStatus event, Emitter<ChatState> emit) {
-    emit(state.copyWith(blocStatus: const InitialFormStatus()));
+    emit(state.copyWith(blocStatus: const Idle()));
   }
 
   void _chatPagePopEventHandler(
@@ -564,21 +564,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     bool emitFailureOnly = false,
   }) async {
     if (!emitFailureOnly) {
-      emit(state.copyWith(blocStatus: FormSubmitting()));
+      emit(state.copyWith(blocStatus: InProgress()));
     }
 
     try {
       await handlerJob();
       if (!emitFailureOnly) {
-        emit(state.copyWith(blocStatus: SubmissionSuccess()));
+        emit(state.copyWith(blocStatus: Success()));
       }
     } on AppException catch (e) {
       emit(state.copyWith(
-          blocStatus: SubmissionFailed(exception: e, message: e.message)));
+          blocStatus: Failure(exception: e, message: e.message)));
     } on Exception catch (_) {
       emit(
         state.copyWith(
-          blocStatus: SubmissionFailed(exception: Exception('Failure')),
+          blocStatus: Failure(exception: Exception('Failure')),
         ),
       );
     }

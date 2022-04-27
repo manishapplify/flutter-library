@@ -1,4 +1,4 @@
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
@@ -45,7 +45,7 @@ class _UsersState extends BasePageState<UsersPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<UsersBloc, UsersState>(
       builder: (BuildContext context, UsersState state) {
-        if (state.chatStatus is SubmissionSuccess) {
+        if (state.chatStatus is Success) {
           Future<void>.microtask(
             () => navigator.pushNamed(
               Routes.chat,
@@ -54,8 +54,8 @@ class _UsersState extends BasePageState<UsersPage> {
           );
           chatBloc.add(ChatOpenedEvent(state.chat!));
           usersBloc.add(ResetChatState());
-        } else if (state.chatStatus is SubmissionFailed) {
-          final SubmissionFailed failure = state.chatStatus as SubmissionFailed;
+        } else if (state.chatStatus is Failure) {
+          final Failure failure = state.chatStatus as Failure;
           Future<void>.microtask(
             () => showSnackBar(
               SnackBar(
@@ -97,8 +97,8 @@ class _UsersState extends BasePageState<UsersPage> {
               child: const Center(
                 child: CircularProgressIndicator(),
               ),
-              visible: state.blocStatus is FormSubmitting ||
-                  state.chatStatus is FormSubmitting,
+              visible: state.blocStatus is InProgress ||
+                  state.chatStatus is InProgress,
             ),
           ],
         );

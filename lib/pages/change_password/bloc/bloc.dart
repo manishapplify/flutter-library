@@ -1,5 +1,5 @@
 import 'package:components/Authentication/repo.dart';
-import 'package:components/common_models/form_submission.dart';
+import 'package:components/common_models/work_status.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/api/api.dart';
@@ -36,7 +36,7 @@ class ChangePasswordBloc
     emit(
       state.copyWith(
         currentPassword: event.currentPassword,
-        formStatus: const InitialFormStatus(),
+        formStatus: const Idle(),
       ),
     );
   }
@@ -46,7 +46,7 @@ class ChangePasswordBloc
     emit(
       state.copyWith(
         newPassword: event.newPassword,
-        formStatus: const InitialFormStatus(),
+        formStatus: const Idle(),
       ),
     );
   }
@@ -56,7 +56,7 @@ class ChangePasswordBloc
     emit(
       state.copyWith(
         confirmNewPassword: event.confirmNewPassword,
-        formStatus: const InitialFormStatus(),
+        formStatus: const Idle(),
       ),
     );
   }
@@ -78,18 +78,18 @@ class ChangePasswordBloc
           ResetFormStatus event, Emitter<ChangePasswordState> emit) =>
       emit(
         state.copyWith(
-          formStatus: const InitialFormStatus(),
+          formStatus: const Idle(),
         ),
       );
 
   Future<void> _commonHandler(
       {required Future<void> Function() handlerJob,
       required Emitter<ChangePasswordState> emit}) async {
-    emit(state.copyWith(formStatus: FormSubmitting()));
+    emit(state.copyWith(formStatus: InProgress()));
 
     try {
       await handlerJob();
-      emit(state.copyWith(formStatus: SubmissionSuccess()));
+      emit(state.copyWith(formStatus: Success()));
     } on DioError catch (e) {
       late final AppException exception;
 
@@ -101,7 +101,7 @@ class ChangePasswordBloc
 
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(
+          formStatus: Failure(
             exception: exception,
             message: exception.message,
           ),
@@ -109,11 +109,11 @@ class ChangePasswordBloc
       );
     } on AppException catch (e) {
       emit(state.copyWith(
-          formStatus: SubmissionFailed(exception: e, message: e.message)));
+          formStatus: Failure(exception: e, message: e.message)));
     } on Exception catch (_) {
       emit(
         state.copyWith(
-          formStatus: SubmissionFailed(exception: Exception('Failure')),
+          formStatus: Failure(exception: Exception('Failure')),
         ),
       );
     }
