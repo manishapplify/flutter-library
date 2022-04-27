@@ -1,4 +1,4 @@
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/form_submission.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/pages/signup/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';

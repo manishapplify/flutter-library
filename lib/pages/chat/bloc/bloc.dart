@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:components/authentication/form_submission.dart';
+import 'package:components/common_models/form_submission.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';

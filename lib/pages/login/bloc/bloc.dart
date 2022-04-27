@@ -1,5 +1,5 @@
 import 'package:components/Authentication/repo.dart';
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/form_submission.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/api/api.dart';
 import 'package:dio/dio.dart';
@@ -37,7 +37,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       LoginEmailChanged event, Emitter<LoginState> emit) {
     emit(
       state.copyWith(
-        email: event.email,       
+        email: event.email,
       ),
     );
   }
@@ -118,6 +118,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           formStatus: SubmissionFailed(exception: Exception('Failure')),
         ),
       );
+    } on Error catch (_) {
+      print('error');
     }
   }
 }

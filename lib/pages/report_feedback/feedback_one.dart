@@ -1,4 +1,4 @@
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/form_submission.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/pages/report_feedback/feedback_one/bloc/bloc.dart';
 import 'package:components/widgets/checkbox.dart';

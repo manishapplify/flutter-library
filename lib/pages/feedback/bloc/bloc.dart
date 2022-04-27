@@ -1,4 +1,4 @@
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/form_submission.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/feedback/models/request.dart';
 import 'package:components/services/api/api.dart';

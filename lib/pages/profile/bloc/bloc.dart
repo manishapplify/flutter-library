@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:components/Authentication/form_submission.dart';
+import 'package:components/common_models/form_submission.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/gender.dart';
 import 'package:components/enums/screen.dart';
