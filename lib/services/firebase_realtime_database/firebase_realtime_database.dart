@@ -345,6 +345,7 @@ class FirebaseRealtimeDatabase {
       lastMessageSenderId: message.senderId,
       lastMessageTime: message.messageTime,
       lastMessageType: message.messageType,
+      lastMessageAttachmentUrl: message.attachmentUrl,
     );
 
     await chatReference.set(
