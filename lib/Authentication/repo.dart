@@ -150,8 +150,6 @@ class AuthRepository {
     if (countryCode is String) {
       _persistence.saveCountryCode(countryCode);
     }
-    _persistence
-        .saveRegistrationStatus(signupResponse.user.registrationStep < 1);
   }
 
   Future<void> forgotPassword(ForgotPasswordRequest request) async {

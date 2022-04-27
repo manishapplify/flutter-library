@@ -47,21 +47,8 @@ class Persistence {
 
   Future<void> deleteForgotPasswordToken() =>
       _preferences.remove(_forgotPasswordToken);
-
-  /// false = incomplete registration
-  Future<bool> saveRegistrationStatus(bool status) =>
-      _preferences.setBool(_registrationStatus, status);
-
-  /// false = incomplete registration
-  bool fetchRegistrationStatus() =>
-      _preferences.getBool(_registrationStatus) ?? false;
-
-  /// false = incomplete registration
-  Future<void> deleteRegistrationStatus() =>
-      _preferences.remove(_registrationStatus);
 }
 
 const String _user = 'user';
 const String _countryCode = 'countryCode';
 const String _forgotPasswordToken = 'forgotPasswordToken';
-const String _registrationStatus = 'registrationStatus';
