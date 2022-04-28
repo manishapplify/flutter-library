@@ -112,7 +112,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
                   height: 8,
                   child: Divider(
                     thickness: 2,
-                    indent: 90,
+                    indent: 80,
                   ),
                 ),
                 itemBuilder: (BuildContext context, int i) {

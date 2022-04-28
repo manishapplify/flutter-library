@@ -56,6 +56,8 @@ class ChatTile extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 ImageContainer(
+                  height: 80.0,
+                  width: 80.0,
                   imageUrl: (otherUserProfilePic is String)
                       ? (imageBaseUrl + otherUserProfilePic)
                       : null,

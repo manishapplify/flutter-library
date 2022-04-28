@@ -28,6 +28,9 @@ class MessageTile extends StatelessWidget {
           ? Alignment.topRight
           : Alignment.topLeft,
       child: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.70,
+        ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: message.isSentByCurrentUser(currentUser!.firebaseId)
@@ -36,6 +39,10 @@ class MessageTile extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(4),
         child: Column(
+          crossAxisAlignment:
+              message.isSentByCurrentUser(currentUser!.firebaseId)
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
           children: <Widget>[
             _MessageContent(message),
             const SizedBox(
