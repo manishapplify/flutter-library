@@ -126,6 +126,10 @@ class _ChatState extends BasePageState<ChatPage> {
   Widget body(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        if (chatBloc.state.pdfViewerStatus is InProgress) {
+          return Future<bool>.value(false);
+        }
+
         chatBloc.add(ChatPagePopEvent());
         return Future<bool>.value(true);
       },
