@@ -57,6 +57,7 @@ class Api {
     dio.options.headers = <String, dynamic>{};
   }
 
+  /// Return the path of the downloaded file.
   Future<String> downloadFile(String url, String name) async {
     final Directory appStorage = await getApplicationDocumentsDirectory();
     final File file = File('${appStorage.path}/$name');
