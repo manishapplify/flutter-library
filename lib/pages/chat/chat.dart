@@ -4,7 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:components/common_models/work_status.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/dialogs/dialogs.dart';

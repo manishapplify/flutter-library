@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:components/common_models/work_status.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
@@ -30,8 +30,7 @@ class ForgotPasswordBloc
   void _onEmailChangedHandler(
           EmailChanged event, Emitter<ForgotPasswordState> emit) =>
       emit(
-        state.copyWith(
-            email: event.email, formStatus: const Idle()),
+        state.copyWith(email: event.email, formStatus: const Idle()),
       );
 
   void _onForgotPasswordSubmittedHandler(

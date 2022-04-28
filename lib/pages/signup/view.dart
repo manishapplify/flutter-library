@@ -1,4 +1,4 @@
-import 'package:components/common_models/work_status.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/pages/signup/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
@@ -184,8 +184,7 @@ class _SignupState extends BasePageState<SignupPage> {
                       ),
                     );
                   } else if (state.formStatus is Failure) {
-                    final Failure failure =
-                        state.formStatus as Failure;
+                    final Failure failure = state.formStatus as Failure;
                     Future<void>.microtask(
                       () => showSnackBar(
                         SnackBar(

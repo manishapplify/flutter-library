@@ -1,4 +1,4 @@
-import 'package:components/common_models/work_status.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/enums/screen.dart';
@@ -73,8 +73,7 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                     );
                   } else if (state.formStatus is Failure) {
                     forgotPasswordBloc.add(ResetFormStatus());
-                    final Failure failure =
-                        state.formStatus as Failure;
+                    final Failure failure = state.formStatus as Failure;
                     Future<void>.microtask(
                       () => showSnackBar(
                         SnackBar(

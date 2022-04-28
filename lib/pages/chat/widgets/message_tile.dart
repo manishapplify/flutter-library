@@ -1,3 +1,4 @@
+import 'package:components/common/functions.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
 import 'package:components/pages/chat/widgets/pdf_tile.dart';
@@ -29,14 +30,27 @@ class MessageTile extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: message is TextMessage
-              ? message.isSentByCurrentUser(currentUser!.firebaseId)
-                  ? const Color.fromARGB(255, 77, 192, 129)
-                  : Colors.grey
-              : null,
+          color: message.isSentByCurrentUser(currentUser!.firebaseId)
+              ? Colors.green[100]
+              : Colors.grey[200],
         ),
-        padding: const EdgeInsets.all(12.0),
-        child: _MessageContent(message),
+        padding: const EdgeInsets.all(4),
+        child: Column(
+          children: <Widget>[
+            _MessageContent(message),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              displayMessageTime(
+                message.messageTime,
+              ),
+              style: Theme.of(context).textTheme.headline4!.copyWith(
+                    fontWeight: FontWeight.w300,
+                  ),
+            )
+          ],
+        ),
       ),
     );
   }

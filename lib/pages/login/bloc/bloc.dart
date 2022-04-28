@@ -1,5 +1,5 @@
 import 'package:components/Authentication/repo.dart';
-import 'package:components/common_models/work_status.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/api/api.dart';
 import 'package:dio/dio.dart';

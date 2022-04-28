@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:components/common_models/work_status.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:dio/dio.dart';
@@ -28,8 +28,7 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
           ResetNewPasswordChanged event, Emitter<ResetPasswordState> emit) =>
       emit(
         state.copyWith(
-            newPassword: event.newPassword,
-            formStatus: const Idle()),
+            newPassword: event.newPassword, formStatus: const Idle()),
       );
   void _onConfirmNewPasswordChangedHandler(
           ConfirmNewPasswordChanged event, Emitter<ResetPasswordState> emit) =>

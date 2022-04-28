@@ -1,4 +1,4 @@
-import 'package:components/common_models/base_response.dart';
+import 'package:components/common/base_response.dart';
 
 class AppVersionResponse extends BaseResponse {
   AppVersionResponse({

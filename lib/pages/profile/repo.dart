@@ -10,7 +10,7 @@ import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
-import 'package:components/common_models/config.dart';
+import 'package:components/common/config.dart';
 import 'package:dio/dio.dart';
 
 class ProfileRepository {

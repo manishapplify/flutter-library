@@ -1,4 +1,4 @@
-import 'package:components/common_models/work_status.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
@@ -212,8 +212,7 @@ class _OTPState extends BasePageState<OtpPage> {
                       }
                     } else if (state.formStatus is Failure) {
                       otpBloc.add(ResetFormStatus());
-                      final Failure failure =
-                          state.formStatus as Failure;
+                      final Failure failure = state.formStatus as Failure;
                       Future<void>.microtask(
                         () => showSnackBar(
                           SnackBar(

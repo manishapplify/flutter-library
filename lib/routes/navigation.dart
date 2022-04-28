@@ -37,7 +37,7 @@ import 'package:components/pages/users/view.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
-import 'package:components/common_models/config.dart';
+import 'package:components/common/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,4 +1,4 @@
-import 'package:components/common_models/work_status.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/pages/change_password/bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -71,8 +71,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               ),
             );
           } else if (state.formStatus is Failure) {
-            final Failure failure =
-                state.formStatus as Failure;
+            final Failure failure = state.formStatus as Failure;
             Future<void>.microtask(
               () => showSnackBar(
                 SnackBar(

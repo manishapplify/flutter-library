@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:components/Authentication/repo.dart';
-import 'package:components/common_models/config.dart';
+import 'package:components/common/config.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/enums/platform.dart' as enums;

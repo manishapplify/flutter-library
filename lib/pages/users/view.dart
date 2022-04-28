@@ -1,4 +1,4 @@
-import 'package:components/common_models/work_status.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
