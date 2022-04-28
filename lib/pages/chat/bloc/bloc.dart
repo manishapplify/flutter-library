@@ -569,13 +569,28 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   // TODO: Cache downloaded documents.
   void _openDocEventHandler(OpenDocEvent event, Emitter<ChatState> emit) async {
     emit(state.copyWith(pdfViewerStatus: InProgress()));
-    final String? filePath =
-        await _api.downloadFile(event.docUrl, event.docFilename);
-    if (filePath == null) {
+    try {
+      final String filePath =
+          await _api.downloadFile(event.docUrl, event.docFilename);
+
+      emit(
+        state.copyWith(
+          downloadedPdfFilePath: filePath,
+          pdfViewerStatus: Success(),
+        ),
+      );
+    } on Exception catch (_) {
+      // Show message and override [state.pdfViewerStatus]
+      emit(
+        state.copyWith(
+          blocStatus: Failure(
+              message: AppException.documentCouldNotBeDownloaded().message),
+          pdfViewerStatus: const Idle(),
+        ),
+      );
+
       throw AppException.documentCouldNotBeDownloaded();
     }
-    emit(state.copyWith(
-        downloadedPdfFilePath: filePath, pdfViewerStatus: Success()));
   }
 
   void _onPdfViewCloseEventHandler(

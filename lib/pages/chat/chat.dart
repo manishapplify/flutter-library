@@ -206,7 +206,7 @@ class _ChatState extends BasePageState<ChatPage> {
           ),
         ],
       ),
-    ); 
+    );
   }
 
   void onStateChange(ChatState state) {
@@ -245,6 +245,12 @@ class _ChatState extends BasePageState<ChatPage> {
       Future<void>.microtask(
         () => controller.jumpTo(
           controller.position.maxScrollExtent,
+        ),
+      ).then(
+        (_) => Future<void>.delayed(const Duration(milliseconds: 50)).then(
+          (_) => controller.jumpTo(
+            controller.position.maxScrollExtent,
+          ),
         ),
       );
     }
