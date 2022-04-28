@@ -1,6 +1,9 @@
 import 'package:components/cubits/models/user.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
-import 'package:components/services/firebase_realtime_database/models/message.dart';
+import 'package:components/services/firebase_realtime_database/models/message/document_message.dart';
+import 'package:components/services/firebase_realtime_database/models/message/image_message.dart';
+import 'package:components/services/firebase_realtime_database/models/message/message.dart';
+import 'package:components/services/firebase_realtime_database/models/message/text_message.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -290,30 +293,10 @@ class FirebaseRealtimeDatabase {
     return messageReference.key;
   }
 
-  Future<FirebaseMessage> sendMessage({
-    required String textMessage,
-    required String chatId,
-    required String senderId,
-    required int messageType,
-    required String messageId,
-    String? imageUrl,
-  }) async {
-    final DateTime dateTime = DateTime.now().toUtc();
-    final String receiverId =
-        chatId.split(',').firstWhere((String id) => id != senderId);
+  Future<void> sendMessage(FirebaseMessage message) async {
+    final String chatId = message.chatDialogId;
+    final String messageId = message.messageId;
 
-    final FirebaseMessage message = FirebaseMessage(
-      message: textMessage,
-      chatDialogId: chatId,
-      messageId: messageId,
-      messageTime: dateTime,
-      firebaseMessageTime: dateTime,
-      messageReadStatus: receiverId,
-      messageType: messageType,
-      receiverId: receiverId,
-      senderId: senderId,
-      attachmentUrl: imageUrl,
-    );
     final DatabaseReference messageReference =
         _database.ref(_messagesCollection + chatId + '/' + messageId);
     // Update message reference.
@@ -327,9 +310,7 @@ class FirebaseRealtimeDatabase {
     );
 
     // Update notifications collection.
-    await _updateNotificationsCollectionOnMessageSend(message);
-
-    return message;
+    _updateNotificationsCollectionOnMessageSend(message);
   }
 
   Future<void> _updateChatOnMessageSend({
@@ -345,7 +326,11 @@ class FirebaseRealtimeDatabase {
       lastMessageSenderId: message.senderId,
       lastMessageTime: message.messageTime,
       lastMessageType: message.messageType,
-      lastMessageAttachmentUrl: message.attachmentUrl,
+      lastMessageAttachmentUrl: message is ImageMessage
+          ? message.attachmentUrl
+          : message is DocumentMessage
+              ? message.attachmentUrl
+              : null,
     );
 
     await chatReference.set(

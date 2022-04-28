@@ -1,40 +1,34 @@
-// TODO: Create a message abstract class and subclasses according to type.
+import 'package:components/exceptions/app_exception.dart';
+import 'package:components/services/firebase_realtime_database/models/message/document_message.dart';
+import 'package:components/services/firebase_realtime_database/models/message/image_message.dart';
+import 'package:components/services/firebase_realtime_database/models/message/text_message.dart';
 
-class FirebaseMessage {
+abstract class FirebaseMessage {
   FirebaseMessage({
-    this.attachmentUrl,
     required this.chatDialogId,
     required this.firebaseMessageTime,
     required this.message,
     required this.messageId,
     required this.messageReadStatus,
     required this.messageTime,
-    required this.messageType,
     required this.receiverId,
     required this.senderId,
   });
 
   factory FirebaseMessage.fromMap(Map<dynamic, dynamic> map) {
-    return FirebaseMessage(
-      attachmentUrl: map['attachment_url'],
-      chatDialogId: map['chat_dialog_id'],
-      firebaseMessageTime: DateTime.fromMillisecondsSinceEpoch(
-          map['firebase_message_time'] as int),
-      message: map['message'],
-      messageId: map['message_id'],
-      messageReadStatus: (map['message_read_status'] as Map<dynamic, dynamic>)
-          .entries
-          .first
-          .key,
-      messageTime:
-          DateTime.fromMillisecondsSinceEpoch(map['message_time'] as int),
-      messageType: map['message_type'],
-      receiverId: map['receiver_id'],
-      senderId: map['sender_id'],
-    );
+    final int messageType = map['message_type'];
+
+    if (messageType == 1) {
+      return TextMessage.fromMap(map);
+    } else if (messageType == 2) {
+      return ImageMessage.fromMap(map);
+    } else if (messageType == 3) {
+      return DocumentMessage.fromMap(map);
+    } else {
+      throw AppException.unknownMessageType();
+    }
   }
 
-  final String? attachmentUrl;
   final String chatDialogId;
   final DateTime firebaseMessageTime;
   final String message;
@@ -49,7 +43,7 @@ class FirebaseMessage {
   /// 1 -> Text message
   /// 2 -> Image
   /// 3 -> Document
-  final int messageType;
+  int get messageType;
   final String receiverId;
   final String senderId;
 
@@ -57,7 +51,6 @@ class FirebaseMessage {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'attachment_url': attachmentUrl,
       'chat_dialog_id': chatDialogId,
       'firebase_message_time': firebaseMessageTime.millisecondsSinceEpoch,
       'message': message,
@@ -70,11 +63,6 @@ class FirebaseMessage {
       'receiver_id': receiverId,
       'sender_id': senderId,
     };
-  }
-
-  @override
-  String toString() {
-    return 'FirebaseMessage(attachmentUrl: $attachmentUrl, chatDialogId: $chatDialogId, firebaseMessageTime: $firebaseMessageTime, message: $message, messageId: $messageId, messageReadStatus: $messageReadStatus, messageTime: $messageTime, messageType: $messageType, receiverId: $receiverId, senderId: $senderId)';
   }
 
   @override

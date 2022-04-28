@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class PdfTile extends StatelessWidget {
-  const PdfTile(
-      {Key? key,
-      required this.fileName,
-      this.onPressed,
-      required this.closeButton})
-      : super(key: key);
+  const PdfTile({
+    Key? key,
+    required this.fileName,
+    this.onPressed,
+    required this.closeButton,
+  }) : super(key: key);
+
   final String fileName;
   final Function()? onPressed;
   final bool closeButton;

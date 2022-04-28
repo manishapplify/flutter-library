@@ -24,8 +24,8 @@ class _PdfViewerState extends BasePageState<PdfViewerPage> {
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) => AppBar(
-    title: const Text('PDF'),
-  );
+        title: const Text('Document'),
+      );
 
   @override
   Widget body(BuildContext context) {

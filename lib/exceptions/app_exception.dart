@@ -36,26 +36,35 @@ class AppException implements Exception {
   factory AppException.noChatsPresent() {
     return AppException(message: 'You have no chats');
   }
+  factory AppException.unknownMessageType() {
+    return AppException(message: 'Unkown message type');
+  }
   factory AppException.messageCannotBeEmpty() {
     return AppException(message: 'Message cannot be empty');
   }
   factory AppException.currentChatRemoved() {
-    return AppException(message: 'This chat has been removed, going back.');
+    return AppException(message: 'This chat has been removed, going back');
   }
   factory AppException.imageCannotBeEmpty() {
-    return AppException(message: 'Image cannot be empty'); 
+    return AppException(message: 'Image cannot be empty');
+  }
+  factory AppException.imageCouldNotBeUploaded() {
+    return AppException(message: 'Image could not be uploaded');
   }
   factory AppException.docCannotBeEmpty() {
-    return AppException(message: 'Document cannot be empty'); 
+    return AppException(message: 'Document cannot be empty');
+  }
+  factory AppException.documentCouldNotBeUploaded() {
+    return AppException(message: 'Document could not be uploaded');
+  }
+  factory AppException.documentCouldNotBeDownloaded() {
+    return AppException(message: 'Document could not be downloaded');
   }
   factory AppException.otpCannotBeEmpty() {
-    return AppException(message: 'Please Enter OTP'); 
+    return AppException(message: 'Please Enter OTP');
   }
   factory AppException.otpvalid() {
-    return AppException(message: 'Please enter valid otp'); 
-  }
-  factory AppException.docUrlEmpty() {
-    return AppException(message: 'Invalid Documnet'); 
+    return AppException(message: 'Please enter valid otp');
   }
 
   final String message;
