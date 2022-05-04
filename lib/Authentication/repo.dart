@@ -165,7 +165,7 @@ class AuthRepository {
 
   Future<void> verifyForgetPasswordOtp(String otp) async {
     if (!_passwordAuthCubit.state.isTokenGenerated) {
-      throw AppException.passwordResetTokenAbsentException;
+      throw AppException.passwordResetTokenAbsentException();
     }
 
     final VerifyForgetPasswordOtpRequest request =
@@ -179,7 +179,7 @@ class AuthRepository {
 
   Future<void> resetPassword(String password) async {
     if (!_passwordAuthCubit.state.isTokenGenerated) {
-      throw AppException.passwordResetTokenAbsentException;
+      throw AppException.passwordResetTokenAbsentException();
     }
 
     final ResetPasswordRequest request = ResetPasswordRequest(
@@ -195,7 +195,7 @@ class AuthRepository {
     required String newPassword,
   }) async {
     if (!_authCubit.state.isAuthorized) {
-      throw AppException.authenticationException;
+      throw AppException.authenticationException();
     }
     await Future<dynamic>.delayed(const Duration(seconds: 5));
     final ChangePasswordRequest request = ChangePasswordRequest(
@@ -211,7 +211,7 @@ class AuthRepository {
       await _fcm.getToken();
     }
     if (!_authCubit.state.isAuthorized) {
-      throw AppException.authenticationException;
+      throw AppException.authenticationException();
     }
     final LogoutRequest request = LogoutRequest(
       deviceToken: _fcm.deviceToken!,
@@ -223,7 +223,7 @@ class AuthRepository {
 
   Future<dynamic> deleteAccount() async {
     if (!_authCubit.state.isAuthorized) {
-      throw AppException.authenticationException;
+      throw AppException.authenticationException();
     }
 
     await _api.deleteAccount();

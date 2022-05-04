@@ -74,7 +74,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await _commonHandler(
       handlerJob: () async {
         if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
+          throw AppException.authenticationException();
         }
 
         final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
@@ -103,7 +103,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await _commonHandler(
       handlerJob: () async {
         if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
+          throw AppException.authenticationException();
         }
 
         final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
@@ -322,7 +322,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await _commonHandler(
       handlerJob: () async {
         if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
+          throw AppException.authenticationException();
         }
 
         final FirebaseUser? firebaseUser = await _firebaseRealtimeDatabase
@@ -422,7 +422,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await _commonHandler(
       handlerJob: () async {
         if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
+          throw AppException.authenticationException();
         }
         if (state.message.isEmpty) {
           throw AppException.messageCannotBeEmpty();
@@ -452,7 +452,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await _commonHandler(
       handlerJob: () async {
         if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
+          throw AppException.authenticationException();
         }
         if (state.imageFile == null) {
           throw AppException.imageCannotBeEmpty();
@@ -505,7 +505,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await _commonHandler(
       handlerJob: () async {
         if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
+          throw AppException.authenticationException();
         }
         if (state.pdfFile == null) {
           throw AppException.docCannotBeEmpty();

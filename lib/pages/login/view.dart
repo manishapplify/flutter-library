@@ -54,7 +54,7 @@ class _LoginState extends BasePageState<LoginPage> {
               if (state.formStatus is Success) {
                 loginBloc.add(ResetFormStatus());
                 if (!authCubit.state.isAuthorized) {
-                  throw AppException.authenticationException;
+                  throw AppException.authenticationException();
                 }
 
                 Navigation.navigateAfterSplashOrLogin(authCubit.state.user);

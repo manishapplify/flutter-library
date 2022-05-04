@@ -37,7 +37,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         final List<FirebaseUser> users =
             await _firebaseRealtimeDatabase.getUsers();
         if (!_authCubit.state.isAuthorized) {
-          throw AppException.authenticationException;
+          throw AppException.authenticationException();
         }
 
         // Don't show self in the list.

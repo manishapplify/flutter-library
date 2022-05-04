@@ -62,7 +62,7 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
   void _reportBugSubmittedHandler(
       ReportBugSubmitted event, Emitter<ReportBugState> emit) async {
     if (!_authCubit.state.isAuthorized) {
-      throw AppException.authenticationException;
+      throw AppException.authenticationException();
     }
     emit(state.copyWith(formStatus: InProgress()));
 
@@ -73,7 +73,7 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
       );
 
       if (screenShotUrl == null) {
-        throw AppException.s3ImageUploadException;
+        throw AppException.s3ImageUploadException();
       }
 
       final ReportBugRequest request = ReportBugRequest(

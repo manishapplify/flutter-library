@@ -107,7 +107,7 @@ class _OTPState extends BasePageState<OtpPage> {
       );
     } else if (screen == Screen.verifyEmail) {
       if (!authCubit.state.isAuthorized) {
-        throw AppException.authenticationException;
+        throw AppException.authenticationException();
       }
       if (authCubit.state.user!.isEmailVerified == 1) {
         return Center(

@@ -21,7 +21,7 @@ class _HomeState extends BasePageState<HomePage> {
   void initState() {
     authCubit = BlocProvider.of(context);
     if (!authCubit.state.isAuthorized) {
-      throw AppException.authenticationException;
+      throw AppException.authenticationException();
     }
     super.initState();
   }
@@ -57,7 +57,7 @@ class _HomeState extends BasePageState<HomePage> {
       child: BlocBuilder<AuthCubit, AuthState>(
         builder: (BuildContext context, AuthState state) {
           if (!state.isAuthorized) {
-            throw AppException.authenticationException;
+            throw AppException.authenticationException();
           }
 
           final User user = authCubit.state.user!;

@@ -55,10 +55,10 @@ class S3ImageUpload {
 
     final Uri? uri = Uri.tryParse(s3imageUploadResponse.uploadURL);
     if (uri == null) {
-      throw AppException.s3UrlParseException;
+      throw AppException.s3UrlParseException();
     }
 
-    return uri.pathSegments.last; 
+    return uri.pathSegments.last;
   }
 
   Future<Response<dynamic>> _uploadImageToSignedURL({
