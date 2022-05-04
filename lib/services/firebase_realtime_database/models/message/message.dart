@@ -79,3 +79,35 @@ abstract class FirebaseMessage {
     return messageId.hashCode;
   }
 }
+
+abstract class AttachmentFirebaseMessage extends FirebaseMessage {
+  AttachmentFirebaseMessage({
+    required this.attachmentUrl,
+    required String chatDialogId,
+    required DateTime firebaseMessageTime,
+    required String message,
+    required String messageId,
+    required String messageReadStatus,
+    required DateTime messageTime,
+    required String receiverId,
+    required String senderId,
+  }) : super(
+          chatDialogId: chatDialogId,
+          firebaseMessageTime: firebaseMessageTime,
+          message: message,
+          messageId: messageId,
+          messageReadStatus: messageReadStatus,
+          messageTime: messageTime,
+          receiverId: receiverId,
+          senderId: senderId,
+        );
+
+  final String attachmentUrl;
+
+  @override
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> map = super.toMap();
+    map['attachment_url'] = attachmentUrl;
+    return map;
+  }
+}
