@@ -43,7 +43,7 @@ abstract class FirebaseMessage {
   /// 1 -> Text message
   /// 2 -> Image
   /// 3 -> Document
-  int get messageType;
+  int get messageType => throw UnimplementedError();
   final String receiverId;
   final String senderId;
 
