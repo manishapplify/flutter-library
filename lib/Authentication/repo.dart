@@ -81,7 +81,7 @@ class AuthRepository {
       await _signInWithSocialId(
           socialId: socialId, socialEmail: socialEmail, loginType: 3);
     } else {
-      throw AppException.googleSignInException;
+      throw AppException.googleSignInException();
     }
   }
 
