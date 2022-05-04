@@ -13,7 +13,5 @@ class ReportBugRequest {
         'title': title,
         'description': description,
         'image': image,
-        // TODO: Remove this when the api no longer takes this field.
-        'status': 'PENDING',
       };
 }

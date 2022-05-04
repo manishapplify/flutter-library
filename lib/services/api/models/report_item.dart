@@ -13,8 +13,6 @@ abstract class ReportItemRequest {
     final Map<String, dynamic> map = <String, dynamic>{
       'itemType': itemType,
       'description': description,
-      // TODO: Remove this when the api no longer takes this field.
-      'status': 'PENDING',
     };
 
     if (itemId is String && itemId!.isNotEmpty) {

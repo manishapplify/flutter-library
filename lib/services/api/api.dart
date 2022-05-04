@@ -15,7 +15,6 @@ import 'package:components/pages/signup/models/request.dart';
 import 'package:components/services/api/models/report_item.dart';
 import 'package:components/services/s3_image_upload/request.dart';
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
 
 class Api {
   Api({
@@ -59,8 +58,21 @@ class Api {
 
   /// Return the path of the downloaded file.
   Future<String> downloadFile(String url, String name) async {
-    final Directory appStorage = await getApplicationDocumentsDirectory();
-    final File file = File('${appStorage.path}/$name');
+    // final Directory appStorage = Directory.systemTemp;
+    // final File file = File('${appStorage.path}/$name');
+    // final customCacheManager = CacheManager(
+    //   Config('customCacheKey',
+    //       stalePeriod: Duration(days: 15), maxNrOfCacheObjects: 6),
+    // );
+    // final File file = await DefaultCacheManager().getSingleFile(url);
+    // var fetchedFile = await DefaultCacheManager().getSingleFile(url);
+
+    final Directory systemTempDir = Directory.systemTemp;
+    final File tempFile = File('${systemTempDir.path}/$name');
+    if (tempFile.existsSync()) {
+      return tempFile.path;
+    }
+    //await tempFile.create();
 
     final Response<dynamic> response = await Dio().get(
       url,
@@ -69,10 +81,11 @@ class Api {
         followRedirects: false,
       ),
     );
-    final RandomAccessFile raf = file.openSync(mode: FileMode.write)
+    final RandomAccessFile raf = tempFile.openSync(mode: FileMode.write)
       ..writeFromSync(response.data);
+    //final File file = await DefaultCacheManager().getSingleFile(url);
     await raf.close();
-    return file.path;
+    return tempFile.path;
   }
 
   Future<Response<dynamic>> signup(SignupRequest signupRequest) async {

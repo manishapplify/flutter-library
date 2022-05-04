@@ -81,7 +81,6 @@ class _LoginState extends BasePageState<LoginPage> {
                     decoration: const InputDecoration(
                       hintText: 'Enter your email',
                       labelText: 'Email',
-                      errorStyle: TextStyle(height: 0.5),
                       prefixIcon: Icon(
                         Icons.email,
                       ),

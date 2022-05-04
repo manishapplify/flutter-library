@@ -73,7 +73,6 @@ class _SignupState extends BasePageState<SignupPage> {
                 textAlignVertical: TextAlignVertical.center,
                 autofocus: true,
                 decoration: const InputDecoration(
-                  errorStyle: TextStyle(height: 0.5),
                   hintText: 'Enter your email',
                   labelText: 'Email',
                   prefixIcon: Icon(Icons.mail),
@@ -111,7 +110,6 @@ class _SignupState extends BasePageState<SignupPage> {
                       autofocus: true,
                       textAlignVertical: TextAlignVertical.center,
                       decoration: const InputDecoration(
-                        errorStyle: TextStyle(height: 0.5),
                         hintText: 'Enter your phone number',
                         labelText: 'Phone number',
                         prefixIcon: Icon(Icons.phone),
@@ -138,7 +136,6 @@ class _SignupState extends BasePageState<SignupPage> {
                       textAlignVertical: TextAlignVertical.center,
                       focusNode: passwordFocusNodes[i],
                       decoration: InputDecoration(
-                        errorStyle: const TextStyle(height: 0.5),
                         prefixIcon: const Icon(
                           Icons.lock,
                         ),

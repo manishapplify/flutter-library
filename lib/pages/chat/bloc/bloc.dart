@@ -417,7 +417,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
   }
 
-  // TODO: Refactor common logic into a function.
   void _sendTextEventHandler(
       SendTextEvent event, Emitter<ChatState> emit) async {
     await _commonHandler(
@@ -428,26 +427,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (state.message.isEmpty) {
           throw AppException.messageCannotBeEmpty();
         }
-        final String? messageId = _firebaseRealtimeDatabase.getNewMessgeId(
-            chatId: state.currentChat!.id);
-        if (messageId == null) {
-          throw AppException.firebaseCouldNotGenerateKey();
-        }
 
-        final DateTime now = DateTime.now();
-        final String chatId = state.currentChat!.id;
-        final String senderId = _authCubit.state.user!.firebaseId;
-        final String receiverId =
-            chatId.split(',').firstWhere((String id) => id != senderId);
+        final _MessageMetadata _messageMetadata = _getNewMessageMetadata();
         final FirebaseMessage message = TextMessage(
           message: state.message,
-          chatDialogId: chatId,
-          senderId: senderId,
-          messageId: messageId,
-          firebaseMessageTime: now,
-          messageTime: now,
-          receiverId: receiverId,
-          messageReadStatus: receiverId,
+          chatDialogId: _messageMetadata.chatId,
+          senderId: _messageMetadata.senderId,
+          messageId: _messageMetadata.messageId,
+          firebaseMessageTime: _messageMetadata.messageTime,
+          messageTime: _messageMetadata.messageTime,
+          receiverId: _messageMetadata.receiverId,
+          messageReadStatus: _messageMetadata.receiverId,
         );
 
         _firebaseRealtimeDatabase.sendMessage(message);
@@ -467,36 +457,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (state.imageFile == null) {
           throw AppException.imageCannotBeEmpty();
         }
-
-        final String? messageId = _firebaseRealtimeDatabase.getNewMessgeId(
-            chatId: state.currentChat!.id);
-        if (messageId == null) {
-          throw AppException.firebaseCouldNotGenerateKey();
-        }
-
+        final _MessageMetadata _messageMetadata = _getNewMessageMetadata();
         final String? imageUrl = await _firebaseStorageService.uploadImage(
           file: state.imageFile!,
-          messageId: messageId,
+          messageId: _messageMetadata.messageId,
         );
         if (imageUrl == null) {
           throw AppException.imageCouldNotBeUploaded();
         }
 
-        final DateTime now = DateTime.now();
-        final String chatId = state.currentChat!.id;
-        final String senderId = _authCubit.state.user!.firebaseId;
-        final String receiverId =
-            chatId.split(',').firstWhere((String id) => id != senderId);
         final FirebaseMessage message = ImageMessage(
           attachmentUrl: imageUrl,
           message: 'Image',
-          chatDialogId: chatId,
-          senderId: senderId,
-          messageId: messageId,
-          firebaseMessageTime: now,
-          messageTime: now,
-          receiverId: receiverId,
-          messageReadStatus: receiverId,
+          chatDialogId: _messageMetadata.chatId,
+          senderId: _messageMetadata.senderId,
+          messageId: _messageMetadata.messageId,
+          firebaseMessageTime: _messageMetadata.messageTime,
+          messageTime: _messageMetadata.messageTime,
+          receiverId: _messageMetadata.receiverId,
+          messageReadStatus: _messageMetadata.receiverId,
         );
 
         _firebaseRealtimeDatabase.sendMessage(message);
@@ -531,32 +510,24 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         if (state.pdfFile == null) {
           throw AppException.docCannotBeEmpty();
         }
-        final String? messageId = _firebaseRealtimeDatabase.getNewMessgeId(
-            chatId: state.currentChat!.id);
-        if (messageId == null) {
-          throw AppException.firebaseCouldNotGenerateKey();
-        }
+        final _MessageMetadata _messageMetadata = _getNewMessageMetadata();
         final String? pdfUrl = await _firebaseStorageService.uploadPdf(
-            file: File(state.pdfFile!.path!), messageId: messageId);
+            file: File(state.pdfFile!.path!),
+            messageId: _messageMetadata.messageId);
         if (pdfUrl == null) {
           throw AppException.documentCouldNotBeUploaded();
         }
 
-        final DateTime now = DateTime.now();
-        final String chatId = state.currentChat!.id;
-        final String senderId = _authCubit.state.user!.firebaseId;
-        final String receiverId =
-            chatId.split(',').firstWhere((String id) => id != senderId);
         final FirebaseMessage message = DocumentMessage(
           attachmentUrl: pdfUrl,
           message: state.pdfFile!.name,
-          chatDialogId: chatId,
-          senderId: senderId,
-          messageId: messageId,
-          firebaseMessageTime: now,
-          messageTime: now,
-          receiverId: receiverId,
-          messageReadStatus: receiverId,
+          chatDialogId: _messageMetadata.chatId,
+          senderId: _messageMetadata.senderId,
+          messageId: _messageMetadata.messageId,
+          firebaseMessageTime: _messageMetadata.messageTime,
+          messageTime: _messageMetadata.messageTime,
+          receiverId: _messageMetadata.receiverId,
+          messageReadStatus: _messageMetadata.receiverId,
         );
 
         _firebaseRealtimeDatabase.sendMessage(message);
@@ -566,7 +537,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
   }
 
-  // TODO: Cache downloaded documents.
   void _openDocEventHandler(OpenDocEvent event, Emitter<ChatState> emit) async {
     emit(state.copyWith(pdfViewerStatus: InProgress()));
     try {
@@ -719,4 +689,36 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     return list.toSet();
   }
+
+  _MessageMetadata _getNewMessageMetadata() {
+    final String chatId = state.currentChat!.id;
+    final String senderId = _authCubit.state.user!.firebaseId;
+    final String receiverId =
+        chatId.split(',').firstWhere((String id) => id != senderId);
+    final String? messageId =
+        _firebaseRealtimeDatabase.getNewMessgeId(chatId: state.currentChat!.id);
+    if (messageId == null) {
+      throw AppException.firebaseCouldNotGenerateKey();
+    }
+    return _MessageMetadata(
+        chatId: chatId,
+        senderId: senderId,
+        receiverId: receiverId,
+        messageId: messageId,
+        messageTime: DateTime.now());
+  }
+}
+
+class _MessageMetadata {
+  _MessageMetadata(
+      {required this.chatId,
+      required this.senderId,
+      required this.receiverId,
+      required this.messageId,
+      required this.messageTime});
+  final String chatId;
+  final String senderId;
+  final String receiverId;
+  final String messageId;
+  final DateTime messageTime;
 }

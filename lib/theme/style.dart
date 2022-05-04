@@ -54,6 +54,7 @@ final ThemeData appTheme = ThemeData(
       horizontal: 12.0,
       vertical: 8.0,
     ),
+    errorStyle: TextStyle(height: 0.5),
     filled: true,
     fillColor: Color(0xFFF2F2F2),
     border: OutlineInputBorder(

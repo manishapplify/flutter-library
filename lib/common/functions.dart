@@ -1,3 +1,5 @@
+import 'package:week_of_year/week_of_year.dart';
+
 String displayMessageTime(DateTime? time) {
   if (time == null) {
     return '';
@@ -7,13 +9,10 @@ String displayMessageTime(DateTime? time) {
   if (now.difference(time).compareTo(const Duration(days: 1)) < 0 &&
       now.day == time.day) {
     return '${time.hour <= 12 ? time.hour : time.hour % 12}:${time.minute < 10 ? '0${time.minute}' : time.minute} ${time.hour > 11 ? 'PM' : 'AM'}';
-  }
-
-  // TODO: Also check if both the timestamps are in the same week.
-  else if (now.difference(time).compareTo(const Duration(days: 7)) < 0) {
+  } else if (time.weekOfYear == now.weekOfYear && time.year == now.year) {
     return _mapDay[time.weekday]!;
-  } else if (now.difference(time).compareTo(const Duration(days: 365)) < 0) {
-    return '${time.day} ${_mapMonth[_mapMonth]}';
+  } else if (time.year == now.year ) {
+    return '${time.day} ${_mapMonth[time.month]}';
   } else {
     return time.year.toString();
   }
