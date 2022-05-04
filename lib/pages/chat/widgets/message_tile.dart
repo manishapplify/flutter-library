@@ -73,30 +73,37 @@ class _MessageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (message is TextMessage) {
+    if (message is AttachmentFirebaseMessage) {
+      final AttachmentFirebaseMessage _message =
+          message as AttachmentFirebaseMessage;
+
+      if (_message is ImageMessage) {
+        return ImageContainer(
+          height: 200.0,
+          width: 150.0,
+          circularDecoration: false,
+          imageUrl: _message.attachmentUrl,
+        );
+      } else if (_message is DocumentMessage) {
+        return InkWell(
+          onTap: () {
+            BlocProvider.of<ChatBloc>(context).add(
+              OpenDocEvent(
+                docFilename: _message.message,
+                docUrl: _message.attachmentUrl,
+              ),
+            );
+          },
+          child: PdfTile(
+            fileName: _message.message,
+            closeButton: false,
+          ),
+        );
+      } else {
+        return const SizedBox();
+      }
+    } else if (message is TextMessage) {
       return Text(message.message);
-    } else if (message is ImageMessage) {
-      return ImageContainer(
-        height: 200.0,
-        width: 150.0,
-        circularDecoration: false,
-        imageUrl: (message as ImageMessage).attachmentUrl,
-      );
-    } else if (message is DocumentMessage) {
-      return InkWell(
-        onTap: () {
-          BlocProvider.of<ChatBloc>(context).add(
-            OpenDocEvent(
-              docFilename: message.message,
-              docUrl: (message as DocumentMessage).attachmentUrl,
-            ),
-          );
-        },
-        child: PdfTile(
-          fileName: message.message,
-          closeButton: false,
-        ),
-      );
     } else {
       return const SizedBox();
     }

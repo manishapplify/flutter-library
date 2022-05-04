@@ -1,8 +1,8 @@
 import 'package:components/services/firebase_realtime_database/models/message/message.dart';
 
-class ImageMessage extends FirebaseMessage {
+class ImageMessage extends AttachmentFirebaseMessage {
   ImageMessage({
-    required this.attachmentUrl,
+    required String attachmentUrl,
     required String chatDialogId,
     required DateTime firebaseMessageTime,
     required String message,
@@ -12,6 +12,7 @@ class ImageMessage extends FirebaseMessage {
     required String receiverId,
     required String senderId,
   }) : super(
+          attachmentUrl: attachmentUrl,
           chatDialogId: chatDialogId,
           firebaseMessageTime: firebaseMessageTime,
           message: message,
@@ -41,15 +42,6 @@ class ImageMessage extends FirebaseMessage {
     );
   }
 
-  final String attachmentUrl;
-
   @override
   int get messageType => 2;
-
-  @override
-  Map<String, dynamic> toMap() {
-    final Map<String, dynamic> map = super.toMap();
-    map['attachment_url'] = attachmentUrl;
-    return map;
-  }
 }
