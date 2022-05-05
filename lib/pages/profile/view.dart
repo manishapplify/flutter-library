@@ -73,7 +73,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
     final AuthCubit authCubit = BlocProvider.of(context);
 
     if (!authCubit.state.isAuthorized) {
-      throw AppException.authenticationException;
+      throw AppException.authenticationException();
     }
     user = authCubit.state.user!;
 

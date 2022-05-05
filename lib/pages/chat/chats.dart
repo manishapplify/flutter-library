@@ -36,7 +36,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
   void initState() {
     final AuthCubit authCubit = BlocProvider.of(context);
     if (!authCubit.state.isAuthorized) {
-      throw AppException.authenticationException;
+      throw AppException.authenticationException();
     }
 
     currentUser = authCubit.state.user!;

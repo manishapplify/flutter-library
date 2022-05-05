@@ -51,7 +51,7 @@ class ProfileRepository {
     required Signup signupType,
   }) async {
     if (!_authCubit.state.isAuthorized) {
-      throw AppException.authenticationException;
+      throw AppException.authenticationException();
     }
 
     if (countryCode is String) {
@@ -99,7 +99,7 @@ class ProfileRepository {
     required String notificationEnabled,
   }) async {
     if (!_authCubit.state.isAuthorized) {
-      throw AppException.authenticationException;
+      throw AppException.authenticationException();
     }
 
     if (countryCode is String) {

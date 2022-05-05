@@ -245,7 +245,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         );
       }
     } else {
-      throw AppException.unsupportedActionException;
+      throw AppException.unsupportedActionException();
     }
   }
 
