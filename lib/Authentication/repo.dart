@@ -1,6 +1,7 @@
 import 'package:components/Authentication/models/logout_request.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
+import 'package:components/enums/platform.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/change_password/model/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
@@ -21,6 +22,7 @@ import 'package:components/common/config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthRepository {
   AuthRepository({
@@ -99,18 +101,51 @@ class AuthRepository {
     }
   }
 
-  Future<void> _signInWithSocialId(
-      {required String? socialId,
-      required String? socialEmail,
-      required int? loginType}) async {
+  Future<void> signInWithApple() async {
+    if (_config.platform != Platform.IOS) {
+      throw AppException.unsupportedActionException();
+    }
+
+    final AuthorizationCredentialAppleID credential =
+        await SignInWithApple.getAppleIDCredential(
+      scopes: <AppleIDAuthorizationScopes>[
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+
+      // TODO: Configure to enable apple login in android.
+      webAuthenticationOptions: WebAuthenticationOptions(
+        clientId: 'com.applify.flutter.library.android',
+        redirectUri: Uri.parse('uri'),
+      ),
+    );
+
+    if (credential.userIdentifier != null) {
+      await _signInWithSocialId(
+        socialId: credential.userIdentifier!,
+        socialEmail: credential.email,
+        loginType: 4,
+      );
+    } else {
+      throw AppException.appleSignInException();
+    }
+
+    print(credential);
+  }
+
+  Future<void> _signInWithSocialId({
+    required String socialId,
+    required String? socialEmail,
+    required int loginType,
+  }) async {
     if (_fcm.deviceToken == null) {
       await _fcm.getToken();
     }
     final SocialSigninRequest request = SocialSigninRequest(
       platformType: _config.platform.name,
       deviceToken: _fcm.deviceToken!,
-      loginType: loginType!,
-      socialId: socialId!,
+      loginType: loginType,
+      socialId: socialId,
       emailOrPhoneNumber: socialEmail,
       countryCode: _persistence.fetchCountryCode(),
     );

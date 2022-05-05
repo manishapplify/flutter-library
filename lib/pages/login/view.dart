@@ -6,6 +6,7 @@ import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginPage extends BasePage {
   const LoginPage({Key? key}) : super(key: key);
@@ -177,90 +178,19 @@ class _LoginState extends BasePageState<LoginPage> {
                     ],
                   ),
                   const SizedBox(height: 10.0),
-                  InkWell(
+                  SignInWithGoogleButton(
                     onTap: () => loginBloc.add(
                       GoogleSignInSummitted(),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10.0),
-                      child: Material(
-                        elevation: 3.0,
-                        color: Colors.white,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              width: 40.0,
-                              height: 35.0,
-                              child: const Image(
-                                image: AssetImage(
-                                  "assets/images/googlelogo.png",
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(3.0),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 8.0,
-                            ),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              height: 50.0,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(3.0)),
-                              child: const Text('Sign in with Google',
-                                  style: TextStyle(color: Colors.black54)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ),
-                  InkWell(
+                  SignInWithFacebookButton(
                     onTap: () => loginBloc.add(
                       FacebookSignInSummitted(),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10.0),
-                      child: Material(
-                        elevation: 3.0,
-                        color: Colors.white,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              width: 40.0,
-                              height: 35.0,
-                              child: const Image(
-                                image: AssetImage(
-                                  "assets/images/fblogo.png",
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(3.0),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 8.0,
-                            ),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              height: 50.0,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(3.0)),
-                              child: const Text('Sign in with Facebook',
-                                  style: TextStyle(color: Colors.black54)),
-                            ),
-                          ],
-                        ),
-                      ),
+                  ),
+                  SignInWithAppleButton(
+                    onPressed: () => loginBloc.add(
+                      AppleSignInSummitted(),
                     ),
                   ),
                 ],
@@ -279,5 +209,114 @@ class _LoginState extends BasePageState<LoginPage> {
         LoginSubmitted(),
       );
     }
+  }
+}
+
+class SignInWithFacebookButton extends StatelessWidget {
+  const SignInWithFacebookButton({
+    Key? key,
+    required this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        child: Material(
+          elevation: 3.0,
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 40.0,
+                height: 35.0,
+                child: const Image(
+                  image: AssetImage(
+                    "assets/images/fblogo.png",
+                  ),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(3.0),
+                ),
+              ),
+              const SizedBox(
+                width: 8.0,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                height: 50.0,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0)),
+                child: const Text('Sign in with Facebook',
+                    style: TextStyle(color: Colors.black54)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SignInWithGoogleButton extends StatelessWidget {
+  const SignInWithGoogleButton({
+    Key? key,
+    required this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20.0,
+          vertical: 10.0,
+        ),
+        child: Material(
+          elevation: 3.0,
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 40.0,
+                height: 35.0,
+                child: const Image(
+                  image: AssetImage(
+                    "assets/images/googlelogo.png",
+                  ),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(3.0),
+                ),
+              ),
+              const SizedBox(
+                width: 8.0,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                height: 50.0,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0)),
+                child: const Text('Sign in with Google',
+                    style: TextStyle(color: Colors.black54)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

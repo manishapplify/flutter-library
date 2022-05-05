@@ -13,10 +13,13 @@ class AppException implements Exception {
     return AppException(message: 'Could not upload image to S3');
   }
   factory AppException.googleSignInException() {
-    return AppException(message: 'GoogleSigin failed');
+    return AppException(message: 'Google sigin failed');
   }
   factory AppException.facebookSignInException(String? message) {
-    return AppException(message: message ?? 'FacebookSigin failed');
+    return AppException(message: message ?? 'Facebook sigin failed');
+  }
+  factory AppException.appleSignInException() {
+    return AppException(message: 'Apple sigin failed');
   }
   factory AppException.passwordResetTokenAbsentException() {
     return AppException(message: 'No password reset token present');

@@ -20,6 +20,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginSubmitted>(_loginEventHandler);
     on<GoogleSignInSummitted>(_googleLoginEventHandler);
     on<FacebookSignInSummitted>(_facebookLoginEventHandler);
+    on<AppleSignInSummitted>(_appleLoginEventHandler);
     on<ResetFormStatus>(_resetFormStatusHandler);
   }
 
@@ -79,6 +80,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     await _commonHandler(
       handlerJob: () async {
         await _authRepository.signInWithFacebook();
+      },
+      emit: emit,
+    );
+  }
+
+  void _appleLoginEventHandler(
+      AppleSignInSummitted event, Emitter<LoginState> emit) async {
+    await _commonHandler(
+      handlerJob: () async {
+        await _authRepository.signInWithApple();
       },
       emit: emit,
     );

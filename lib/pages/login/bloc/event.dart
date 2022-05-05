@@ -15,7 +15,10 @@ class LoginPasswordChanged extends LoginEvent {
 }
 
 class GoogleSignInSummitted extends LoginEvent {}
+
 class FacebookSignInSummitted extends LoginEvent {}
+
+class AppleSignInSummitted extends LoginEvent {}
 
 class LoginSubmitted extends LoginEvent {}
 
