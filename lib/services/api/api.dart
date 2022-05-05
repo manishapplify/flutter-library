@@ -58,22 +58,11 @@ class Api {
 
   /// Return the path of the downloaded file.
   Future<String> downloadFile(String url, String name) async {
-    // final Directory appStorage = Directory.systemTemp;
-    // final File file = File('${appStorage.path}/$name');
-    // final customCacheManager = CacheManager(
-    //   Config('customCacheKey',
-    //       stalePeriod: Duration(days: 15), maxNrOfCacheObjects: 6),
-    // );
-    // final File file = await DefaultCacheManager().getSingleFile(url);
-    // var fetchedFile = await DefaultCacheManager().getSingleFile(url);
-
     final Directory systemTempDir = Directory.systemTemp;
     final File tempFile = File('${systemTempDir.path}/$name');
     if (tempFile.existsSync()) {
       return tempFile.path;
     }
-    //await tempFile.create();
-
     final Response<dynamic> response = await Dio().get(
       url,
       options: Options(
@@ -83,7 +72,6 @@ class Api {
     );
     final RandomAccessFile raf = tempFile.openSync(mode: FileMode.write)
       ..writeFromSync(response.data);
-    //final File file = await DefaultCacheManager().getSingleFile(url);
     await raf.close();
     return tempFile.path;
   }

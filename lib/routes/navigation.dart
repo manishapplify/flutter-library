@@ -272,7 +272,11 @@ class Navigation {
   static void navigateAfterSplashOrLogin(User? user) {
     final NavigatorState navigator = Navigator.of(navigatorKey.currentContext!);
 
-    // TODO: Empty navigation stack before navigating to next page.
+    Future<void>.microtask(
+      () => navigator.popUntil(
+        (_) => false,
+      ),
+    );
 
     if (user == null) {
       Future<void>.microtask(

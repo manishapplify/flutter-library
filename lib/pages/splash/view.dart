@@ -70,11 +70,7 @@ class _SplashState extends BasePageState<SplashPage> {
   }
 
   void navigateToNextScreen() {
-    Future<void>.microtask(
-      () => navigator.popUntil(
-        (_) => false,
-      ),
-    );
+   
     Navigation.navigateAfterSplashOrLogin(authCubit.state.user);
   }
 }
