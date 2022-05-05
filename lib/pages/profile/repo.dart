@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/signup.dart';
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/profile/models/update_profile_request.dart';
 import 'package:components/services/api/api.dart';

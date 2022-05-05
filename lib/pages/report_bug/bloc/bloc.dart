@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:components/common/work_status.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/pages/report_bug/models/request.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';

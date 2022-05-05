@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:components/common/work_status.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';

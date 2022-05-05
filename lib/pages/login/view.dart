@@ -1,7 +1,7 @@
 import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';

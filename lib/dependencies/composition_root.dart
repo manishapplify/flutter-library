@@ -5,7 +5,7 @@ import 'package:components/common/config.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/enums/platform.dart' as enums;
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/pages/profile/repo.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/api/api.dart';

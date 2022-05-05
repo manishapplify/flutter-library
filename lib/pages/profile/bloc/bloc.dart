@@ -6,7 +6,7 @@ import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/gender.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/enums/signup.dart';
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/pages/profile/repo.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';

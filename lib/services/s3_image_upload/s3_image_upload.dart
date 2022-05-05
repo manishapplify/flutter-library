@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/s3_image_upload/request.dart';
 import 'package:components/services/s3_image_upload/response.dart';

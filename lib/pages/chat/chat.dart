@@ -8,7 +8,7 @@ import 'package:components/common/work_status.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/dialogs/dialogs.dart';
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/pages/chat/bloc/bloc.dart';
 import 'package:components/pages/chat/widgets/message_tile.dart';

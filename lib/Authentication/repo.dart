@@ -2,7 +2,7 @@ import 'package:components/Authentication/models/logout_request.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/enums/platform.dart';
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/pages/change_password/model/request.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/pages/forgot_password/models/response.dart';

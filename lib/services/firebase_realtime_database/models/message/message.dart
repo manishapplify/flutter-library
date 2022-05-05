@@ -1,4 +1,4 @@
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/services/firebase_realtime_database/models/message/document_message.dart';
 import 'package:components/services/firebase_realtime_database/models/message/image_message.dart';
 import 'package:components/services/firebase_realtime_database/models/message/text_message.dart';

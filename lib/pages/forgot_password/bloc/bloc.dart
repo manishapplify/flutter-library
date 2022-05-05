@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:components/common/work_status.dart';
 import 'package:components/Authentication/repo.dart';
-import 'package:components/exceptions/app_exception.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/pages/forgot_password/models/request.dart';
 import 'package:components/services/persistence.dart';
 import 'package:dio/dio.dart';
