@@ -7,7 +7,7 @@ import 'package:components/exceptions/app_exception.dart';
 import 'package:components/pages/report_bug/models/request.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
-import 'package:components/validators/validators.dart' as validators;
+import 'package:components/common/validators.dart' as validators;
 import 'package:meta/meta.dart';
 
 part 'event.dart';

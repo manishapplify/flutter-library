@@ -4,7 +4,7 @@ import 'package:components/Authentication/repo.dart';
 import 'package:components/exceptions/app_exception.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
-import 'package:components/validators/validators.dart' as validators;
+import 'package:components/common/validators.dart' as validators;
 
 part 'event.dart';
 part 'state.dart';

@@ -5,7 +5,7 @@ import 'package:components/exceptions/app_exception.dart';
 import 'package:components/services/api/api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:components/validators/validators.dart' as validators;
+import 'package:components/common/validators.dart' as validators;
 
 part 'event.dart';
 part 'state.dart';
