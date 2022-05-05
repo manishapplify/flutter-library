@@ -1,38 +1,25 @@
-import 'package:components/Authentication/repo.dart';
-import 'package:components/common/work_status.dart';
-import 'package:components/common/app_exception.dart';
-import 'package:components/services/api/api.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:components/common/validators.dart' as validators;
+part of blocs;
 
-part 'event.dart';
-part 'state.dart';
-
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
+class LoginBloc extends BaseBloc<LoginEvent, LoginState> {
   LoginBloc({
     required Api api,
     required AuthRepository authRepository,
   })  : _authRepository = authRepository,
-        super(LoginState()) {
+        super(const LoginState()) {
     on<LoginEmailChanged>(_loginEmailChangedHandler);
     on<LoginPasswordChanged>(_loginPasswordChangedHandler);
     on<LoginSubmitted>(_loginEventHandler);
     on<GoogleSignInSummitted>(_googleLoginEventHandler);
     on<FacebookSignInSummitted>(_facebookLoginEventHandler);
     on<AppleSignInSummitted>(_appleLoginEventHandler);
-    on<ResetFormStatus>(_resetFormStatusHandler);
+    on<ResetLoginBlocStatus>(_resetFormStatusHandler);
   }
 
   final AuthRepository _authRepository;
 
   void _resetFormStatusHandler(
-          ResetFormStatus event, Emitter<LoginState> emit) =>
-      emit(
-        state.copyWith(
-          formStatus: const Idle(),
-        ),
-      );
+          ResetLoginBlocStatus event, Emitter<LoginState> emit) =>
+      emit(state.copyWith(blocStatus: const Idle()));
 
   void _loginEmailChangedHandler(
       LoginEmailChanged event, Emitter<LoginState> emit) {
@@ -93,44 +80,5 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       },
       emit: emit,
     );
-  }
-
-  Future<void> _commonHandler(
-      {required Future<void> Function() handlerJob,
-      required Emitter<LoginState> emit}) async {
-    emit(state.copyWith(formStatus: InProgress()));
-
-    try {
-      await handlerJob();
-      emit(state.copyWith(formStatus: Success()));
-    } on DioError catch (e) {
-      late final AppException exception;
-
-      if (e.type == DioErrorType.other && e.error is AppException) {
-        exception = e.error;
-      } else {
-        exception = AppException.api400Exception();
-      }
-
-      emit(
-        state.copyWith(
-          formStatus: Failure(
-            exception: exception,
-            message: exception.message,
-          ),
-        ),
-      );
-    } on AppException catch (e) {
-      emit(state.copyWith(
-          formStatus: Failure(exception: e, message: e.message)));
-    } on Exception catch (_) {
-      emit(
-        state.copyWith(
-          formStatus: Failure(exception: Exception('Failure')),
-        ),
-      );
-    } on Error catch (_) {
-      print('error');
-    }
   }
 }

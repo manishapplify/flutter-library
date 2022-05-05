@@ -1,8 +1,8 @@
+import 'package:components/blocs/blocs.dart';
 import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/common/app_exception.dart';
-import 'package:components/pages/login/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,16 +52,16 @@ class _LoginState extends BasePageState<LoginPage> {
           key: _formkey,
           child: BlocBuilder<LoginBloc, LoginState>(
             builder: (BuildContext context, LoginState state) {
-              if (state.formStatus is Success) {
-                loginBloc.add(ResetFormStatus());
+              if (state.blocStatus is Success) {
+                loginBloc.add(ResetLoginBlocStatus());
                 if (!authCubit.state.isAuthorized) {
                   throw AppException.authenticationException();
                 }
 
                 Navigation.navigateAfterSplashOrLogin(authCubit.state.user);
-              } else if (state.formStatus is Failure) {
-                loginBloc.add(ResetFormStatus());
-                final Failure failure = state.formStatus as Failure;
+              } else if (state.blocStatus is Failure) {
+                loginBloc.add(ResetLoginBlocStatus());
+                final Failure failure = state.blocStatus as Failure;
                 Future<void>.microtask(
                   () => showSnackBar(
                     SnackBar(
@@ -124,7 +124,7 @@ class _LoginState extends BasePageState<LoginPage> {
                       ),
                     ),
                   ),
-                  state.formStatus is InProgress
+                  state.blocStatus is InProgress
                       ? const CircularProgressIndicator()
                       : ElevatedButton(
                           child: const Text(

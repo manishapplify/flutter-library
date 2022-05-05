@@ -1,12 +1,12 @@
-part of 'bloc.dart';
+part of blocs;
 
-class LoginState {
-  LoginState({
+class LoginState extends BaseState {
+  const LoginState({
     this.email = '',
     this.password,
-    this.formStatus = const Idle(),
     this.isLoginSuccessful,
-  });
+    WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
 
   final String email;
   String? get emailValidator =>
@@ -14,18 +14,24 @@ class LoginState {
 
   final String? password;
 
-  final WorkStatus formStatus;
   final bool? isLoginSuccessful;
 
   LoginState copyWith({
     String? email,
     String? password,
-    WorkStatus? formStatus,
+    WorkStatus? blocStatus,
   }) {
     return LoginState(
       email: email ?? this.email,
       password: password ?? this.password,
-      formStatus: formStatus ?? this.formStatus,
+      blocStatus: blocStatus ?? this.blocStatus,
     );
   }
+
+  @override
+  BaseState resetState() => const LoginState();
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }

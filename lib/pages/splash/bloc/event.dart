@@ -1,6 +1,6 @@
-part of 'bloc.dart';
+part of blocs;
 
 @immutable
-abstract class SplashEvent {}
+abstract class SplashEvent extends BaseEvent {}
 
 class OnAppOpened extends SplashEvent {}

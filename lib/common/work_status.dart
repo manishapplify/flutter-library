@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+
+@immutable
 abstract class WorkStatus {
   const WorkStatus();
 }
@@ -11,7 +14,7 @@ class InProgress extends WorkStatus {}
 class Success extends WorkStatus {}
 
 class Failure extends WorkStatus {
-  Failure({
+  const Failure({
     this.exception,
     this.message,
   });

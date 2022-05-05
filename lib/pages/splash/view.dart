@@ -1,5 +1,5 @@
+import 'package:components/blocs/blocs.dart';
 import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/pages/splash/bloc/bloc.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:flutter/material.dart';

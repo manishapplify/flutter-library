@@ -1,14 +1,6 @@
-import 'package:bloc/bloc.dart';
-import 'package:components/pages/splash/models/response.dart';
-import 'package:components/services/api/api.dart';
-import 'package:components/common/config.dart';
-import 'package:dio/dio.dart';
-import 'package:meta/meta.dart';
+part of blocs;
 
-part 'event.dart';
-part 'state.dart';
-
-class SplashBloc extends Bloc<SplashEvent, SplashState> {
+class SplashBloc extends BaseBloc<SplashEvent, SplashState> {
   SplashBloc({
     required Api api,
     required Config config,
@@ -31,13 +23,13 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 
     if (_config.appVersion.compareTo(appVersionResponse.minimumVersion) < 0) {
       emit(
-        UpdateAvailable(
+       const UpdateAvailable(
           isForceful: true,
         ),
       );
     } else if (_config.appVersion.compareTo(appVersionResponse.version) < 0) {
       emit(
-        UpdateAvailable(
+      const  UpdateAvailable(
           isForceful: false,
         ),
       );

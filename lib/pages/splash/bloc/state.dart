@@ -1,12 +1,19 @@
-part of 'bloc.dart';
+part of blocs;
 
-@immutable
-abstract class SplashState {}
+abstract class SplashState extends BaseState {
+  const SplashState() : super(const Idle());
+
+  @override
+  BaseState resetState() => SplashInitial();
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) => throw UnimplementedError();
+}
 
 class SplashInitial extends SplashState {}
 
 class UpdateAvailable extends SplashState {
-  UpdateAvailable({
+  const UpdateAvailable({
     required this.isForceful,
   });
 

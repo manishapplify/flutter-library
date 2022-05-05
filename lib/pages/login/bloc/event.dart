@@ -1,6 +1,6 @@
-part of 'bloc.dart';
+part of blocs;
 
-abstract class LoginEvent {}
+abstract class LoginEvent extends BaseEvent {}
 
 class LoginEmailChanged extends LoginEvent {
   LoginEmailChanged({required this.email});
@@ -22,4 +22,4 @@ class AppleSignInSummitted extends LoginEvent {}
 
 class LoginSubmitted extends LoginEvent {}
 
-class ResetFormStatus extends LoginEvent {}
+class ResetLoginBlocStatus extends LoginEvent {}
