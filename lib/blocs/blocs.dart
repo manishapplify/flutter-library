@@ -37,6 +37,16 @@ abstract class BaseBloc<E extends BaseEvent, S extends BaseState>
     bool emitFailureOnly = false,
     Function(WorkStatus status)? onFailure,
   }) async {
+    // _handleFailure should not be inherited.
+    // ignore: prefer_function_declarations_over_variables
+    final Function(Failure) _handleFailure = (Failure failure) {
+      if (onFailure == null) {
+        emit(state.updateStatus(failure));
+      } else {
+        onFailure(failure);
+      }
+    };
+
     try {
       if (!emitFailureOnly) {
         emit(state.updateStatus(InProgress()));
@@ -59,32 +69,16 @@ abstract class BaseBloc<E extends BaseEvent, S extends BaseState>
         exception: exception,
         message: exception.message,
       );
-      if (onFailure == null) {
-        emit(state.updateStatus(failure));
-      } else {
-        onFailure(failure);
-      }
+      _handleFailure(failure);
     } on AppException catch (e) {
       final Failure failure = Failure(exception: e, message: e.message);
-      if (onFailure == null) {
-        emit(state.updateStatus(failure));
-      } else {
-        onFailure(failure);
-      }
+      _handleFailure(failure);
     } on Exception catch (_) {
       final Failure failure = Failure(exception: Exception('Failure'));
-      if (onFailure == null) {
-        emit(state.updateStatus(failure));
-      } else {
-        onFailure(failure);
-      }
+      _handleFailure(failure);
     } on Error catch (_) {
       final Failure failure = Failure(exception: Exception('Failure'));
-      if (onFailure == null) {
-        emit(state.updateStatus(failure));
-      } else {
-        onFailure(failure);
-      }
+      _handleFailure(failure);
     }
   }
 }
