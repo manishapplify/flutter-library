@@ -118,9 +118,17 @@ class _HomeState extends BasePageState<HomePage> {
   @override
   Widget body(BuildContext context) {
     return Center(
-      child: Text(
-        'Home',
-        style: textTheme.headline1,
+      child: Column(
+        children: <Widget>[
+          Text(
+            'Home',
+            style: textTheme.headline1,
+          ),
+          ElevatedButton(
+            onPressed: () => navigator.pushNamed(Routes.comments),
+            child: const Text('Comments'),
+          ),
+        ],
       ),
     );
   }
