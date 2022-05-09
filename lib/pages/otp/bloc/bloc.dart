@@ -1,19 +1,6 @@
-import 'package:bloc/bloc.dart';
-import 'package:components/common/work_status.dart';
-import 'package:components/Authentication/repo.dart';
-import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/cubits/models/user.dart';
-import 'package:components/enums/screen.dart';
-import 'package:components/common/app_exception.dart';
-import 'package:components/services/api/api.dart';
-import 'package:dio/dio.dart';
-import 'package:meta/meta.dart';
-import 'package:components/common/validators.dart' as validators;
+part of blocs;
 
-part 'event.dart';
-part 'state.dart';
-
-class OtpBloc extends Bloc<OtpEvent, OtpState> {
+class OtpBloc extends BaseBloc<OtpEvent, OtpState> {
   OtpBloc({
     required Screen screenType,
     required Api api,
@@ -25,7 +12,7 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
         super(OtpState(screenType: screenType)) {
     on<OtpChanged>(_onOtpChangedHandler);
     on<OtpSubmitted>(_onOtpSubmittedHandler);
-    on<ResetFormStatus>(_resetFormStatusHandler);
+    on<ResetOtpFormStatus>(_resetFormStatusHandler);
   }
 
   final AuthRepository _authRepository;
@@ -38,62 +25,37 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
 
   void _onOtpSubmittedHandler(
       OtpSubmitted event, Emitter<OtpState> emit) async {
-    emit(state.copyWith(formStatus: InProgress()));
-
-    try {
-      if (!state.isOtpValid) {
-        if (state.isOtpEmpty) {
-          throw AppException.otpCannotBeEmpty();
+    await _commonHandler(
+      handlerJob: () async {
+        if (!state.isOtpValid) {
+          if (state.isOtpEmpty) {
+            throw AppException.otpCannotBeEmpty();
+          }
+          throw AppException.otpvalid();
         }
-        throw AppException.otpvalid();
-      }
-      if (state.screenType == Screen.forgotPassword) {
-        await _authRepository.verifyForgetPasswordOtp(state.otp!);
-      } else if (state.screenType == Screen.verifyEmail) {
-        await _api.verifyEmail(state.otp!);
-        final User user = _authCubit.state.user!;
-        _authCubit.signupOrLogin(
-          user.copyWithJson(
-            <String, dynamic>{
-              "isEmailVerified": 1,
-            },
-          ),
-        );
-      }
-      emit(state.copyWith(formStatus: Success()));
-    } on DioError catch (e) {
-      late final AppException exception;
-
-      if (e.type == DioErrorType.other && e.error is AppException) {
-        exception = e.error;
-      } else {
-        exception = AppException.api400Exception();
-      }
-
-      emit(
-        state.copyWith(
-          formStatus: Failure(
-            exception: exception,
-            message: exception.message,
-          ),
-        ),
-      );
-    } on AppException catch (e) {
-      emit(state.copyWith(
-          formStatus: Failure(exception: e, message: e.message)));
-    } on Exception catch (_) {
-      emit(
-        state.copyWith(
-          formStatus: Failure(exception: Exception('Failure')),
-        ),
-      );
-    }
+        if (state.screenType == Screen.forgotPassword) {
+          await _authRepository.verifyForgetPasswordOtp(state.otp!);
+        } else if (state.screenType == Screen.verifyEmail) {
+          await _api.verifyEmail(state.otp!);
+          final User user = _authCubit.state.user!;
+          _authCubit.signupOrLogin(
+            user.copyWithJson(
+              <String, dynamic>{
+                "isEmailVerified": 1,
+              },
+            ),
+          );
+        }
+      },
+      emit: emit,
+    );
   }
 
-  void _resetFormStatusHandler(ResetFormStatus event, Emitter<OtpState> emit) =>
+  void _resetFormStatusHandler(
+          ResetOtpFormStatus event, Emitter<OtpState> emit) =>
       emit(
         state.copyWith(
-          formStatus: const Idle(),
+          blocStatus: const Idle(),
         ),
       );
 }

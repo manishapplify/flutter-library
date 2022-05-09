@@ -8,7 +8,7 @@ import 'package:components/common/dialogs.dart';
 import 'package:components/enums/gender.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/common/app_exception.dart';
-import 'package:components/pages/profile/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/widgets/image_container.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -185,8 +185,8 @@ class _UserProfileState extends BasePageState<ProfilePage> {
         child: SingleChildScrollView(
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (BuildContext context, ProfileState state) {
-              if (state.formStatus is Success) {
-                profileBloc.add(ResetFormStatus());
+              if (state.blocStatus is Success) {
+                profileBloc.add(ResetProfileFormStatus());
                 if (screen == Screen.registerUser) {
                   Future<void>.microtask(
                     () => navigator
@@ -206,9 +206,9 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                     ),
                   );
                 }
-              } else if (state.formStatus is Failure) {
-                profileBloc.add(ResetFormStatus());
-                final Failure failure = state.formStatus as Failure;
+              } else if (state.blocStatus is Failure) {
+                profileBloc.add(ResetProfileFormStatus());
+                final Failure failure = state.blocStatus as Failure;
                 Future<void>.microtask(
                   () => showSnackBar(
                     SnackBar(
@@ -481,7 +481,7 @@ class _UserProfileState extends BasePageState<ProfilePage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  state.formStatus is InProgress
+                  state.blocStatus is InProgress
                       ? const CircularProgressIndicator()
                       : ElevatedButton(
                           onPressed: onFormSubmitted,

@@ -1,19 +1,6 @@
-import 'dart:io';
+part of blocs;
 
-import 'package:bloc/bloc.dart';
-import 'package:components/common/work_status.dart';
-import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/common/app_exception.dart';
-import 'package:components/pages/report_bug/models/request.dart';
-import 'package:components/services/api/api.dart';
-import 'package:components/services/s3_image_upload/s3_image_upload.dart';
-import 'package:components/common/validators.dart' as validators;
-import 'package:meta/meta.dart';
-
-part 'event.dart';
-part 'state.dart';
-
-class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
+class ReportBugBloc extends BaseBloc<ReportBugEvent, ReportBugState> {
   ReportBugBloc({
     required Api api,
     required S3ImageUpload s3imageUpload,
@@ -21,14 +8,14 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
   })  : _api = api,
         _s3imageUpload = s3imageUpload,
         _authCubit = authCubit,
-        super(ReportBugState()) {
+        super(const ReportBugState()) {
     on<ReportBugTitleChanged>(_reportBugTitleChangedHandler);
     on<ReportBugDescriptionChanged>(_reportBugDescriptionChangedHandler);
     on<ReportBugScreenShotChanged>(_reportBugScreenShotChangedHandler);
     on<ReportBugScreenShotRemoved>(_reportBugScreenShotRemovedHandler);
     on<ReportBugSubmitted>(_reportBugSubmittedHandler);
-    on<ResetFormStatus>(_resetFormStatusHandler);
-    on<ResetFormState>(_resetFormStateHandler);
+    on<ResetReportBugFormStatus>(_resetFormStatusHandler);
+    on<ResetReportBugFormState>(_resetFormStateHandler);
   }
 
   final Api _api;
@@ -55,7 +42,7 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
     emit(ReportBugState(
       title: state.title,
       description: state.description,
-      formStatus: state.formStatus,
+      blocStatus: state.blocStatus,
     ));
   }
 
@@ -64,40 +51,36 @@ class ReportBugBloc extends Bloc<ReportBugEvent, ReportBugState> {
     if (!_authCubit.state.isAuthorized) {
       throw AppException.authenticationException();
     }
-    emit(state.copyWith(formStatus: InProgress()));
+    await _commonHandler(
+      handlerJob: () async {
+        final String? screenShotUrl = await _s3imageUpload.uploadImage(
+          s3Directory: _authCubit.state.user!.s3Folders.users,
+          profilePicFile: state.screenShot,
+        );
 
-    try {
-      final String? screenShotUrl = await _s3imageUpload.uploadImage(
-        s3Directory: _authCubit.state.user!.s3Folders.users,
-        profilePicFile: state.screenShot,
-      );
+        if (screenShotUrl == null) {
+          throw AppException.s3ImageUploadException();
+        }
 
-      if (screenShotUrl == null) {
-        throw AppException.s3ImageUploadException();
-      }
+        final ReportBugRequest request = ReportBugRequest(
+          description: state.description!,
+          image: screenShotUrl,
+          title: state.title!,
+        );
 
-      final ReportBugRequest request = ReportBugRequest(
-        description: state.description!,
-        image: screenShotUrl,
-        title: state.title!,
-      );
-
-      await _api.reportBug(request);
-      emit(state.copyWith(formStatus: Success()));
-    } on AppException catch (e) {
-      emit(state.copyWith(
-          formStatus: Failure(exception: e, message: e.message)));
-    } on Exception catch (e) {
-      emit(state.copyWith(formStatus: Failure(exception: e)));
-    }
+        await _api.reportBug(request);
+        emit(state.copyWith(blocStatus: Success()));
+      },
+      emit: emit,
+    );
   }
 
   void _resetFormStatusHandler(
-      ResetFormStatus event, Emitter<ReportBugState> emit) {
-    emit(state.copyWith(formStatus: const Idle()));
+      ResetReportBugFormStatus event, Emitter<ReportBugState> emit) {
+    emit(state.copyWith(blocStatus: const Idle()));
   }
 
   void _resetFormStateHandler(
-          ResetFormState event, Emitter<ReportBugState> emit) =>
-      emit(ReportBugState());
+          ResetReportBugFormState event, Emitter<ReportBugState> emit) =>
+      emit(const ReportBugState());
 }

@@ -10,7 +10,7 @@ import 'package:components/cubits/models/user.dart';
 import 'package:components/common/dialogs.dart';
 import 'package:components/common/app_exception.dart';
 import 'package:components/pages/base_page.dart';
-import 'package:components/pages/chat/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:components/pages/chat/widgets/message_tile.dart';
 import 'package:components/pages/chat/widgets/pdf_tile.dart';
 import 'package:components/routes/navigation.dart';
@@ -223,7 +223,7 @@ class _ChatState extends BasePageState<ChatPage> {
     }
 
     if (state.blocStatus is Failure) {
-      chatBloc.add(ResetBlocStatus());
+      chatBloc.add(ResetChatBlocStatus());
 
       final Failure failure = state.blocStatus as Failure;
 

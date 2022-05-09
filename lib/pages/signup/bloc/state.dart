@@ -1,14 +1,14 @@
-part of 'bloc.dart';
+part of blocs;
 
-class SignUpState {
-  SignUpState({
+class SignUpState extends BaseState {
+  const SignUpState({
     this.email = '',
     this.password = '',
     this.phoneNumber = '',
     this.confirmPassword = '',
     this.countryCode = '+91',
-    this.formStatus = const Idle(),
-  });
+    WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
 
   final String phoneNumber;
   bool get isValidphoneNumber => validators.isValidPhoneNumber(phoneNumber);
@@ -36,15 +36,13 @@ class SignUpState {
           ? 'Should match the password'
           : null;
 
-  final WorkStatus formStatus;
-
   SignUpState copyWith({
     String? phoneNumber,
     String? countryCode,
     String? email,
     String? password,
     String? confirmPassword,
-    WorkStatus? formStatus,
+    WorkStatus? blocStatus,
   }) {
     return SignUpState(
       phoneNumber: phoneNumber ?? this.phoneNumber,
@@ -52,7 +50,14 @@ class SignUpState {
       email: email ?? this.email,
       password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,
-      formStatus: formStatus ?? this.formStatus,
+      blocStatus: blocStatus ?? this.blocStatus,
     );
   }
+
+  @override
+  BaseState resetState() => const SignUpState();
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/common/dialogs.dart';
-import 'package:components/pages/report_bug/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:components/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,8 +49,8 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<ReportBugBloc, ReportBugState>(
       builder: (BuildContext context, ReportBugState state) {
-        if (state.formStatus is Success) {
-          reportBugBloc.add(ResetFormState());
+        if (state.blocStatus is Success) {
+          reportBugBloc.add(ResetReportBugFormState());
           titleTextEditingController.value = TextEditingValue.empty;
           descriptionTextEditingController.value = TextEditingValue.empty;
           Future<void>.microtask(
@@ -60,9 +60,9 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
               ),
             ),
           );
-        } else if (state.formStatus is Failure) {
-          reportBugBloc.add(ResetFormStatus());
-          final Failure failure = state.formStatus as Failure;
+        } else if (state.blocStatus is Failure) {
+          reportBugBloc.add(ResetReportBugFormStatus());
+          final Failure failure = state.blocStatus as Failure;
           Future<void>.microtask(
             () => showSnackBar(
               SnackBar(

@@ -1,6 +1,6 @@
 import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
-import 'package:components/pages/change_password/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -58,7 +58,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
         key: _formkey,
         child: BlocBuilder<ChangePasswordBloc, ChangePasswordState>(
             builder: (BuildContext context, ChangePasswordState state) {
-          if (state.formStatus is Success) {
+          if (state.blocStatus is Success) {
             changePasswordBloc.add(ResetFormState());
             currentPasswordTextController.value = TextEditingValue.empty;
             newPasswordTextController.value = TextEditingValue.empty;
@@ -70,8 +70,8 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
                 ),
               ),
             );
-          } else if (state.formStatus is Failure) {
-            final Failure failure = state.formStatus as Failure;
+          } else if (state.blocStatus is Failure) {
+            final Failure failure = state.blocStatus as Failure;
             Future<void>.microtask(
               () => showSnackBar(
                 SnackBar(
@@ -79,7 +79,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
                 ),
               ),
             );
-            changePasswordBloc.add(ResetFormStatus());
+            changePasswordBloc.add(ResetChangePasswordBlocStatus());
           }
 
           return Column(
@@ -150,7 +150,7 @@ class _ChangePasswordState extends BasePageState<ChangePasswordPage> {
               const SizedBox(
                 height: 20.0,
               ),
-              state.formStatus is InProgress
+              state.blocStatus is InProgress
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: () {

@@ -1,21 +1,6 @@
-import 'dart:io';
+part of blocs;
 
-import 'package:bloc/bloc.dart';
-import 'package:components/common/work_status.dart';
-import 'package:components/cubits/models/user.dart';
-import 'package:components/enums/gender.dart';
-import 'package:components/enums/screen.dart';
-import 'package:components/enums/signup.dart';
-import 'package:components/common/app_exception.dart';
-import 'package:components/pages/profile/repo.dart';
-import 'package:dio/dio.dart';
-import 'package:meta/meta.dart';
-import 'package:components/common/validators.dart' as validators;
-
-part 'event.dart';
-part 'state.dart';
-
-class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
   ProfileBloc({
     required Screen screenType,
     required ProfileRepository profileRepository,
@@ -37,7 +22,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         _profileNotificationStatusChangedHandler);
     on<ExistingUserProfileFetched>(_existingUserProfileFetchedHandler);
     on<ProfileSubmitted>(_profileSubmittedHandler);
-    on<ResetFormStatus>(_resetFormStatusHandler);
+    on<ResetProfileFormStatus>(_resetFormStatusHandler);
   }
 
   final ProfileRepository _profileRepository;
@@ -153,107 +138,57 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   void _profileSubmittedHandler(
       ProfileSubmitted event, Emitter<ProfileState> emit) async {
     if (state.screenType == Screen.registerUser) {
-      emit(state.copyWith(formStatus: InProgress()));
-      try {
-        await _profileRepository.registerUser(
-          firstName: state.firstname,
-          lastName: state.lastname,
-          countryCode: state.countryCode,
-          phoneNumber: state.phoneNumber,
-          email: state.email,
-          gender: state.gender?.name,
-          profilePicFile: state.profilePicFile,
-          age: state.age,
-          address: state.address,
-          city: state.city,
-          notificationEnabled:
-              state.isNotificationEnabled ? 1.toString() : 0.toString(),
-          referralCode: state.referralCode,
-          signupType: Signup.EMAIL_OR_PHONE,
-        );
-        emit(state.copyWith(formStatus: Success()));
-      } on DioError catch (e) {
-        late final AppException exception;
-
-        if (e.type == DioErrorType.other && e.error is AppException) {
-          exception = e.error;
-        } else {
-          exception = AppException.api400Exception();
-        }
-
-        emit(
-          state.copyWith(
-            formStatus: Failure(
-              exception: exception,
-              message: exception.message,
-            ),
-          ),
-        );
-      } on AppException catch (e) {
-        emit(state.copyWith(
-            formStatus: Failure(exception: e, message: e.message)));
-      } on Exception catch (_) {
-        emit(
-          state.copyWith(
-            formStatus: Failure(exception: Exception('Failure')),
-          ),
-        );
-      }
+      await _commonHandler(
+        handlerJob: () async {
+          await _profileRepository.registerUser(
+            firstName: state.firstname,
+            lastName: state.lastname,
+            countryCode: state.countryCode,
+            phoneNumber: state.phoneNumber,
+            email: state.email,
+            gender: state.gender?.name,
+            profilePicFile: state.profilePicFile,
+            age: state.age,
+            address: state.address,
+            city: state.city,
+            notificationEnabled:
+                state.isNotificationEnabled ? 1.toString() : 0.toString(),
+            referralCode: state.referralCode,
+            signupType: Signup.EMAIL_OR_PHONE,
+          );
+        },
+        emit: emit,
+      );
     } else if (state.screenType == Screen.updateProfile) {
-      emit(state.copyWith(formStatus: InProgress()));
-      try {
-        await _profileRepository.updateProfile(
-          firstName: state.firstname,
-          lastName: state.lastname,
-          countryCode: state.countryCode,
-          phoneNumber: state.phoneNumber,
-          email: state.email,
-          gender: state.gender?.name,
-          profilePicFile: state.profilePicFile,
-          age: state.age,
-          address: state.address,
-          city: state.city,
-          notificationEnabled:
-              state.isNotificationEnabled ? 1.toString() : 0.toString(),
-        );
-        emit(state.copyWith(formStatus: Success()));
-      } on DioError catch (e) {
-        late final AppException exception;
-
-        if (e.type == DioErrorType.other && e.error is AppException) {
-          exception = e.error;
-        } else {
-          exception = AppException.api400Exception();
-        }
-
-        emit(
-          state.copyWith(
-            formStatus: Failure(
-              exception: exception,
-              message: exception.message,
-            ),
-          ),
-        );
-      } on AppException catch (e) {
-        emit(state.copyWith(
-            formStatus: Failure(exception: e, message: e.message)));
-      } on Exception catch (_) {
-        emit(
-          state.copyWith(
-            formStatus: Failure(exception: Exception('Failure')),
-          ),
-        );
-      }
+      await _commonHandler(
+        handlerJob: () async {
+          await _profileRepository.updateProfile(
+            firstName: state.firstname,
+            lastName: state.lastname,
+            countryCode: state.countryCode,
+            phoneNumber: state.phoneNumber,
+            email: state.email,
+            gender: state.gender?.name,
+            profilePicFile: state.profilePicFile,
+            age: state.age,
+            address: state.address,
+            city: state.city,
+            notificationEnabled:
+                state.isNotificationEnabled ? 1.toString() : 0.toString(),
+          );
+        },
+        emit: emit,
+      );
     } else {
       throw AppException.unsupportedActionException();
     }
   }
 
   void _resetFormStatusHandler(
-          ResetFormStatus event, Emitter<ProfileState> emit) =>
+          ResetProfileFormStatus event, Emitter<ProfileState> emit) =>
       emit(
         state.copyWith(
-          formStatus: const Idle(),
+          blocStatus: const Idle(),
         ),
       );
 }

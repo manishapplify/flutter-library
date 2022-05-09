@@ -1,27 +1,31 @@
-part of 'bloc.dart';
+part of blocs;
 
-@immutable
-class ForgotPasswordState {
+class ForgotPasswordState extends BaseState {
   const ForgotPasswordState({
     this.email = '',
-    this.formStatus = const Idle(),
     this.isLoginSuccessful,
-  });
+  WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
 
   final String email;
   String? get emailValidator =>
       !validators.notEmptyValidator(email) ? 'Email is required' : null;
 
-  final WorkStatus formStatus;
   final bool? isLoginSuccessful;
 
   ForgotPasswordState copyWith({
     String? email,
-    WorkStatus? formStatus,
+    WorkStatus? blocStatus,
   }) {
     return ForgotPasswordState(
       email: email ?? this.email,
-      formStatus: formStatus ?? this.formStatus,
+      blocStatus: blocStatus ?? this.blocStatus,
     );
   }
+  @override
+  BaseState resetState() => const ForgotPasswordState();
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }

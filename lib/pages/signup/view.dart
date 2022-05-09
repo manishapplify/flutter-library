@@ -1,6 +1,6 @@
 import 'package:components/common/work_status.dart';
 import 'package:components/enums/screen.dart';
-import 'package:components/pages/signup/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:components/pages/base_page.dart';
@@ -172,7 +172,7 @@ class _SignupState extends BasePageState<SignupPage> {
               ),
               BlocBuilder<SignUpBloc, SignUpState>(
                 builder: (BuildContext context, SignUpState state) {
-                  if (state.formStatus is Success) {
+                  if (state.blocStatus is Success) {
                     Future<void>.microtask(
                       () => Navigator.popAndPushNamed(
                         context,
@@ -180,8 +180,8 @@ class _SignupState extends BasePageState<SignupPage> {
                         arguments: Screen.verifyEmail,
                       ),
                     );
-                  } else if (state.formStatus is Failure) {
-                    final Failure failure = state.formStatus as Failure;
+                  } else if (state.blocStatus is Failure) {
+                    final Failure failure = state.blocStatus as Failure;
                     Future<void>.microtask(
                       () => showSnackBar(
                         SnackBar(
@@ -191,7 +191,7 @@ class _SignupState extends BasePageState<SignupPage> {
                     );
                   }
 
-                  return state.formStatus is InProgress
+                  return state.blocStatus is InProgress
                       ? const Center(child: CircularProgressIndicator())
                       : ElevatedButton(
                           onPressed: onFormSubmitted,

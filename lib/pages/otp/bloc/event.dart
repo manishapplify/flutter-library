@@ -1,7 +1,7 @@
-part of 'bloc.dart';
+part of blocs;
 
-@immutable
-abstract class OtpEvent {}
+
+abstract class OtpEvent extends BaseEvent {}
 
 class OtpChanged extends OtpEvent {
   OtpChanged(this.otp);
@@ -11,4 +11,4 @@ class OtpChanged extends OtpEvent {
 
 class OtpSubmitted extends OtpEvent {}
 
-class ResetFormStatus extends OtpEvent {}
+class ResetOtpFormStatus extends OtpEvent {}

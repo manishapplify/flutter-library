@@ -1,6 +1,6 @@
 import 'package:components/common/functions.dart';
 import 'package:components/cubits/models/user.dart';
-import 'package:components/pages/chat/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:components/pages/chat/widgets/pdf_tile.dart';
 import 'package:components/services/firebase_realtime_database/models/message/document_message.dart';
 import 'package:components/services/firebase_realtime_database/models/message/image_message.dart';

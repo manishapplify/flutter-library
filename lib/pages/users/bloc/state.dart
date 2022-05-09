@@ -1,21 +1,20 @@
-part of 'bloc.dart';
+part of blocs;
 
 @immutable
-class UsersState {
+class UsersState extends BaseState {
   const UsersState({
     this.users = const <FirebaseUser>[],
     this.chat,
-    this.blocStatus = const Idle(),
     this.chatStatus = const Idle(),
     this.usersMatchingQuery = const <FirebaseUser>[],
-  });
+    WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
 
   // Using list since index operation is required in view.
   final List<FirebaseUser> users;
 
   /// Chat that the user tapped on.
   final FirebaseChat? chat;
-  final WorkStatus blocStatus;
 
   /// Used to track state of loading a chat when user presses message icon.
   final WorkStatus chatStatus;
@@ -37,4 +36,11 @@ class UsersState {
       usersMatchingQuery: usersMatchingQuery ?? this.usersMatchingQuery,
     );
   }
+
+  @override
+  BaseState resetState() => const UsersState();
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }

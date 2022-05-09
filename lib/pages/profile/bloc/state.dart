@@ -1,7 +1,7 @@
-part of 'bloc.dart';
+part of blocs;
 
-class ProfileState {
-  ProfileState({
+class ProfileState extends BaseState {
+ const ProfileState({
     required this.screenType,
     this.profilePicFile,
     this.profilePicUrlPath,
@@ -16,8 +16,8 @@ class ProfileState {
     this.address,
     this.city,
     this.isNotificationEnabled = false,
-    this.formStatus = const Idle(),
-  });
+    WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
 
   /// Initialize when user selects a file from gallery or camera.
   final File? profilePicFile;
@@ -79,7 +79,6 @@ class ProfileState {
 
   final Screen screenType;
 
-  final WorkStatus formStatus;
 
   ProfileState copyWith({
     File? profilePicFile,
@@ -95,7 +94,7 @@ class ProfileState {
     String? address,
     String? city,
     bool? isNotificationEnabled,
-    WorkStatus? formStatus,
+    WorkStatus? blocStatus,
   }) {
     return ProfileState(
       profilePicFile: profilePicFile ?? this.profilePicFile,
@@ -110,10 +109,16 @@ class ProfileState {
       age: age ?? this.age,
       address: address ?? this.address,
       city: city ?? this.city,
-      formStatus: formStatus ?? this.formStatus,
+      blocStatus: blocStatus ?? this.blocStatus,
       isNotificationEnabled:
           isNotificationEnabled ?? this.isNotificationEnabled,
       screenType: screenType,
     );
   }
+  @override
+  BaseState resetState() =>  ProfileState(screenType: screenType);
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }

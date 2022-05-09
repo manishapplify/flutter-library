@@ -1,7 +1,7 @@
 import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
-import 'package:components/pages/reset_password/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -57,9 +57,9 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
             children: <Widget>[
               BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
                 builder: (BuildContext context, ResetPasswordState state) {
-                  if (state.formStatus is Success) {
+                  if (state.blocStatus is Success) {
                     passwordAuthCubit.resetToken();
-                    resetPasswordBloc.add(ResetFormState());
+                    resetPasswordBloc.add(ResetResetPasswordFormState());
                     passwordTextEditingController.value =
                         TextEditingValue.empty;
                     confirmNewPasswordTextController.value =
@@ -71,8 +71,8 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                         ),
                       ),
                     );
-                  } else if (state.formStatus is Failure) {
-                    final Failure failure = state.formStatus as Failure;
+                  } else if (state.blocStatus is Failure) {
+                    final Failure failure = state.blocStatus as Failure;
                     Future<void>.microtask(
                       () => showSnackBar(
                         SnackBar(
@@ -123,14 +123,15 @@ class _ResetPasswordPageState extends BasePageState<ResetPasswordPage> {
                         ),
                         validator: (_) => state.confirmNewPasswordValidator,
                         onChanged: (String value) => resetPasswordBloc.add(
-                          ConfirmNewPasswordChanged(confirmNewPassword: value),
+                          ResetConfirmNewPasswordChanged(
+                              confirmNewPassword: value),
                         ),
                         onFieldSubmitted: (_) => onFormSubmitted(),
                       ),
                       const SizedBox(
                         height: 16.0,
                       ),
-                      state.formStatus is InProgress
+                      state.blocStatus is InProgress
                           ? const CircularProgressIndicator()
                           : ElevatedButton(
                               onPressed: onFormSubmitted,

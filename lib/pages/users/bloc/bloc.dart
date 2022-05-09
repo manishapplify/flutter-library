@@ -1,17 +1,6 @@
-import 'package:bloc/bloc.dart';
-import 'package:components/common/work_status.dart';
-import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/common/app_exception.dart';
-import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
-import 'package:components/services/firebase_realtime_database/models/chat.dart';
-import 'package:components/services/firebase_realtime_database/models/user.dart';
-import 'package:meta/meta.dart';
-import 'package:dio/dio.dart';
+part of blocs;
 
-part 'event.dart';
-part 'state.dart';
-
-class UsersBloc extends Bloc<UsersEvent, UsersState> {
+class UsersBloc extends BaseBloc<UsersEvent, UsersState> {
   UsersBloc({
     required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
     required AuthCubit authCubit,
@@ -103,34 +92,6 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         usersMatchingQuery: usersMatchingQuery,
       ),
     );
-  }
-
-  Future<void> _commonHandler(
-      {required Future<void> Function() handlerJob,
-      required Function(WorkStatus status) onFailure,
-      required Emitter<UsersState> emit}) async {
-    try {
-      await handlerJob();
-    } on DioError catch (e) {
-      late final AppException exception;
-
-      if (e.type == DioErrorType.other && e.error is AppException) {
-        exception = e.error;
-      } else {
-        exception = AppException.api400Exception();
-      }
-
-      onFailure(
-        Failure(
-          exception: exception,
-          message: exception.message,
-        ),
-      );
-    } on AppException catch (e) {
-      onFailure(Failure(exception: e, message: e.message));
-    } on Exception catch (_) {
-      onFailure(Failure(exception: Exception('Failure')));
-    }
   }
 
   void _resetChatStateHandler(

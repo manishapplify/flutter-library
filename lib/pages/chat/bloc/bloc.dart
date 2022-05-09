@@ -1,26 +1,6 @@
-import 'dart:async';
-import 'dart:io';
+part of blocs;
 
-import 'package:bloc/bloc.dart';
-import 'package:components/common/work_status.dart';
-import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/common/app_exception.dart';
-import 'package:components/services/api/api.dart';
-import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
-import 'package:components/services/firebase_realtime_database/models/chat.dart';
-import 'package:components/services/firebase_realtime_database/models/message/document_message.dart';
-import 'package:components/services/firebase_realtime_database/models/message/image_message.dart';
-import 'package:components/services/firebase_realtime_database/models/message/message.dart';
-import 'package:components/services/firebase_realtime_database/models/message/text_message.dart';
-import 'package:components/services/firebase_realtime_database/models/user.dart';
-import 'package:components/services/firebase_storage_service.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:meta/meta.dart';
-
-part 'event.dart';
-part 'state.dart';
-
-class ChatBloc extends Bloc<ChatEvent, ChatState> {
+class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
   ChatBloc(
       {required this.imageBaseUrl,
       required AuthCubit authCubit,
@@ -57,9 +37,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<SendDocEvent>(_sendDocEventHandler);
     on<OpenDocEvent>(_openDocEventHandler);
     on<OnPdfViewCloseEvent>(_onPdfViewCloseEventHandler);
-    on<ResetBlocStatus>(_resetBlocStatusHandler);
+    on<ResetChatBlocStatus>(_resetBlocStatusHandler);
     on<ChatPagePopEvent>(_chatPagePopEventHandler);
-    on<ResetBlocState>(_resetBlocStateHandler);
+    on<ResetChatBlocState>(_resetBlocStateHandler);
     on<ViewDisposeEvent>(_viewDisposeEventHandler);
   }
 
@@ -569,7 +549,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         downloadedPdfFilePath: '', pdfViewerStatus: const Idle()));
   }
 
-  void _resetBlocStatusHandler(ResetBlocStatus event, Emitter<ChatState> emit) {
+  void _resetBlocStatusHandler(
+      ResetChatBlocStatus event, Emitter<ChatState> emit) {
     emit(state.copyWith(blocStatus: const Idle()));
   }
 
@@ -583,7 +564,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     ));
   }
 
-  void _resetBlocStateHandler(ResetBlocState event, Emitter<ChatState> emit) {
+  void _resetBlocStateHandler(
+      ResetChatBlocState event, Emitter<ChatState> emit) {
     emit(ChatState(
       chatUpdateSubscriptions: state.chatUpdateSubscriptions,
       chatsSubscription: state.chatsSubscription,
@@ -609,32 +591,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
 
     emit(const ChatState());
-  }
-
-  Future<void> _commonHandler({
-    required Future<void> Function() handlerJob,
-    required Emitter<ChatState> emit,
-    bool emitFailureOnly = false,
-  }) async {
-    if (!emitFailureOnly) {
-      emit(state.copyWith(blocStatus: InProgress()));
-    }
-
-    try {
-      await handlerJob();
-      if (!emitFailureOnly) {
-        emit(state.copyWith(blocStatus: Success()));
-      }
-    } on AppException catch (e) {
-      emit(state.copyWith(
-          blocStatus: Failure(exception: e, message: e.message)));
-    } on Exception catch (_) {
-      emit(
-        state.copyWith(
-          blocStatus: Failure(exception: Exception('Failure')),
-        ),
-      );
-    }
   }
 
   /// {chatId: subscription}

@@ -1,6 +1,6 @@
-part of 'bloc.dart';
+part of blocs;
 
-abstract class FeedbackEvent {}
+abstract class FeedbackEvent extends BaseEvent {}
 
 class FeedbackCommentChanged extends FeedbackEvent {
   FeedbackCommentChanged({this.comment});
@@ -19,6 +19,6 @@ class FeedbackRatingChanged extends FeedbackEvent {
 
 class FeedbackSubmitted extends FeedbackEvent {}
 
-class ResetFormStatus extends FeedbackEvent {}
+class ResetFeedbackFormStatus extends FeedbackEvent {}
 
-class ResetFormState extends FeedbackEvent {}
+class ResetFeedbackFormState extends FeedbackEvent {}

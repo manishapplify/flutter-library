@@ -1,11 +1,11 @@
-part of 'bloc.dart';
+part of blocs;
 
-class ResetPasswordState {
-  ResetPasswordState({
+class ResetPasswordState extends BaseState {
+  const ResetPasswordState({
     this.newPassword = '',
     this.confirmNewPassword = '',
-    this.formStatus = const Idle(),
-  });
+   WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
 
   final String newPassword;
   String? get newPasswordValidator => newPassword.isEmpty
@@ -21,17 +21,23 @@ class ResetPasswordState {
           ? 'Should match the new password'
           : null;
 
-  final WorkStatus formStatus;
 
   ResetPasswordState copyWith({
     String? newPassword,
     String? confirmNewPassword,
-    WorkStatus? formStatus,
+    WorkStatus? blocStatus,
   }) {
     return ResetPasswordState(
       newPassword: newPassword ?? this.newPassword,
-      formStatus: formStatus ?? this.formStatus,
+      blocStatus: blocStatus ?? this.blocStatus,
       confirmNewPassword: confirmNewPassword ?? this.confirmNewPassword,
     );
   }
+
+  @override
+  BaseState resetState() => const ResetPasswordState();
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }

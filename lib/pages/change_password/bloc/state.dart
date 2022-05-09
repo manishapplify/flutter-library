@@ -1,12 +1,12 @@
-part of 'bloc.dart';
+part of blocs;
 
-class ChangePasswordState {
-  ChangePasswordState({
+class ChangePasswordState extends BaseState {
+ const ChangePasswordState({
     this.currentPassword = '',
     this.newPassword = '',
     this.confirmNewPassword = '',
-    this.formStatus = const Idle(),
-  });
+    WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
 
   final String currentPassword;
   String? get currentPasswordValidator =>
@@ -28,19 +28,25 @@ class ChangePasswordState {
           ? 'Should match the new password'
           : null;
 
-  final WorkStatus formStatus;
 
   ChangePasswordState copyWith({
     String? currentPassword,
     String? newPassword,
     String? confirmNewPassword,
-    WorkStatus? formStatus,
+    WorkStatus? blocStatus,
   }) {
     return ChangePasswordState(
       currentPassword: currentPassword ?? this.currentPassword,
       newPassword: newPassword ?? this.newPassword,
       confirmNewPassword: confirmNewPassword ?? this.confirmNewPassword,
-      formStatus: formStatus ?? this.formStatus,
+      blocStatus: blocStatus ?? this.blocStatus,
     );
   }
+
+   @override
+  BaseState resetState() => const ChangePasswordState();
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }

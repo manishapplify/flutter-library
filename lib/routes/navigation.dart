@@ -3,33 +3,25 @@ import 'package:components/blocs/blocs.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/screen.dart';
-import 'package:components/pages/change_password/bloc/bloc.dart';
 import 'package:components/pages/change_password/view.dart';
 import 'package:components/pages/chat/chat.dart';
 import 'package:components/pages/chat/chats.dart';
 import 'package:components/pages/chat/widgets/pdf_viewer.dart';
-import 'package:components/pages/feedback/bloc/bloc.dart';
 import 'package:components/pages/feedback/view.dart';
-import 'package:components/pages/forgot_password/bloc/bloc.dart';
 import 'package:components/pages/forgot_password/view.dart';
 import 'package:components/pages/home/view.dart';
 import 'package:components/pages/login/view.dart';
-import 'package:components/pages/otp/bloc/bloc.dart';
 import 'package:components/pages/otp/view.dart';
-import 'package:components/pages/profile/bloc/bloc.dart';
 import 'package:components/pages/profile/repo.dart';
 import 'package:components/pages/profile/view.dart';
-import 'package:components/pages/report_bug/bloc/bloc.dart';
 import 'package:components/pages/report_bug/view.dart';
 import 'package:components/pages/report_feedback/feedback_one.dart';
 import 'package:components/pages/report_feedback/feedback_one/bloc/bloc.dart';
 import 'package:components/pages/report_feedback/feedback_third.dart';
 import 'package:components/pages/report_feedback/list.dart';
-import 'package:components/pages/reset_password/bloc/bloc.dart';
 import 'package:components/pages/reset_password/view.dart';
 import 'package:components/pages/settings/cubit/cubit.dart';
 import 'package:components/pages/settings/view.dart';
-import 'package:components/pages/signup/bloc/bloc.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/view.dart';
 import 'package:components/pages/users/view.dart';
@@ -184,7 +176,6 @@ class Navigation {
             create: (_) => ChangePasswordBloc(
               api: _api,
               authRepository: _authRepository,
-              authCubit: _authCubit,
             ),
             child: const ChangePasswordPage(),
           ),

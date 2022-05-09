@@ -1,12 +1,12 @@
-part of 'bloc.dart';
+part of blocs;
 
-class ReportBugState {
-  ReportBugState({
+class ReportBugState extends BaseState {
+  const ReportBugState({
     this.title,
     this.description,
     this.screenShot,
-    this.formStatus = const Idle(),
-  });
+    WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
 
   final String? title;
   String? get titleValidator =>
@@ -19,19 +19,25 @@ class ReportBugState {
 
   final File? screenShot;
   bool get isValidScreenShot => screenShot is File;
-  final WorkStatus formStatus;
 
   ReportBugState copyWith({
     String? title,
     String? description,
     File? screenShot,
-    WorkStatus? formStatus,
+    WorkStatus? blocStatus,
   }) {
     return ReportBugState(
       title: title ?? this.title,
       description: description ?? this.description,
       screenShot: screenShot ?? this.screenShot,
-      formStatus: formStatus ?? this.formStatus,
+      blocStatus: blocStatus ?? this.blocStatus,
     );
   }
+
+  @override
+  BaseState resetState() => const ReportBugState();
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }

@@ -1,7 +1,6 @@
-part of 'bloc.dart';
+part of blocs;
 
-@immutable
-abstract class ForgotPasswordEvent {}
+abstract class ForgotPasswordEvent extends BaseEvent {}
 
 class EmailChanged extends ForgotPasswordEvent {
   EmailChanged(this.email);
@@ -11,4 +10,4 @@ class EmailChanged extends ForgotPasswordEvent {
 
 class ForgotPasswordSubmitted extends ForgotPasswordEvent {}
 
-class ResetFormStatus extends ForgotPasswordEvent {}
+class ResetForgotPasswordFormStatus extends ForgotPasswordEvent {}

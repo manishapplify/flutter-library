@@ -1,6 +1,6 @@
-part of 'bloc.dart';
+part of blocs;
 
-abstract class SignUpEvent {}
+abstract class SignUpEvent extends BaseEvent {}
 
 class SignUpEmailChanged extends SignUpEvent {
   SignUpEmailChanged({required this.email});

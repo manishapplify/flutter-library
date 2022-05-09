@@ -1,7 +1,6 @@
-part of 'bloc.dart';
+part of blocs;
 
-@immutable
-abstract class UsersEvent {}
+abstract class UsersEvent extends BaseEvent {}
 
 class GetUsersEvent extends UsersEvent {}
 

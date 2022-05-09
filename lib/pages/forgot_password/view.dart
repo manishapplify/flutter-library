@@ -2,7 +2,7 @@ import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/enums/screen.dart';
-import 'package:components/pages/forgot_password/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,17 +63,17 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
             children: <Widget>[
               BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
                 builder: (BuildContext context, ForgotPasswordState state) {
-                  if (state.formStatus is Success) {
-                    forgotPasswordBloc.add(ResetFormStatus());
+                  if (state.blocStatus is Success) {
+                    forgotPasswordBloc.add(ResetForgotPasswordFormStatus());
                     Future<void>.microtask(
                       () => navigator.pushNamed(
                         Routes.otp,
                         arguments: Screen.forgotPassword,
                       ),
                     );
-                  } else if (state.formStatus is Failure) {
-                    forgotPasswordBloc.add(ResetFormStatus());
-                    final Failure failure = state.formStatus as Failure;
+                  } else if (state.blocStatus is Failure) {
+                    forgotPasswordBloc.add(ResetForgotPasswordFormStatus());
+                    final Failure failure = state.blocStatus as Failure;
                     Future<void>.microtask(
                       () => showSnackBar(
                         SnackBar(
@@ -108,7 +108,7 @@ class _ForgotPasswordPageState extends BasePageState<ForgotPasswordPage> {
                         onFieldSubmitted: (_) => onFormSubmitted(),
                       ),
                       const SizedBox(height: 15),
-                      state.formStatus is InProgress
+                      state.blocStatus is InProgress
                           ? const CircularProgressIndicator()
                           : ElevatedButton(
                               onPressed: onFormSubmitted,

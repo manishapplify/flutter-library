@@ -1,9 +1,8 @@
-part of 'bloc.dart';
+part of blocs;
 
 @immutable
-class ChatState {
+class ChatState extends BaseState {
   const ChatState({
-    this.blocStatus = const Idle(),
     this.chats = const <FirebaseChat>{},
     this.chatsSubscription,
     this.chatUpdateSubscriptions =
@@ -19,7 +18,8 @@ class ChatState {
     this.pdfFile,
     this.downloadedPdfFilePath,
     this.pdfViewerStatus = const Idle(),
-  });
+  WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
 
   final Set<FirebaseChat> chats;
 
@@ -38,7 +38,6 @@ class ChatState {
   /// ChatId: Subscription object.
   final Map<String, StreamSubscription<Set<FirebaseMessage>>>
       messageSubscriptions;
-  final WorkStatus blocStatus;
   final File? imageFile;
   final PlatformFile? pdfFile;
   final String? downloadedPdfFilePath;
@@ -80,4 +79,10 @@ class ChatState {
       pdfViewerStatus: pdfViewerStatus?? this.pdfViewerStatus
     );
   }
+  @override
+  BaseState resetState() => const ChatState();
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }

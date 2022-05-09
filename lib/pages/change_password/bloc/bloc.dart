@@ -1,31 +1,20 @@
-import 'package:components/Authentication/repo.dart';
-import 'package:components/common/work_status.dart';
-import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/common/app_exception.dart';
-import 'package:components/services/api/api.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:components/common/validators.dart' as validators;
-
-part 'event.dart';
-part 'state.dart';
+part of blocs;
 
 class ChangePasswordBloc
-    extends Bloc<ChangePasswordEvent, ChangePasswordState> {
+    extends BaseBloc<ChangePasswordEvent, ChangePasswordState> {
   ChangePasswordBloc({
     required Api api,
     required AuthRepository authRepository,
-    required AuthCubit authCubit,
   })  : _authRepository = authRepository,
-        super(ChangePasswordState()) {
+        super(const ChangePasswordState()) {
     on<CurrentPasswordChanged>(_currentPasswordChangedHandler);
     on<NewPasswordChanged>(_newPasswordChangedHandler);
     on<ConfirmNewPasswordChanged>(_confirmNewPasswordChangedHandler);
     on<ResetFormState>(
         (ResetFormState event, Emitter<ChangePasswordState> emit) {
-      emit(ChangePasswordState());
+      emit(const ChangePasswordState());
     });
-    on<ResetFormStatus>(_resetFormStatusHandler);
+    on<ResetChangePasswordBlocStatus>(_resetChangePasswordBlocStatusHandler);
     on<ChangePasswordSubmitted>(_changePasswordEventHandler);
   }
 
@@ -36,7 +25,7 @@ class ChangePasswordBloc
     emit(
       state.copyWith(
         currentPassword: event.currentPassword,
-        formStatus: const Idle(),
+        blocStatus: const Idle(),
       ),
     );
   }
@@ -46,7 +35,7 @@ class ChangePasswordBloc
     emit(
       state.copyWith(
         newPassword: event.newPassword,
-        formStatus: const Idle(),
+        blocStatus: const Idle(),
       ),
     );
   }
@@ -56,7 +45,7 @@ class ChangePasswordBloc
     emit(
       state.copyWith(
         confirmNewPassword: event.confirmNewPassword,
-        formStatus: const Idle(),
+        blocStatus: const Idle(),
       ),
     );
   }
@@ -74,48 +63,12 @@ class ChangePasswordBloc
     );
   }
 
-  void _resetFormStatusHandler(
-          ResetFormStatus event, Emitter<ChangePasswordState> emit) =>
+  void _resetChangePasswordBlocStatusHandler(
+          ResetChangePasswordBlocStatus event,
+          Emitter<ChangePasswordState> emit) =>
       emit(
         state.copyWith(
-          formStatus: const Idle(),
+          blocStatus: const Idle(),
         ),
       );
-
-  Future<void> _commonHandler(
-      {required Future<void> Function() handlerJob,
-      required Emitter<ChangePasswordState> emit}) async {
-    emit(state.copyWith(formStatus: InProgress()));
-
-    try {
-      await handlerJob();
-      emit(state.copyWith(formStatus: Success()));
-    } on DioError catch (e) {
-      late final AppException exception;
-
-      if (e.type == DioErrorType.other && e.error is AppException) {
-        exception = e.error;
-      } else {
-        exception = AppException.api400Exception();
-      }
-
-      emit(
-        state.copyWith(
-          formStatus: Failure(
-            exception: exception,
-            message: exception.message,
-          ),
-        ),
-      );
-    } on AppException catch (e) {
-      emit(state.copyWith(
-          formStatus: Failure(exception: e, message: e.message)));
-    } on Exception catch (_) {
-      emit(
-        state.copyWith(
-          formStatus: Failure(exception: Exception('Failure')),
-        ),
-      );
-    }
-  }
 }

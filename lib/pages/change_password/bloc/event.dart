@@ -1,6 +1,6 @@
-part of 'bloc.dart';
+part of blocs;
 
-abstract class ChangePasswordEvent {}
+abstract class ChangePasswordEvent extends BaseEvent {}
 
 class CurrentPasswordChanged extends ChangePasswordEvent {
   CurrentPasswordChanged({required this.currentPassword});
@@ -22,6 +22,6 @@ class ConfirmNewPasswordChanged extends ChangePasswordEvent {
 
 class ResetFormState extends ChangePasswordEvent {}
 
-class ResetFormStatus extends ChangePasswordEvent {}
+class ResetChangePasswordBlocStatus extends ChangePasswordEvent {}
 
 class ChangePasswordSubmitted extends ChangePasswordEvent {}

@@ -1,7 +1,5 @@
-part of 'bloc.dart';
-
-@immutable
-abstract class ProfileEvent {}
+part of blocs;
+abstract class ProfileEvent extends BaseEvent {}
 
 class ProfileReferralCodeChanged extends ProfileEvent {
   ProfileReferralCodeChanged({required this.referralCode});
@@ -71,4 +69,4 @@ class ExistingUserProfileFetched extends ProfileEvent {
 
 class ProfileSubmitted extends ProfileEvent {}
 
-class ResetFormStatus extends ProfileEvent {}
+class ResetProfileFormStatus extends ProfileEvent {}

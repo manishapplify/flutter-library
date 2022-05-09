@@ -1,6 +1,6 @@
 import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
-import 'package:components/pages/feedback/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:components/widgets/chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,8 +66,8 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
           child: SingleChildScrollView(
             child: BlocBuilder<FeedbackBloc, FeedbackState>(
                 builder: (BuildContext context, FeedbackState state) {
-              if (state.formStatus is Success) {
-                feedbackBloc.add(ResetFormState());
+              if (state.blocStatus is Success) {
+                feedbackBloc.add(ResetFeedbackFormState());
                 descriptionTextEditingController.value = TextEditingValue.empty;
                 Future<void>.microtask(
                   () => showSnackBar(
@@ -76,10 +76,10 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                     ),
                   ),
                 );
-              } else if (state.formStatus is Failure) {
-                feedbackBloc.add(ResetFormStatus());
+              } else if (state.blocStatus is Failure) {
+                feedbackBloc.add(ResetFeedbackFormStatus());
 
-                final Failure failure = state.formStatus as Failure;
+                final Failure failure = state.blocStatus as Failure;
                 Future<void>.microtask(
                   () => showSnackBar(
                     SnackBar(
@@ -176,7 +176,7 @@ class _FeedbackPageState extends BasePageState<FeedbackPage> {
                   ),
                   const SizedBox(height: 20.0),
                   Center(
-                    child: state.formStatus is InProgress
+                    child: state.blocStatus is InProgress
                         ? const Center(child: CircularProgressIndicator())
                         : ElevatedButton(
                             child: const Padding(

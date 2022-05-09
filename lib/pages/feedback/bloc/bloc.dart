@@ -1,25 +1,16 @@
-import 'package:components/common/work_status.dart';
-import 'package:components/common/app_exception.dart';
-import 'package:components/pages/feedback/models/request.dart';
-import 'package:components/services/api/api.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dio/dio.dart';
-import 'package:components/common/validators.dart' as validators;
+part of blocs;
 
-part 'event.dart';
-part 'state.dart';
-
-class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
+class FeedbackBloc extends BaseBloc<FeedbackEvent, FeedbackState> {
   FeedbackBloc({
     required Api api,
   })  : _api = api,
-        super(FeedbackState()) {
+        super(const FeedbackState()) {
     on<FeedbackTitleChanged>(_feedbackTitleChangedHandler);
     on<FeedbackRatingChanged>(_feedbackRatingChangedHandler);
     on<FeedbackCommentChanged>(_feedbackCommentChangedHandler);
     on<FeedbackSubmitted>(_feedbackSubmittedEventHandler);
-    on<ResetFormStatus>(_resetFormStatusHandler);
-    on<ResetFormState>(_resetFormStateHandler);
+    on<ResetFeedbackFormStatus>(_resetFormStatusHandler);
+    on<ResetFeedbackFormState>(_resetFormStateHandler);
   }
 
   final Api _api;
@@ -66,52 +57,15 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     );
   }
 
-  Future<void> _commonHandler(
-      {required Future<void> Function() handlerJob,
-      required Emitter<FeedbackState> emit}) async {
-    emit(state.copyWith(formStatus: InProgress()));
-
-    try {
-      await handlerJob();
-      emit(state.copyWith(formStatus: Success()));
-    } on DioError catch (e) {
-      late final AppException exception;
-
-      if (e.type == DioErrorType.other && e.error is AppException) {
-        exception = e.error;
-      } else {
-        exception = AppException.api400Exception();
-      }
-
-      emit(
-        state.copyWith(
-          formStatus: Failure(
-            exception: exception,
-            message: exception.message,
-          ),
-        ),
-      );
-    } on AppException catch (e) {
-      emit(state.copyWith(
-          formStatus: Failure(exception: e, message: e.message)));
-    } on Exception catch (_) {
-      emit(
-        state.copyWith(
-          formStatus: Failure(exception: Exception('Failure')),
-        ),
-      );
-    }
-  }
-
   void _resetFormStatusHandler(
-          ResetFormStatus event, Emitter<FeedbackState> emit) =>
+          ResetFeedbackFormStatus event, Emitter<FeedbackState> emit) =>
       emit(
         state.copyWith(
-          formStatus: const Idle(),
+          blocStatus: const Idle(),
         ),
       );
 
   void _resetFormStateHandler(
-          ResetFormState event, Emitter<FeedbackState> emit) =>
-      emit(FeedbackState());
+          ResetFeedbackFormState event, Emitter<FeedbackState> emit) =>
+      emit(const FeedbackState());
 }

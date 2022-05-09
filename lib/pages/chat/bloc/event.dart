@@ -1,7 +1,7 @@
-part of 'bloc.dart';
+part of blocs;
 
-@immutable
-abstract class ChatEvent {}
+
+abstract class ChatEvent extends BaseEvent {}
 
 class GetChatsEvent extends ChatEvent {}
 
@@ -97,9 +97,9 @@ class OpenDocEvent extends ChatEvent {
 
 class OnPdfViewCloseEvent extends ChatEvent {}
 
-class ResetBlocStatus extends ChatEvent {}
+class ResetChatBlocStatus extends ChatEvent {}
 
-class ResetBlocState extends ChatEvent {}
+class ResetChatBlocState extends ChatEvent {}
 
 class ChatPagePopEvent extends ChatEvent {}
 

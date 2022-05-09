@@ -4,7 +4,7 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/enums/screen.dart';
 import 'package:components/common/app_exception.dart';
-import 'package:components/pages/otp/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -196,8 +196,8 @@ class _OTPState extends BasePageState<OtpPage> {
                 ),
                 BlocBuilder<OtpBloc, OtpState>(
                   builder: (_, OtpState state) {
-                    if (state.formStatus is Success) {
-                      otpBloc.add(ResetFormStatus());
+                    if (state.blocStatus is Success) {
+                      otpBloc.add(ResetOtpFormStatus());
                       if (screen == Screen.forgotPassword) {
                         Future<void>.microtask(
                           () => navigator.popAndPushNamed(Routes.resetPassword),
@@ -210,9 +210,9 @@ class _OTPState extends BasePageState<OtpPage> {
                           ),
                         );
                       }
-                    } else if (state.formStatus is Failure) {
-                      otpBloc.add(ResetFormStatus());
-                      final Failure failure = state.formStatus as Failure;
+                    } else if (state.blocStatus is Failure) {
+                      otpBloc.add(ResetOtpFormStatus());
+                      final Failure failure = state.blocStatus as Failure;
                       Future<void>.microtask(
                         () => showSnackBar(
                           SnackBar(
@@ -222,7 +222,7 @@ class _OTPState extends BasePageState<OtpPage> {
                       );
                     }
 
-                    return state.formStatus is InProgress
+                    return state.blocStatus is InProgress
                         ? const CircularProgressIndicator()
                         : ElevatedButton(
                             onPressed: onFormSubmitted,

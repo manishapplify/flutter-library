@@ -1,7 +1,6 @@
-part of 'bloc.dart';
+part of blocs;
 
-@immutable
-abstract class ReportBugEvent {}
+abstract class ReportBugEvent extends BaseEvent {}
 
 class ReportBugTitleChanged extends ReportBugEvent {
   ReportBugTitleChanged({required this.title});
@@ -22,6 +21,6 @@ class ReportBugScreenShotRemoved extends ReportBugEvent {}
 
 class ReportBugSubmitted extends ReportBugEvent {}
 
-class ResetFormStatus extends ReportBugEvent {}
+class ResetReportBugFormStatus extends ReportBugEvent {}
 
-class ResetFormState extends ReportBugEvent {}
+class ResetReportBugFormState extends ReportBugEvent {}

@@ -5,9 +5,8 @@ import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/common/app_exception.dart';
-import 'package:components/pages/chat/bloc/bloc.dart';
 import 'package:components/pages/chat/widgets/chat_tile.dart';
-import 'package:components/pages/users/bloc/bloc.dart';
+import 'package:components/blocs/blocs.dart';
 import 'package:components/pages/users/widgets/user_tile.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
@@ -75,7 +74,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
     return WillPopScope(
       onWillPop: () {
         if (usersOverlayEntry == null) {
-          chatBloc.add(ResetBlocState());
+          chatBloc.add(ResetChatBlocState());
 
           return Future<bool>.value(true);
         } else {
@@ -102,7 +101,7 @@ class _ChatsState extends BasePageState<ChatsPage> {
                     ),
                   );
                 }
-                chatBloc.add(ResetBlocStatus());
+                chatBloc.add(ResetChatBlocStatus());
               }
 
               final List<FirebaseChat> chats = state.chats.toList();

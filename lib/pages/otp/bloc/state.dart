@@ -1,14 +1,12 @@
-part of 'bloc.dart';
+part of blocs;
 
-@immutable
-class OtpState {
+class OtpState extends BaseState {
   const OtpState({
     required this.screenType,
     this.otp,
-    this.formStatus = const Idle(),
-  });
+    WorkStatus blocStatus = const Idle(),
+  }) : super(blocStatus);
   final String? otp;
-  final WorkStatus formStatus;
   final Screen screenType;
 
   bool get isOtpValid => otp is String && otp!.length == 4;
@@ -16,12 +14,19 @@ class OtpState {
 
   OtpState copyWith({
     String? otp,
-    WorkStatus? formStatus,
+    WorkStatus? blocStatus,
   }) {
     return OtpState(
       otp: otp ?? this.otp,
-      formStatus: formStatus ?? this.formStatus,
+      blocStatus: blocStatus ?? this.blocStatus,
       screenType: this.screenType,
     );
   }
+
+  @override
+  BaseState resetState() => OtpState(screenType: screenType);
+
+  @override
+  BaseState updateStatus(WorkStatus blocStatus) =>
+      this.copyWith(blocStatus: blocStatus);
 }
