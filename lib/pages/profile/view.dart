@@ -10,7 +10,8 @@ import 'package:components/enums/screen.dart';
 import 'package:components/common/app_exception.dart';
 import 'package:components/blocs/blocs.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:components/widgets/image_container.dart';
+
+import 'package:components/common/widgets/image_container.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

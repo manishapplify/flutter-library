@@ -6,7 +6,8 @@ import 'package:components/services/firebase_realtime_database/models/message/do
 import 'package:components/services/firebase_realtime_database/models/message/image_message.dart';
 import 'package:components/services/firebase_realtime_database/models/message/message.dart';
 import 'package:components/services/firebase_realtime_database/models/message/text_message.dart';
-import 'package:components/widgets/image_container.dart';
+
+import 'package:components/common/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

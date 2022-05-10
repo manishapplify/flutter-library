@@ -3,7 +3,8 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/common/app_exception.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:components/widgets/image_container.dart';
+
+import 'package:components/common/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

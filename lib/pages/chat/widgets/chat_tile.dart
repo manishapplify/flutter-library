@@ -1,6 +1,7 @@
 import 'package:components/common/functions.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
-import 'package:components/widgets/image_container.dart';
+
+import 'package:components/common/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 
 class ChatTile extends StatelessWidget {

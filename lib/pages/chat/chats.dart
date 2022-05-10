@@ -11,7 +11,7 @@ import 'package:components/pages/users/widgets/user_tile.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
-import 'package:components/widgets/search_bar.dart';
+import 'package:components/common/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

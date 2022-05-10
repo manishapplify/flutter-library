@@ -4,7 +4,8 @@ import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/common/dialogs.dart';
 import 'package:components/blocs/blocs.dart';
-import 'package:components/widgets/image_container.dart';
+
+import 'package:components/common/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

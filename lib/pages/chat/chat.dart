@@ -17,7 +17,8 @@ import 'package:components/routes/navigation.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message/message.dart';
-import 'package:components/widgets/image_container.dart';
+
+import 'package:components/common/widgets/image_container.dart';
 
 class ChatPage extends BasePage {
   const ChatPage({Key? key}) : super(key: key);
