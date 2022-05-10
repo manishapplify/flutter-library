@@ -44,64 +44,62 @@ class _UsersState extends BasePageState<UsersPage> {
   Widget body(BuildContext context) {
     return BlocBuilder<UsersBloc, UsersState>(
       builder: (BuildContext context, UsersState state) {
-        if (state.chatStatus is Success) {
-          Future<void>.microtask(
-            () => navigator.pushNamed(
-              Routes.chat,
-              arguments: Routes.users,
-            ),
-          );
-          chatBloc.add(ChatOpenedEvent(state.chat!));
-          usersBloc.add(ResetChatState());
-        } else if (state.chatStatus is Failure) {
-          final Failure failure = state.chatStatus as Failure;
-          Future<void>.microtask(
-            () => showSnackBar(
-              SnackBar(
-                content: Text(failure.message ?? 'Failure'),
-              ),
-            ),
-          );
-          usersBloc.add(ResetChatState());
-        }
-
+        onStateChanged(state: state);
         final List<FirebaseUser> users = state.users;
-        return Stack(
-          children: <Widget>[
-            ListView.separated(
-              separatorBuilder: (_, __) => const SizedBox(
-                height: 8,
-              ),
-              itemBuilder: (BuildContext context, int i) {
-                final FirebaseUser otherUser = users[i];
+        return ListView.separated(
+          separatorBuilder: (_, __) => const SizedBox(
+            height: 8,
+          ),
+          itemBuilder: (BuildContext context, int i) {
+            final FirebaseUser otherUser = users[i];
 
-                return UserTile(
-                  user: otherUser,
-                  imageBaseUrl: usersBloc.imageBaseUrl,
-                  onMessageIconTap: () {
-                    usersBloc.add(
-                      MessageIconTapEvent(
-                        firebaseUserA: FirebaseUser.fromMap(
-                          user.toFirebaseMap(),
-                        ),
-                        firebaseUserB: otherUser,
-                      ),
-                    );
-                  },
+            return UserTile(
+              user: otherUser,
+              imageBaseUrl: usersBloc.imageBaseUrl,
+              onMessageIconTap: () {
+                usersBloc.add(
+                  MessageIconTapEvent(
+                    firebaseUserA: FirebaseUser.fromMap(
+                      user.toFirebaseMap(),
+                    ),
+                    firebaseUserB: otherUser,
+                  ),
                 );
               },
-              itemCount: users.length,
-            ),
-            Visibility(
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-              visible: state.blocStatus is InProgress ||
-                  state.chatStatus is InProgress,
-            ),
-          ],
+            );
+          },
+          itemCount: users.length,
         );
       },
     );
+  }
+
+  void onStateChanged({required UsersState state}) {
+    final bool _isLoading =
+        state.blocStatus is InProgress || state.chatStatus is InProgress;
+    if (_isLoading != isLoading) {
+      Future<void>.microtask(() => isLoading = _isLoading);
+    }
+
+    if (state.chatStatus is Success) {
+      Future<void>.microtask(
+        () => navigator.pushNamed(
+          Routes.chat,
+          arguments: Routes.users,
+        ),
+      );
+      chatBloc.add(ChatOpenedEvent(state.chat!));
+      usersBloc.add(ResetChatState());
+    } else if (state.chatStatus is Failure) {
+      final Failure failure = state.chatStatus as Failure;
+      Future<void>.microtask(
+        () => showSnackBar(
+          SnackBar(
+            content: Text(failure.message ?? 'Failure'),
+          ),
+        ),
+      );
+      usersBloc.add(ResetChatState());
+    }
   }
 }

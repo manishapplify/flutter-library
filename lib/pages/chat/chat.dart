@@ -140,7 +140,7 @@ class _ChatState extends BasePageState<ChatPage> {
               padding: const EdgeInsets.only(top: 8.0),
               child: BlocBuilder<ChatBloc, ChatState>(
                 builder: (BuildContext context, ChatState state) {
-                  onStateChange(state);
+                  onStateChanged(state: state);
 
                   final List<FirebaseMessage> messages =
                       state.messages.toList();
@@ -213,7 +213,7 @@ class _ChatState extends BasePageState<ChatPage> {
     );
   }
 
-  void onStateChange(ChatState state) {
+  void onStateChanged({required ChatState state}) {
     if (state.pdfViewerStatus is Success) {
       Future<void>.microtask(
         () => navigator.pushNamed(
