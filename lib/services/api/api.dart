@@ -198,24 +198,6 @@ class Api {
     return response;
   }
 
-  Future<Response<dynamic>> uploadImageToS3SignedURL({
-    required String s3SignedURL,
-    required File image,
-  }) async {
-    final Response<dynamic> response = await dio.put(
-      s3SignedURL,
-      data: image.openRead(),
-      options: Options(
-        headers: <String, dynamic>{
-          "Content-Length": image.lengthSync(),
-          "authorization": null,
-          "Content-Type": 'image/jpeg',
-        },
-      ),
-    );
-    return response;
-  }
-
   Future<Response<dynamic>> reportFeedback(FeedbackRequest request) async {
     final Response<dynamic> response = await dio.post(
       _reportFeedback,

@@ -55,7 +55,7 @@ class ReportBugBloc extends BaseBloc<ReportBugEvent, ReportBugState> {
       handlerJob: () async {
         final String? screenShotUrl = await _s3imageUpload.uploadImage(
           s3Directory: _authCubit.state.user!.s3Folders.users,
-          profilePicFile: state.screenShot,
+          image: state.screenShot,
         );
 
         if (screenShotUrl == null) {

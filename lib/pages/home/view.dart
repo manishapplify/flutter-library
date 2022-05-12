@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:components/blocs/blocs.dart';
+import 'package:components/common/bottomsheets.dart';
+import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
@@ -17,6 +22,7 @@ class HomePage extends BasePage {
 
 class _HomeState extends BasePageState<HomePage> {
   late final AuthCubit authCubit;
+  late final HomeBloc homeBloc;
 
   @override
   void initState() {
@@ -24,6 +30,7 @@ class _HomeState extends BasePageState<HomePage> {
     if (!authCubit.state.isAuthorized) {
       throw AppException.authenticationException();
     }
+    homeBloc = BlocProvider.of(context);
     super.initState();
   }
 
@@ -77,10 +84,8 @@ class _HomeState extends BasePageState<HomePage> {
               DrawerHeader(
                 padding: const EdgeInsets.all(30.0),
                 child: ImageContainer(
-                  // TODO: Refactor this while implementing HomeBloc.
                   imageUrl: (user.profilePic is String)
-                      ? 'https://applify-library.s3.ap-southeast-1.amazonaws.com/users/' +
-                          user.profilePic!
+                      ? (homeBloc.imageBaseUrl + user.profilePic!)
                       : null,
                 ),
                 decoration: BoxDecoration(
@@ -94,12 +99,6 @@ class _HomeState extends BasePageState<HomePage> {
                 ),
               ),
               const Divider(),
-              // ListTile(
-              //   title: const Text('Users'),
-              //   onTap: () => navigator.popAndPushNamed(
-              //     Routes.users,
-              //   ),
-              // ),
               ListTile(
                 title: const Text('Chats'),
                 onTap: () => navigator.popAndPushNamed(
@@ -128,18 +127,32 @@ class _HomeState extends BasePageState<HomePage> {
 
   @override
   Widget body(BuildContext context) {
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Text(
-            'Home',
-            style: textTheme.headline1,
-          ),
-          ElevatedButton(
-            onPressed: () => navigator.pushNamed(Routes.comments),
-            child: const Text('Comments'),
-          ),
-        ],
+    return BlocListener<HomeBloc, HomeState>(
+      listener: (BuildContext context, HomeState state) {
+        final bool _isLoading = state.blocStatus is InProgress ||
+            state.imageUploadStatus is InProgress;
+        if (_isLoading != isLoading) {
+          Future<void>.microtask(() => isLoading = _isLoading);
+        }
+      },
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () => multiImageSelectionBottomSheet(
+                context: context,
+                onImageSelectionDone: (List<File> images) {
+                  homeBloc.add(UploadImagesEvent(images));
+                  if (mounted) {
+                    navigator.pop();
+                  }
+                },
+              ),
+              child: const Text('Pick images'),
+            ),
+          ],
+        ),
       ),
     );
   }

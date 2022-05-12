@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+// TODO: Use imageFile parameter where applicable.
+
 class ImageContainer extends StatelessWidget {
   const ImageContainer({
     Key? key,
     this.height = 100,
     this.width = 100,
     this.imagePath,
+    this.imageFile,
     this.imageUrl,
     this.onContainerTap,
     this.iconAlignment = Alignment.bottomRight,
@@ -20,6 +23,9 @@ class ImageContainer extends StatelessWidget {
   }) : super(key: key);
 
   final String? imagePath;
+
+  final File? imageFile;
+
   final String? imageUrl;
   final VoidCallback? onContainerTap;
   final bool circularDecoration;
@@ -46,11 +52,15 @@ class ImageContainer extends StatelessWidget {
           image: DecorationImage(
             image:
                 // Prefer to show selected image.
+
                 imagePath is String && imagePath!.isNotEmpty
                     ? FileImage(File(imagePath!))
-                    : imageUrl is String && imageUrl!.isNotEmpty
-                        ? NetworkImage(imageUrl!) as ImageProvider
-                        : const AssetImage("assets/images/avtar.png"),
+                    : imageFile != null ||
+                            imagePath is String && imagePath!.isNotEmpty
+                        ? FileImage(imageFile ?? File(imagePath!))
+                        : imageUrl is String && imageUrl!.isNotEmpty
+                            ? NetworkImage(imageUrl!) as ImageProvider
+                            : const AssetImage("assets/images/avtar.png"),
             fit: BoxFit.fill,
           ),
           border: !circularDecoration

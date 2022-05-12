@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:components/common/functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 
 // TODO: Disable multiselection of image in iOS.
+// TODO: Return picked image file instead of calling image cropper internally.
 dynamic showImagePickerPopup({
   required BuildContext context,
   required Function(File) onImagePicked,
@@ -26,13 +27,11 @@ dynamic showImagePickerPopup({
               ),
             ),
             onPressed: () async {
-              final XFile? pickedFile = await ImagePicker()
-                  .pickImage(source: ImageSource.gallery, imageQuality: 20);
-              imageCropper(
-                  imagePath: pickedFile!.path,
-                  onCropped: (File croppedImage) {
-                    onImagePicked(croppedImage);
-                  });
+              onImagePicked(
+                await _pickImage(
+                  ImageSource.gallery,
+                ),
+              );
             },
           ),
         if (cameraAllowed)
@@ -44,13 +43,11 @@ dynamic showImagePickerPopup({
               ),
             ),
             onPressed: () async {
-              final XFile? pickedFile = await ImagePicker()
-                  .pickImage(source: ImageSource.camera, imageQuality: 20);
-              imageCropper(
-                  imagePath: pickedFile!.path,
-                  onCropped: (File croppedImage) {
-                    onImagePicked(croppedImage);
-                  });
+              onImagePicked(
+                await _pickImage(
+                  ImageSource.camera,
+                ),
+              );
             },
           ),
       ],
@@ -76,37 +73,6 @@ dynamic showImagePickerPopup({
       ),
     ),
   );
-}
-
-dynamic imageCropper({
-  required String imagePath,
-  required Function(File) onCropped,
-}) async {
-  final File? croppedFile = await ImageCropper().cropImage(
-    sourcePath: imagePath,
-    compressQuality: 20,
-    aspectRatioPresets: <CropAspectRatioPreset>[
-      CropAspectRatioPreset.square,
-      CropAspectRatioPreset.ratio3x2,
-      CropAspectRatioPreset.original,
-      CropAspectRatioPreset.ratio4x3,
-      CropAspectRatioPreset.ratio16x9
-    ],
-    androidUiSettings: const AndroidUiSettings(
-        toolbarTitle: "Edit Image",
-        toolbarColor: Colors.deepOrange,
-        toolbarWidgetColor: Colors.white,
-        initAspectRatio: CropAspectRatioPreset.original,
-        lockAspectRatio: false),
-    iosUiSettings: const IOSUiSettings(
-      minimumAspectRatio: 1.0,
-      aspectRatioLockDimensionSwapEnabled: true,
-      aspectRatioLockEnabled: true,
-    ),
-  );
-  if (croppedFile != null) {
-    onCropped(croppedFile);
-  }
 }
 
 dynamic showChatAttachmentPicker({
@@ -160,4 +126,15 @@ dynamic showChatAttachmentPicker({
       ),
     ),
   );
+}
+
+Future<File> _pickImage(ImageSource source) async {
+  final XFile? pickedFile = await ImagePicker().pickImage(
+    source: source,
+    imageQuality: 20,
+  );
+  final File croppedImage = await cropImage(
+    imagePath: pickedFile!.path,
+  );
+  return croppedImage;
 }

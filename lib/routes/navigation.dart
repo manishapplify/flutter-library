@@ -159,7 +159,13 @@ class Navigation {
       case Routes.home:
         return MaterialPageRoute<ResetPasswordPage>(
           settings: settings,
-          builder: (_) => const HomePage(),
+          builder: (_) => BlocProvider<HomeBloc>(
+            create: (_) => HomeBloc(
+              s3imageUpload: _s3imageUpload,
+              authCubit: _authCubit,imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
+            ),
+            child: const HomePage(),
+          ),
         );
       case Routes.settings:
         return MaterialPageRoute<SettingsPage>(
@@ -328,6 +334,8 @@ class Routes {
   static const String chats = '/chats';
   static const String chat = '/chat';
   static const String comments = '/comments';
+  static const String multiImageSelectionBottomSheet =
+      '/multiImageSelectionBottomSheet';
 
   static const String loginOne = "/loginScreenOne";
   static const String feedbackScreens = "/feedbackScreens";
