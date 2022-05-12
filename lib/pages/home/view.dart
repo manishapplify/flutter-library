@@ -85,7 +85,7 @@ class _HomeState extends BasePageState<HomePage> {
                 padding: const EdgeInsets.all(30.0),
                 child: ImageContainer(
                   imageUrl: (user.profilePic is String)
-                      ? homeBloc.imageBaseUrl + user.profilePic!
+                      ? (homeBloc.imageBaseUrl + user.profilePic!)
                       : null,
                 ),
                 decoration: BoxDecoration(
