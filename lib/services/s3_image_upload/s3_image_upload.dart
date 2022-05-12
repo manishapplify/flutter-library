@@ -32,17 +32,18 @@ class S3ImageUpload {
   /// Returns the filename of the image uploaded to [s3Directory].
   Future<String?> uploadImage({
     required String s3Directory,
-    File? profilePicFile,
+    File? image,
   }) async {
-    if (profilePicFile == null) {
+    if (image == null) {
       return null;
     }
 
+    // TODO: Remove this logic out from this function to remove dependency on Api class. This function will then accept signedURL instead of s3Folder.
     Response<dynamic> response;
     response = await _api.getS3UploadSignedURL(
       S3SignedUrlRequest(
         directory: s3Directory,
-        fileName: profilePicFile.uri.pathSegments.last,
+        fileName: image.uri.pathSegments.last,
       ),
     );
     final S3SignedUrlResponse s3imageUploadResponse =
@@ -50,7 +51,7 @@ class S3ImageUpload {
 
     response = await _uploadImageToSignedURL(
       s3SignedURL: s3imageUploadResponse.uploadURL,
-      image: profilePicFile,
+      image: image,
     );
 
     final Uri? uri = Uri.tryParse(s3imageUploadResponse.uploadURL);

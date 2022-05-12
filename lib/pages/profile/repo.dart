@@ -67,7 +67,7 @@ class ProfileRepository {
       gender: gender,
       profilePic: await _s3imageUpload.uploadImage(
         s3Directory: _authCubit.state.user!.s3Folders.users,
-        profilePicFile: profilePicFile,
+        image: profilePicFile,
       ),
       age: age,
       address: address,
@@ -115,7 +115,7 @@ class ProfileRepository {
       gender: gender,
       profilePic: await _s3imageUpload.uploadImage(
         s3Directory: _authCubit.state.user!.s3Folders.users,
-        profilePicFile: profilePicFile,
+        image: profilePicFile,
       ),
       age: age,
       address: address,

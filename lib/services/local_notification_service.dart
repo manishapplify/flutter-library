@@ -7,7 +7,8 @@ class LocalNotificationService {
             android: AndroidInitializationSettings("@mipmap/ic_launcher"));
     _flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
-  int notificationId = 0;
+  
+  int _notificationId = 0;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -21,8 +22,10 @@ class LocalNotificationService {
     ));
 
     await _flutterLocalNotificationsPlugin.show(
-        0, title, body, notificationDetails
-        //payload: payload,
-        );
+      _notificationId++,
+      title,
+      body,
+      notificationDetails,
+    );
   }
 }

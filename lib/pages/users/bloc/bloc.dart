@@ -33,16 +33,10 @@ class UsersBloc extends BaseBloc<UsersEvent, UsersState> {
         final String currentUserId = _authCubit.state.user!.firebaseId;
         users.removeWhere((FirebaseUser user) => user.id == currentUserId);
 
-        emit(state.copyWith(
-          users: users,
-          usersMatchingQuery: users,
-          blocStatus: Success(),
-        ));
-      },
-      onFailure: (WorkStatus status) {
         emit(
           state.copyWith(
-            blocStatus: status,
+            users: users,
+            usersMatchingQuery: users,
           ),
         );
       },
@@ -61,12 +55,13 @@ class UsersBloc extends BaseBloc<UsersEvent, UsersState> {
           firebaseUserB: event.firebaseUserB,
         );
 
-        emit(state.copyWith(
-          chat: chat,
-          chatStatus: Success(),
-        ));
+        emit(
+          state.copyWith(
+            chat: chat,
+          ),
+        );
       },
-      onFailure: (WorkStatus status) {
+      onStatusUpdate: (WorkStatus status) {
         emit(
           state.copyWith(
             chatStatus: status,

@@ -36,58 +36,63 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
-// LoginPage
-part 'package:components/pages/login/bloc/bloc.dart';
-part 'package:components/pages/login/bloc/event.dart';
-part 'package:components/pages/login/bloc/state.dart';
-// SplashPage
-part 'package:components/pages/splash/bloc/bloc.dart';
-part 'package:components/pages/splash/bloc/event.dart';
-part 'package:components/pages/splash/bloc/state.dart';
 // ChangePassWordPage
 part 'package:components/pages/change_password/bloc/bloc.dart';
 part 'package:components/pages/change_password/bloc/event.dart';
 part 'package:components/pages/change_password/bloc/state.dart';
-// ForgotPassWordPage
-part 'package:components/pages/forgot_password/bloc/bloc.dart';
-part 'package:components/pages/forgot_password/bloc/event.dart';
-part 'package:components/pages/forgot_password/bloc/state.dart';
-// ResetPassWordPage
-part 'package:components/pages/reset_password/bloc/bloc.dart';
-part 'package:components/pages/reset_password/bloc/event.dart';
-part 'package:components/pages/reset_password/bloc/state.dart';
-// OtpPage
-part 'package:components/pages/otp/bloc/bloc.dart';
-part 'package:components/pages/otp/bloc/event.dart';
-part 'package:components/pages/otp/bloc/state.dart';
-// FeedbackPage
-part 'package:components/pages/feedback/bloc/bloc.dart';
-part 'package:components/pages/feedback/bloc/event.dart';
-part 'package:components/pages/feedback/bloc/state.dart';
-// ReportBugPage
-part 'package:components/pages/report_bug/bloc/bloc.dart';
-part 'package:components/pages/report_bug/bloc/event.dart';
-part 'package:components/pages/report_bug/bloc/state.dart';
-// SignupPage
-part 'package:components/pages/signup/bloc/bloc.dart';
-part 'package:components/pages/signup/bloc/event.dart';
-part 'package:components/pages/signup/bloc/state.dart';
-// UsersPage
-part 'package:components/pages/users/bloc/bloc.dart';
-part 'package:components/pages/users/bloc/event.dart';
-part 'package:components/pages/users/bloc/state.dart';
 // ChatPage
 part 'package:components/pages/chat/bloc/bloc.dart';
 part 'package:components/pages/chat/bloc/event.dart';
 part 'package:components/pages/chat/bloc/state.dart';
-// Profile
-part 'package:components/pages/profile/bloc/bloc.dart';
-part 'package:components/pages/profile/bloc/event.dart';
-part 'package:components/pages/profile/bloc/state.dart';
+// FeedbackPage
+part 'package:components/pages/feedback/bloc/bloc.dart';
+part 'package:components/pages/feedback/bloc/event.dart';
+part 'package:components/pages/feedback/bloc/state.dart';
+// ForgotPassWordPage
+part 'package:components/pages/forgot_password/bloc/bloc.dart';
+part 'package:components/pages/forgot_password/bloc/event.dart';
+part 'package:components/pages/forgot_password/bloc/state.dart';
+// HomePage
+part 'package:components/pages/home/bloc/bloc.dart';
+part 'package:components/pages/home/bloc/event.dart';
+part 'package:components/pages/home/bloc/state.dart';
+// LoginPage
+part 'package:components/pages/login/bloc/bloc.dart';
+part 'package:components/pages/login/bloc/event.dart';
+part 'package:components/pages/login/bloc/state.dart';
 // NotificationPage
 part 'package:components/pages/notifications/bloc/bloc.dart';
 part 'package:components/pages/notifications/bloc/event.dart';
 part 'package:components/pages/notifications/bloc/state.dart';
+// OtpPage
+part 'package:components/pages/otp/bloc/bloc.dart';
+part 'package:components/pages/otp/bloc/event.dart';
+part 'package:components/pages/otp/bloc/state.dart';
+// Profile
+part 'package:components/pages/profile/bloc/bloc.dart';
+part 'package:components/pages/profile/bloc/event.dart';
+part 'package:components/pages/profile/bloc/state.dart';
+// ReportBugPage
+part 'package:components/pages/report_bug/bloc/bloc.dart';
+part 'package:components/pages/report_bug/bloc/event.dart';
+part 'package:components/pages/report_bug/bloc/state.dart';
+// ResetPassWordPage
+part 'package:components/pages/reset_password/bloc/bloc.dart';
+part 'package:components/pages/reset_password/bloc/event.dart';
+part 'package:components/pages/reset_password/bloc/state.dart';
+// SignupPage
+part 'package:components/pages/signup/bloc/bloc.dart';
+part 'package:components/pages/signup/bloc/event.dart';
+part 'package:components/pages/signup/bloc/state.dart';
+// SplashPage
+part 'package:components/pages/splash/bloc/bloc.dart';
+part 'package:components/pages/splash/bloc/event.dart';
+part 'package:components/pages/splash/bloc/state.dart';
+// UsersPage
+part 'package:components/pages/users/bloc/bloc.dart';
+part 'package:components/pages/users/bloc/event.dart';
+part 'package:components/pages/users/bloc/state.dart';
+
 abstract class BaseBloc<E extends BaseEvent, S extends BaseState>
     extends Bloc<E, S> {
   BaseBloc(S initialState) : super(initialState);
@@ -97,31 +102,32 @@ abstract class BaseBloc<E extends BaseEvent, S extends BaseState>
   /// [handlerJob] : Specific job of the handler.
   /// [emit] : Emmiter to be used for sending status updates.
   /// [emitFailureOnly] : If set to `true`, will only provide status updates on failure.
-  /// [onFailure] : Callback to be used when status other than [blocStatus] is to be updated.
+  /// [onStatusUpdate] : Callback to be used when status other than [blocStatus] is to be updated.
   Future<void> _commonHandler({
     required Future<void> Function() handlerJob,
     required Emitter<BaseState> emit,
     bool emitFailureOnly = false,
-    Function(WorkStatus status)? onFailure,
+    Function(WorkStatus status)? onStatusUpdate,
+
   }) async {
-    // _handleFailure should not be inherited.
+    // _handleStatusUpdate should not be inherited.
     // ignore: prefer_function_declarations_over_variables
-    final Function(Failure) _handleFailure = (Failure failure) {
-      if (onFailure == null) {
-        emit(state.updateStatus(failure));
+    final Function(WorkStatus) _handleStatusUpdate = (WorkStatus workStatus) {
+      if (onStatusUpdate == null) {
+        emit(state.updateStatus(workStatus));
       } else {
-        onFailure(failure);
+        onStatusUpdate(workStatus);
       }
     };
 
     try {
       if (!emitFailureOnly) {
-        emit(state.updateStatus(InProgress()));
+        _handleStatusUpdate(InProgress());
       }
 
       await handlerJob();
       if (!emitFailureOnly) {
-        emit(state.updateStatus(Success()));
+        _handleStatusUpdate(Success());
       }
     } on DioError catch (e) {
       late final AppException exception;
@@ -136,16 +142,16 @@ abstract class BaseBloc<E extends BaseEvent, S extends BaseState>
         exception: exception,
         message: exception.message,
       );
-      _handleFailure(failure);
+      _handleStatusUpdate(failure);
     } on AppException catch (e) {
       final Failure failure = Failure(exception: e, message: e.message);
-      _handleFailure(failure);
+      _handleStatusUpdate(failure);
     } on Exception catch (_) {
       final Failure failure = Failure(exception: Exception('Failure'));
-      _handleFailure(failure);
+      _handleStatusUpdate(failure);
     } on Error catch (_) {
       final Failure failure = Failure(exception: Exception('Failure'));
-      _handleFailure(failure);
+      _handleStatusUpdate(failure);
     }
   }
 }
