@@ -1,14 +1,17 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotificationService {
-  LocalNotificationService() {
+  int _notificationId = 0;
+
+  Future<bool?> initialize() {
     const InitializationSettings initializationSettings =
         InitializationSettings(
-            android: AndroidInitializationSettings("@mipmap/ic_launcher"));
-    _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+      android: AndroidInitializationSettings("@mipmap/ic_launcher"),
+      iOS: IOSInitializationSettings(),
+    );
+    return _flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
-  
-  int _notificationId = 0;
+
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 

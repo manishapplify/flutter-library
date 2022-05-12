@@ -28,10 +28,11 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
         final Set<FirebaseMessage> notifications =
             await _firebaseRealtimeDatabase.getNotifications();
 
-        notifications.removeWhere((FirebaseMessage element) =>
-            !element.chatDialogId.split(',').contains(currentUser.firebaseId) 
-            || currentUser.firebaseId == element.senderId
-            );
+        notifications.removeWhere(
+          (FirebaseMessage element) =>
+              !element.chatDialogId.contains(currentUser.firebaseId) ||
+              currentUser.firebaseId == element.senderId,
+        );
         emit(state.copyWith(
           notifications: notifications,
         ));
@@ -57,12 +58,11 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
           final StreamSubscription<Set<FirebaseMessage>>
               notificationsSubscription =
               notificationsStream.listen((Set<FirebaseMessage> notifications) {
-            notifications.removeWhere((FirebaseMessage element) =>
-                !element.chatDialogId
-                    .split(',')
-                    .contains(currentUser.firebaseId) 
-                    || currentUser.firebaseId == element.senderId
-                    );
+            notifications.removeWhere(
+              (FirebaseMessage element) =>
+                  !element.chatDialogId.contains(currentUser.firebaseId) ||
+                  currentUser.firebaseId == element.senderId,
+            );
             add(_OnNotificationEvent(notification: notifications));
           });
 
@@ -79,13 +79,15 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
   void _onNotificationEventHandler(
       _OnNotificationEvent event, Emitter<NotificationState> emit) {
     if (event.notification != state.notifications) {
-      final Set<String> addedNotification = event.notification
+      final Set<String> newNotifications = event.notification
           .difference(state.notifications)
           .map((FirebaseMessage notification) => notification.message)
           .toSet();
-      for (final String notification in addedNotification) {
-         _localNotificationService.showLocalNotification(
-             title: "Flutter Library", body: notification);
+      for (final String notification in newNotifications) {
+        _localNotificationService.showLocalNotification(
+          title: "Flutter Library",
+          body: notification,
+        );
       }
     }
     emit(

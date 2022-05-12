@@ -107,6 +107,8 @@ PODS:
     - FBSDKCoreKit (~> 13.0.0)
     - FBSDKLoginKit (~> 13.0.0)
     - Flutter
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - flutter_pdfview (1.0.2):
     - Flutter
   - google_sign_in_ios (0.0.1):
@@ -177,6 +179,7 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_pdfview (from `.symlinks/plugins/flutter_pdfview/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
@@ -230,6 +233,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_facebook_auth:
     :path: ".symlinks/plugins/flutter_facebook_auth/ios"
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_pdfview:
     :path: ".symlinks/plugins/flutter_pdfview/ios"
   google_sign_in_ios:
@@ -271,6 +276,7 @@ SPEC CHECKSUMS:
   FirebaseStorage: 32ab036ce11eb7e94c279a238a65efa24f81593d
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_facebook_auth: b3d0ccff602c4a24c1fd5972e5740e420c4b5071
+  flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_pdfview: 25f53dd6097661e6395b17de506e6060585946bd
   google_sign_in_ios: ed71c0dbddfba8b1ea9aa210dbda695f46bf51bd
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
