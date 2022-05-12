@@ -10,7 +10,13 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
   Widget? drawer(BuildContext context) => null;
 
   Widget body(BuildContext context);
-  bool isLoading = false;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  set isLoading(bool value) {
+    setState(() {
+      _isLoading = value;
+    });
+  }
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
           SnackBar snackBar) =>
@@ -38,10 +44,13 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
                 padding: padding,
                 child: body(context),
               ),
-              Visibility(
-                visible: isLoading,
-                child: const CircularProgressIndicator(),
-              )
+              if (_isLoading)
+                const Material(
+                  color: Colors.transparent,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
             ],
           ),
         ),

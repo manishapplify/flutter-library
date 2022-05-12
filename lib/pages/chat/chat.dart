@@ -17,7 +17,8 @@ import 'package:components/routes/navigation.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/message/message.dart';
-import 'package:components/widgets/image_container.dart';
+
+import 'package:components/common/widgets/image_container.dart';
 
 class ChatPage extends BasePage {
   const ChatPage({Key? key}) : super(key: key);
@@ -140,7 +141,7 @@ class _ChatState extends BasePageState<ChatPage> {
               padding: const EdgeInsets.only(top: 8.0),
               child: BlocBuilder<ChatBloc, ChatState>(
                 builder: (BuildContext context, ChatState state) {
-                  onStateChange(state);
+                  onStateChanged(state: state);
 
                   final List<FirebaseMessage> messages =
                       state.messages.toList();
@@ -213,7 +214,7 @@ class _ChatState extends BasePageState<ChatPage> {
     );
   }
 
-  void onStateChange(ChatState state) {
+  void onStateChanged({required ChatState state}) {
     if (state.pdfViewerStatus is Success) {
       Future<void>.microtask(
         () => navigator.pushNamed(

@@ -10,7 +10,8 @@ import 'package:components/enums/screen.dart';
 import 'package:components/common/app_exception.dart';
 import 'package:components/blocs/blocs.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:components/widgets/image_container.dart';
+
+import 'package:components/common/widgets/image_container.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -179,329 +180,334 @@ class _UserProfileState extends BasePageState<ProfilePage> {
   @override
   Widget body(BuildContext context) {
     final Screen screen = routeSettings.arguments as Screen;
-    return Form(
-      key: _formkey,
-      child: Center(
-        child: SingleChildScrollView(
-          child: BlocBuilder<ProfileBloc, ProfileState>(
-            builder: (BuildContext context, ProfileState state) {
-              if (state.blocStatus is Success) {
-                profileBloc.add(ResetProfileFormStatus());
-                if (screen == Screen.registerUser) {
-                  Future<void>.microtask(
-                    () => navigator
-                      ..popUntil(
-                        (_) => false,
-                      )
-                      ..pushNamed(
-                        Routes.home,
-                      ),
-                  );
-                } else {
-                  Future<void>.microtask(
-                    () => showSnackBar(
-                      const SnackBar(
-                        content: Text('Profile successfully updated'),
-                      ),
-                    ),
-                  );
-                }
-              } else if (state.blocStatus is Failure) {
-                profileBloc.add(ResetProfileFormStatus());
-                final Failure failure = state.blocStatus as Failure;
-                Future<void>.microtask(
-                  () => showSnackBar(
-                    SnackBar(
-                      content: Text(failure.message ?? 'Failure'),
-                    ),
-                  ),
-                );
-              }
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (BuildContext context, ProfileState state) {
+        onStateChanged(screen: screen, state: state);
 
-              return Column(
-                children: <Widget>[
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  ImageContainer(
-                    imagePath: state.profilePicFile?.path,
-                    imageUrl: state.profilePicUrlPath,
-                    onContainerTap: () {
-                      showImagePickerPopup(
-                        context: context,
-                        onImagePicked: (File file) {
-                          if (!profileBloc.isClosed) {
-                            profileBloc.add(
-                              ProfileImageChanged(
-                                profilePic: file,
-                              ),
-                            );
-                          }
-                          if (mounted) {
-                            Navigator.pop(context);
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 32),
-                  if (screen == Screen.registerUser)
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  TextFormField(
-                    autofocus: true,
-                    textCapitalization: TextCapitalization.words,
-                    controller: firstNameTextEditingController,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.account_circle_outlined,
-                      ),
-                      hintText: 'Enter your first name',
-                      labelText: 'First name',
-                    ),
-                    keyboardType: TextInputType.text,
-                    onFieldSubmitted: (_) => lastNameFocusNode.requestFocus(),
-                    validator: (_) => state.firstnameValidator,
-                    textInputAction: TextInputAction.next,
-                    onChanged: (String value) => profileBloc.add(
-                      ProfileFirstnameChanged(
-                        firstname: value,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    controller: lastNameTextEditingController,
-                    focusNode: lastNameFocusNode,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.account_circle_outlined,
-                      ),
-                      hintText: 'Enter your last name',
-                      labelText: 'Last name',
-                    ),
-                    keyboardType: TextInputType.text,
-                    onFieldSubmitted: (_) => emailFocusNode.requestFocus(),
-                    validator: (_) => state.lastnameValidator,
-                    textInputAction: TextInputAction.next,
-                    onChanged: (String value) => profileBloc.add(
-                      ProfileLastnameChanged(
-                        lastname: value,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    controller: emailTextEditingController,
-                    focusNode: emailFocusNode,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.email,
-                      ),
-                      hintText: 'Enter your email',
-                      labelText: 'Email',
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    onFieldSubmitted: (_) => phoneFocusNode.requestFocus(),
-                    validator: (_) => state.emailValidator,
-                    textInputAction: TextInputAction.next,
-                    onChanged: (String value) => profileBloc.add(
-                      ProfileEmailChanged(
-                        email: value,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: <Widget>[
-                      CountryCodePicker(
-                        initialSelection: state.countryCode,
-                        flagDecoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                        onChanged: (CountryCode countryCode) {
+        return Form(
+          key: _formkey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                const SizedBox(
+                  height: 5,
+                ),
+                ImageContainer(
+                  imagePath: state.profilePicFile?.path,
+                  imageUrl: state.profilePicUrlPath,
+                  onContainerTap: () {
+                    showImagePickerPopup(
+                      context: context,
+                      onImagePicked: (File file) {
+                        if (!profileBloc.isClosed) {
                           profileBloc.add(
-                            ProfileCountryCodeChanged(
-                              countryCode: countryCode.dialCode ?? '+91',
+                            ProfileImageChanged(
+                              profilePic: file,
                             ),
                           );
-                        },
+                        }
+                        if (mounted) {
+                          Navigator.pop(context);
+                        }
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 32),
+                if (screen == Screen.registerUser)
+                  const SizedBox(
+                    height: 15,
+                  ),
+                TextFormField(
+                  autofocus: true,
+                  textCapitalization: TextCapitalization.words,
+                  controller: firstNameTextEditingController,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.account_circle_outlined,
+                    ),
+                    hintText: 'Enter your first name',
+                    labelText: 'First name',
+                  ),
+                  keyboardType: TextInputType.text,
+                  onFieldSubmitted: (_) => lastNameFocusNode.requestFocus(),
+                  validator: (_) => state.firstnameValidator,
+                  textInputAction: TextInputAction.next,
+                  onChanged: (String value) => profileBloc.add(
+                    ProfileFirstnameChanged(
+                      firstname: value,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  textCapitalization: TextCapitalization.words,
+                  controller: lastNameTextEditingController,
+                  focusNode: lastNameFocusNode,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.account_circle_outlined,
+                    ),
+                    hintText: 'Enter your last name',
+                    labelText: 'Last name',
+                  ),
+                  keyboardType: TextInputType.text,
+                  onFieldSubmitted: (_) => emailFocusNode.requestFocus(),
+                  validator: (_) => state.lastnameValidator,
+                  textInputAction: TextInputAction.next,
+                  onChanged: (String value) => profileBloc.add(
+                    ProfileLastnameChanged(
+                      lastname: value,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: emailTextEditingController,
+                  focusNode: emailFocusNode,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.email,
+                    ),
+                    hintText: 'Enter your email',
+                    labelText: 'Email',
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  onFieldSubmitted: (_) => phoneFocusNode.requestFocus(),
+                  validator: (_) => state.emailValidator,
+                  textInputAction: TextInputAction.next,
+                  onChanged: (String value) => profileBloc.add(
+                    ProfileEmailChanged(
+                      email: value,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Row(
+                  children: <Widget>[
+                    CountryCodePicker(
+                      initialSelection: state.countryCode,
+                      flagDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7),
                       ),
-                      Expanded(
-                        child: TextFormField(
-                          controller: phoneTextEditingController,
-                          focusNode: phoneFocusNode,
-                          decoration: const InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.phone,
-                            ),
-                            hintText: 'Enter your phone number',
-                            labelText: 'Phone number',
+                      onChanged: (CountryCode countryCode) {
+                        profileBloc.add(
+                          ProfileCountryCodeChanged(
+                            countryCode: countryCode.dialCode ?? '+91',
                           ),
-                          keyboardType: TextInputType.phone,
-                          onFieldSubmitted: (_) => ageFocusNode.requestFocus(),
-                          validator: (_) => state.phoneNumberValidator,
-                          textInputAction: TextInputAction.next,
-                          onChanged: (String value) => profileBloc.add(
-                            ProfilePhoneNumberChanged(
-                              phoneNumber: value,
-                            ),
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: phoneTextEditingController,
+                        focusNode: phoneFocusNode,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.phone,
+                          ),
+                          hintText: 'Enter your phone number',
+                          labelText: 'Phone number',
+                        ),
+                        keyboardType: TextInputType.phone,
+                        onFieldSubmitted: (_) => ageFocusNode.requestFocus(),
+                        validator: (_) => state.phoneNumberValidator,
+                        textInputAction: TextInputAction.next,
+                        onChanged: (String value) => profileBloc.add(
+                          ProfilePhoneNumberChanged(
+                            phoneNumber: value,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  DropdownButtonFormField<Gender>(
-                    items: genderOptions,
-                    onChanged: (Gender? gender) {
-                      if (gender is Gender) {
-                        profileBloc.add(ProfileGenderChanged(gender: gender));
-                      }
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Select your gender',
-                      labelText: 'Gender',
-                      prefixIcon: Icon(Icons.account_circle_outlined),
                     ),
-                    value: state.gender,
+                  ],
+                ),
+                const SizedBox(height: 15),
+                DropdownButtonFormField<Gender>(
+                  items: genderOptions,
+                  onChanged: (Gender? gender) {
+                    if (gender is Gender) {
+                      profileBloc.add(ProfileGenderChanged(gender: gender));
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Select your gender',
+                    labelText: 'Gender',
+                    prefixIcon: Icon(Icons.account_circle_outlined),
                   ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    controller: ageTextEditingController,
-                    focusNode: ageFocusNode,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.account_circle_outlined),
-                      hintText: 'Enter your age',
-                      labelText: 'Age',
+                  value: state.gender,
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: ageTextEditingController,
+                  focusNode: ageFocusNode,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.account_circle_outlined),
+                    hintText: 'Enter your age',
+                    labelText: 'Age',
+                  ),
+                  keyboardType: TextInputType.number,
+                  onFieldSubmitted: (_) => addressFocusNode.requestFocus(),
+                  validator: (_) => state.ageValidator,
+                  textInputAction: TextInputAction.next,
+                  onChanged: (String value) => profileBloc.add(
+                    ProfileAgeChanged(
+                      age: int.tryParse(value) ?? 0,
                     ),
-                    keyboardType: TextInputType.number,
-                    onFieldSubmitted: (_) => addressFocusNode.requestFocus(),
-                    validator: (_) => state.ageValidator,
-                    textInputAction: TextInputAction.next,
-                    onChanged: (String value) => profileBloc.add(
-                      ProfileAgeChanged(
-                        age: int.tryParse(value) ?? 0,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  textCapitalization: TextCapitalization.words,
+                  controller: addressTextEditingController,
+                  focusNode: addressFocusNode,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.home),
+                    hintText: 'Enter your address',
+                    labelText: 'Address',
+                  ),
+                  keyboardType: TextInputType.text,
+                  onFieldSubmitted: (_) => cityFocusNode.requestFocus(),
+                  validator: (_) =>
+                      state.isValidAddress ? null : 'Address is required',
+                  textInputAction: TextInputAction.next,
+                  onChanged: (String value) => profileBloc.add(
+                    ProfileAddressChanged(
+                      address: value,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  textCapitalization: TextCapitalization.words,
+                  controller: cityTextEditingController,
+                  focusNode: cityFocusNode,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.home,
+                    ),
+                    hintText: 'Enter your city',
+                    labelText: 'City',
+                  ),
+                  keyboardType: TextInputType.text,
+                  onFieldSubmitted: (_) => screen == Screen.registerUser
+                      ? referralFocusNode.requestFocus()
+                      : onFormSubmitted(),
+                  validator: (_) =>
+                      state.isValidCity ? null : 'City is required',
+                  textInputAction: screen == Screen.registerUser
+                      ? TextInputAction.next
+                      : TextInputAction.done,
+                  onChanged: (String value) => profileBloc.add(
+                    ProfileCityChanged(
+                      city: value,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        'Enable Push Notifications',
+                        style: textTheme.headline2,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 15),
+                    Switch(
+                      value: state.isNotificationEnabled,
+                      onChanged: (bool enableNotifications) {
+                        profileBloc.add(
+                          ProfileNotificationStatusChanged(
+                            enableNotifications: enableNotifications,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+                if (screen == Screen.registerUser)
                   TextFormField(
                     textCapitalization: TextCapitalization.words,
-                    controller: addressTextEditingController,
-                    focusNode: addressFocusNode,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.home),
-                      hintText: 'Enter your address',
-                      labelText: 'Address',
-                    ),
-                    keyboardType: TextInputType.text,
-                    onFieldSubmitted: (_) => cityFocusNode.requestFocus(),
-                    validator: (_) =>
-                        state.isValidAddress ? null : 'Address is required',
-                    textInputAction: TextInputAction.next,
-                    onChanged: (String value) => profileBloc.add(
-                      ProfileAddressChanged(
-                        address: value,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    controller: cityTextEditingController,
-                    focusNode: cityFocusNode,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
-                        Icons.home,
+                        Icons.qr_code_rounded,
                       ),
-                      hintText: 'Enter your city',
-                      labelText: 'City',
+                      hintText: 'Enter a referral code(optional)',
+                      labelText: 'Referral code',
                     ),
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) => screen == Screen.registerUser
-                        ? referralFocusNode.requestFocus()
-                        : onFormSubmitted(),
-                    validator: (_) =>
-                        state.isValidCity ? null : 'City is required',
-                    textInputAction: screen == Screen.registerUser
-                        ? TextInputAction.next
-                        : TextInputAction.done,
+                        ? onFormSubmitted()
+                        : null,
                     onChanged: (String value) => profileBloc.add(
-                      ProfileCityChanged(
-                        city: value,
+                      ProfileReferralCodeChanged(
+                        referralCode: value,
                       ),
                     ),
+                    focusNode: referralFocusNode,
                   ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          'Enable Push Notifications',
-                          style: textTheme.headline2,
-                        ),
-                      ),
-                      Switch(
-                        value: state.isNotificationEnabled,
-                        onChanged: (bool enableNotifications) {
-                          profileBloc.add(
-                            ProfileNotificationStatusChanged(
-                              enableNotifications: enableNotifications,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  if (screen == Screen.registerUser)
-                    TextFormField(
-                      textCapitalization: TextCapitalization.words,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.qr_code_rounded,
-                        ),
-                        hintText: 'Enter a referral code(optional)',
-                        labelText: 'Referral code',
-                      ),
-                      keyboardType: TextInputType.text,
-                      onFieldSubmitted: (_) => screen == Screen.registerUser
-                          ? onFormSubmitted()
-                          : null,
-                      onChanged: (String value) => profileBloc.add(
-                        ProfileReferralCodeChanged(
-                          referralCode: value,
-                        ),
-                      ),
-                      focusNode: referralFocusNode,
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                  onPressed: onFormSubmitted,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
                     ),
-                  const SizedBox(
-                    height: 10,
+                    child: Text(
+                      'Submit',
+                      style: textTheme.headline2,
+                    ),
                   ),
-                  state.blocStatus is InProgress
-                      ? const CircularProgressIndicator()
-                      : ElevatedButton(
-                          onPressed: onFormSubmitted,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                              vertical: 8.0,
-                            ),
-                            child: Text(
-                              'Submit',
-                              style: textTheme.headline2,
-                            ),
-                          ),
-                        ),
-                ],
-              );
-            },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void onStateChanged({required Screen screen, required ProfileState state}) {
+    final bool _isLoading = state.blocStatus is InProgress;
+    if (_isLoading != isLoading) {
+      Future<void>.microtask(() => isLoading = _isLoading);
+    }
+
+    if (state.blocStatus is Success) {
+      profileBloc.add(ResetProfileFormStatus());
+      if (screen == Screen.registerUser) {
+        Future<void>.microtask(
+          () => navigator
+            ..popUntil(
+              (_) => false,
+            )
+            ..pushNamed(
+              Routes.home,
+            ),
+        );
+      } else {
+        Future<void>.microtask(
+          () => showSnackBar(
+            const SnackBar(
+              content: Text('Profile successfully updated'),
+            ),
+          ),
+        );
+      }
+    } else if (state.blocStatus is Failure) {
+      profileBloc.add(ResetProfileFormStatus());
+      final Failure failure = state.blocStatus as Failure;
+      Future<void>.microtask(
+        () => showSnackBar(
+          SnackBar(
+            content: Text(failure.message ?? 'Failure'),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

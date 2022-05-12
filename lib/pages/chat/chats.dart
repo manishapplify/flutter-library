@@ -11,7 +11,7 @@ import 'package:components/pages/users/widgets/user_tile.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/firebase_realtime_database/models/chat.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
-import 'package:components/widgets/search_bar.dart';
+import 'package:components/common/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -84,78 +84,68 @@ class _ChatsState extends BasePageState<ChatsPage> {
           return Future<bool>.value(false);
         }
       },
-      child: Stack(
-        children: <Widget>[
-          BlocBuilder<ChatBloc, ChatState>(
-            builder: (BuildContext context, ChatState state) {
-              if (state.blocStatus is Failure) {
-                final Failure failure = state.blocStatus as Failure;
-                if (failure.message == AppException.noChatsPresent().message ||
-                    failure.message ==
-                        AppException.couldNotLoadChats().message) {
+      child: BlocBuilder<ChatBloc, ChatState>(
+        builder: (BuildContext context, ChatState state) {
+          onStateChanged(state: state);
+          final List<FirebaseChat> chats = state.chats.toList();
+
+          return ListView.separated(
+            separatorBuilder: (_, __) => const SizedBox(
+              height: 8,
+              child: Divider(
+                thickness: 2,
+                indent: 80,
+              ),
+            ),
+            itemBuilder: (BuildContext context, int i) {
+              final FirebaseChat chat = chats[i];
+
+              return ChatTile(
+                chat: chat,
+                imageBaseUrl: chatBloc.imageBaseUrl,
+                currentUserFirebaseId: currentUser.firebaseId,
+                onTileTap: () {
+                  chatBloc.add(ChatOpenedEvent(chat));
                   Future<void>.microtask(
-                    () => showSnackBar(
-                      SnackBar(
-                        content: Text(failure.message ?? 'Failure'),
-                      ),
-                    ),
-                  );
-                }
-                chatBloc.add(ResetChatBlocStatus());
-              }
-
-              final List<FirebaseChat> chats = state.chats.toList();
-
-              return ListView.separated(
-                separatorBuilder: (_, __) => const SizedBox(
-                  height: 8,
-                  child: Divider(
-                    thickness: 2,
-                    indent: 80,
-                  ),
-                ),
-                itemBuilder: (BuildContext context, int i) {
-                  final FirebaseChat chat = chats[i];
-
-                  return ChatTile(
-                    chat: chat,
-                    imageBaseUrl: chatBloc.imageBaseUrl,
-                    currentUserFirebaseId: currentUser.firebaseId,
-                    onTileTap: () {
-                      chatBloc.add(ChatOpenedEvent(chat));
-                      Future<void>.microtask(
-                        () => navigator.pushNamed(
-                          Routes.chat,
-                          arguments: Routes.chats,
-                        ),
-                      );
-                    },
-                    onTileDismissed: () => onChatTileDismissed(
-                      context: context,
-                      chat: chat,
+                    () => navigator.pushNamed(
+                      Routes.chat,
+                      arguments: Routes.chats,
                     ),
                   );
                 },
-                itemCount: chats.length,
-              );
-            },
-          ),
-          BlocBuilder<ChatBloc, ChatState>(
-            builder: (BuildContext context, ChatState state) {
-              return Visibility(
-                child: const Material(
-                  color: Colors.transparent,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                onTileDismissed: () => onChatTileDismissed(
+                  context: context,
+                  chat: chat,
                 ),
-                visible: state.blocStatus is InProgress,
               );
             },
-          ),
-        ],
+            itemCount: chats.length,
+          );
+        },
       ),
     );
+  }
+
+  void onStateChanged({required ChatState state}) {
+    final bool _isLoading = state.blocStatus is InProgress;
+    if (_isLoading != isLoading) {
+      Future<void>.microtask(() => isLoading = _isLoading);
+    }
+
+    if (state.blocStatus is Failure) {
+      final Failure failure = state.blocStatus as Failure;
+      if (failure.message == AppException.noChatsPresent().message ||
+          failure.message == AppException.couldNotLoadChats().message) {
+        Future<void>.microtask(
+          () => showSnackBar(
+            SnackBar(
+              content: Text(failure.message ?? 'Failure'),
+            ),
+          ),
+        );
+      }
+      chatBloc.add(ResetChatBlocStatus());
+    }
   }
 
   void onQueryChanged(String query) {

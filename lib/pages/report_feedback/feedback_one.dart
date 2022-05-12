@@ -1,7 +1,7 @@
 import 'package:components/common/work_status.dart';
 import 'package:components/pages/base_page.dart';
 import 'package:components/pages/report_feedback/feedback_one/bloc/bloc.dart';
-import 'package:components/widgets/checkbox.dart';
+import 'package:components/common/widgets/checkbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

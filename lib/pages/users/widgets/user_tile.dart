@@ -1,5 +1,5 @@
 import 'package:components/services/firebase_realtime_database/models/user.dart';
-import 'package:components/widgets/image_container.dart';
+import 'package:components/common/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 
 class UserTile extends StatelessWidget {

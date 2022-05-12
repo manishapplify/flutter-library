@@ -66,7 +66,10 @@ class _SettingsState extends BasePageState<SettingsPage> {
                       'Are you sure, you want to delete your account?'),
                   actions: <Widget>[
                     TextButton(
-                      onPressed: () => settingsCubit.deleteAccount(),
+                      onPressed: () {
+                        settingsCubit.deleteAccount();
+                        Navigator.of(context).pop();
+                      },
                       child: const Text('Yes'),
                     ),
                     TextButton(
@@ -90,7 +93,10 @@ class _SettingsState extends BasePageState<SettingsPage> {
                   content: const Text('Are you sure, you want to log out?'),
                   actions: <Widget>[
                     TextButton(
-                      onPressed: () => settingsCubit.logout(),
+                      onPressed: () {
+                        settingsCubit.logout();
+                        Navigator.of(context).pop();
+                      },
                       child: const Text('Yes'),
                     ),
                     TextButton(
@@ -107,48 +113,51 @@ class _SettingsState extends BasePageState<SettingsPage> {
             ),
           ],
         ),
-        BlocBuilder<SettingsCubit, SettingsState>(
-            builder: (_, SettingsState state) {
-          if (state is CompletedAction) {
-            settingsCubit.resetState();
-
-            // Move to login screen on both LogdedOut, DeletedAccount.
-            Future<void>.microtask(
-              () => navigator
-                ..popUntil(
-                  (_) => false,
-                )
-                ..pushNamed(
-                  Routes.login,
-                ),
-            );
-          } else if (state is FailedAction) {
-            settingsCubit.resetState();
-
-            if (state is FailedLoggingOut) {
-              Future<void>.microtask(
-                () => showSnackBar(
-                  SnackBar(
-                    content: Text(state.message ?? 'Failed to logout'),
-                  ),
-                ),
-              );
-            } else if (state is FailedDeletingAccount) {
-              Future<void>.microtask(
-                () => showSnackBar(
-                  SnackBar(
-                    content: Text(state.message ?? 'Failed to delete account'),
-                  ),
-                ),
-              );
+        BlocListener<SettingsCubit, SettingsState>(
+          listener: (_, SettingsState state) {
+            final bool _isLoading = state is PerformingAction;
+            if (_isLoading != isLoading) {
+              Future<void>.microtask(() => isLoading = _isLoading);
             }
-          }
 
-          return Visibility(
-            visible: state is PerformingAction,
-            child: const CircularProgressIndicator(),
-          );
-        }),
+            if (state is CompletedAction) {
+              settingsCubit.resetState();
+
+              // Move to login screen on both Logout and Delete account.
+              Future<void>.microtask(
+                () => navigator
+                  ..popUntil(
+                    (_) => false,
+                  )
+                  ..pushNamed(
+                    Routes.login,
+                  ),
+              );
+            } else if (state is FailedAction) {
+              settingsCubit.resetState();
+
+              if (state is FailedLoggingOut) {
+                Future<void>.microtask(
+                  () => showSnackBar(
+                    SnackBar(
+                      content: Text(state.message ?? 'Failed to logout'),
+                    ),
+                  ),
+                );
+              } else if (state is FailedDeletingAccount) {
+                Future<void>.microtask(
+                  () => showSnackBar(
+                    SnackBar(
+                      content:
+                          Text(state.message ?? 'Failed to delete account'),
+                    ),
+                  ),
+                );
+              }
+            }
+          },
+          child: const SizedBox(),
+        ),
       ],
     );
   }

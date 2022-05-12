@@ -7,6 +7,7 @@ import 'package:components/pages/change_password/view.dart';
 import 'package:components/pages/chat/chat.dart';
 import 'package:components/pages/chat/chats.dart';
 import 'package:components/pages/chat/widgets/pdf_viewer.dart';
+import 'package:components/pages/comments/comment_ui.dart';
 import 'package:components/pages/feedback/view.dart';
 import 'package:components/pages/forgot_password/view.dart';
 import 'package:components/pages/home/view.dart';
@@ -218,6 +219,10 @@ class Navigation {
           settings: settings,
           builder: (_) => const ChatPage(),
         );
+      case Routes.comments:
+        return MaterialPageRoute<CommentScreen>(
+          builder: (_) => const CommentScreen(),
+        );
 
       case Routes.feedbackScreens:
         return MaterialPageRoute<FeedbackScreenTypes>(
@@ -322,6 +327,7 @@ class Routes {
   static const String users = '/users';
   static const String chats = '/chats';
   static const String chat = '/chat';
+  static const String comments = '/comments';
 
   static const String loginOne = "/loginScreenOne";
   static const String feedbackScreens = "/feedbackScreens";

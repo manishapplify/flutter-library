@@ -15,7 +15,7 @@ class ProfileState extends BaseState {
     this.age,
     this.address,
     this.city,
-    this.isNotificationEnabled = false,
+    this.isNotificationEnabled = true,
     WorkStatus blocStatus = const Idle(),
   }) : super(blocStatus);
 

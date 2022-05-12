@@ -3,7 +3,8 @@ import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/common/app_exception.dart';
 import 'package:components/routes/navigation.dart';
-import 'package:components/widgets/image_container.dart';
+
+import 'package:components/common/widgets/image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -128,9 +129,17 @@ class _HomeState extends BasePageState<HomePage> {
   @override
   Widget body(BuildContext context) {
     return Center(
-      child: Text(
-        'Home',
-        style: textTheme.headline1,
+      child: Column(
+        children: <Widget>[
+          Text(
+            'Home',
+            style: textTheme.headline1,
+          ),
+          ElevatedButton(
+            onPressed: () => navigator.pushNamed(Routes.comments),
+            child: const Text('Comments'),
+          ),
+        ],
       ),
     );
   }
