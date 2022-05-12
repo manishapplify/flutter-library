@@ -11,6 +11,7 @@ import 'package:components/pages/feedback/view.dart';
 import 'package:components/pages/forgot_password/view.dart';
 import 'package:components/pages/home/view.dart';
 import 'package:components/pages/login/view.dart';
+import 'package:components/pages/notifications/view.dart';
 import 'package:components/pages/otp/view.dart';
 import 'package:components/pages/profile/repo.dart';
 import 'package:components/pages/profile/view.dart';
@@ -245,6 +246,11 @@ class Navigation {
           settings: settings,
           builder: (_) => const PdfViewerPage(),
         );
+      case Routes.notifications:
+        return MaterialPageRoute<NotificationPage>(
+          settings: settings,
+          builder: (_) => const NotificationPage(),
+        );
     }
 
     return MaterialPageRoute<LoginPage>(
@@ -322,4 +328,5 @@ class Routes {
   static const String feedbackOne = "/feedbackOneScreen";
   static const String feedbackThird = "/feedbackThirdScreen";
   static const String pdfViewerPage = "/pdfViewerPage";
+  static const String notifications = '/notifications';
 }

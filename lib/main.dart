@@ -40,12 +40,20 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ChatBloc>(
           create: (_) => ChatBloc(
-            authCubit: compositionRoot.authCubit,
+              authCubit: compositionRoot.authCubit,
+              firebaseRealtimeDatabase:
+                  compositionRoot.firebaseRealtimeDatabase,
+              firebaseStorageService: compositionRoot.firebaseStorageService,
+              imageBaseUrl: compositionRoot.s3imageUpload.s3BaseUrl + 'users/',
+              api: compositionRoot.api),
+        ),
+        BlocProvider<NotificationBloc>(
+          create: (_) => NotificationBloc(
             firebaseRealtimeDatabase: compositionRoot.firebaseRealtimeDatabase,
-            firebaseStorageService: compositionRoot.firebaseStorageService,
-            imageBaseUrl: compositionRoot.s3imageUpload.s3BaseUrl + 'users/',
-            api: compositionRoot.api
-          ),
+            authCubit: compositionRoot.authCubit,
+            localNotificationService: compositionRoot.localNotificationService,
+          )..add(GetNotificationSubscriptionEvent()),
+          lazy: false,
         ),
         BlocProvider<UsersBloc>(
           create: (_) => UsersBloc(

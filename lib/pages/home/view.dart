@@ -47,6 +47,16 @@ class _HomeState extends BasePageState<HomePage> {
             icon: const Icon(
               Icons.settings,
             ),
+          ),
+          IconButton(
+            onPressed: () {
+              navigator.pushNamed(
+                Routes.notifications,
+              );
+            },
+            icon: const Icon(
+              Icons.notifications,
+            ),
           )
         ],
       );

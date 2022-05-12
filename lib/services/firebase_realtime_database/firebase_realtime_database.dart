@@ -284,6 +284,24 @@ class FirebaseRealtimeDatabase {
     return streams;
   }
 
+  Future<Set<FirebaseMessage>> getNotifications() async {
+    final DatabaseReference notificationReference =
+        _database.ref(_notificationsCollection);
+
+    final DatabaseEvent event = await notificationReference.once();
+    return _parseNotificationDatabaseEvent(event);
+  }
+
+  Stream<Set<FirebaseMessage>> getNotificationStream() {
+    Stream<Set<FirebaseMessage>> stream;
+    stream = _database
+        .ref(_notificationsCollection)
+        .onValue
+        .map(_parseNotificationDatabaseEvent);
+
+    return stream;
+  }
+
   String? getNewMessgeId({
     required String chatId,
   }) {
@@ -358,6 +376,29 @@ class FirebaseRealtimeDatabase {
           .toList()
         ..sort(((FirebaseMessage a, FirebaseMessage b) =>
             a.messageTime.compareTo(b.messageTime)));
+
+      messages = _messages.toSet();
+    }
+
+    return messages;
+  }
+
+  Set<FirebaseMessage> _parseNotificationDatabaseEvent(DatabaseEvent event) {
+    Set<FirebaseMessage> messages = <FirebaseMessage>{};
+    if (event.snapshot.value != null) {
+      final Map<dynamic, dynamic> map =
+          event.snapshot.value as Map<dynamic, dynamic>;
+
+      final List<FirebaseMessage> _messages = map.entries
+          .map(
+            (MapEntry<dynamic, dynamic> e) => FirebaseMessage.fromMap(e.value),
+          )
+          .toList()
+        ..sort(
+          ((FirebaseMessage a, FirebaseMessage b) {
+            return b.messageTime.compareTo(a.messageTime);
+          }),
+        );
 
       messages = _messages.toSet();
     }

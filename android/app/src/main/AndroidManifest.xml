@@ -58,6 +58,10 @@
             android:name="com.facebook.sdk.ClientToken" 
             android:value="@string/facebook_client_token"
             />
+        <!-- Notification channel. -->
+            <meta-data
+              android:name="com.google.firebase.messaging.default_notification_channel_id"
+              android:value="Flutter Library" />
 
         
     </application>

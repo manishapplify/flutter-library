@@ -28,6 +28,7 @@ import 'package:components/services/firebase_realtime_database/models/message/me
 import 'package:components/services/firebase_realtime_database/models/message/text_message.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
 import 'package:components/services/firebase_storage_service.dart';
+import 'package:components/services/local_notification_service.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:dio/dio.dart';
@@ -83,6 +84,10 @@ part 'package:components/pages/chat/bloc/state.dart';
 part 'package:components/pages/profile/bloc/bloc.dart';
 part 'package:components/pages/profile/bloc/event.dart';
 part 'package:components/pages/profile/bloc/state.dart';
+// NotificationPage
+part 'package:components/pages/notifications/bloc/bloc.dart';
+part 'package:components/pages/notifications/bloc/event.dart';
+part 'package:components/pages/notifications/bloc/state.dart';
 abstract class BaseBloc<E extends BaseEvent, S extends BaseState>
     extends Bloc<E, S> {
   BaseBloc(S initialState) : super(initialState);
