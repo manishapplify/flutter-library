@@ -89,9 +89,9 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
           body: notification,
         );
       }
+      emit(
+        state.copyWith(notifications: event.notification),
+      );
     }
-    emit(
-      state.copyWith(notifications: event.notification),
-    );
   }
 }
