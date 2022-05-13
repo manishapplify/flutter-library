@@ -56,16 +56,6 @@ class _HomeState extends BasePageState<HomePage> {
               Icons.settings,
             ),
           ),
-          IconButton(
-            onPressed: () {
-              navigator.pushNamed(
-                Routes.notifications,
-              );
-            },
-            icon: const Icon(
-              Icons.notifications,
-            ),
-          )
         ],
       );
 
@@ -103,6 +93,12 @@ class _HomeState extends BasePageState<HomePage> {
                 title: const Text('Chats'),
                 onTap: () => navigator.popAndPushNamed(
                   Routes.chats,
+                ),
+              ),
+              ListTile(
+                title: const Text('Notifications'),
+                onTap: () => navigator.pushNamed(
+                  Routes.notifications,
                 ),
               ),
               const Divider(),
