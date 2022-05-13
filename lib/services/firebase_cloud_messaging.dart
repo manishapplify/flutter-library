@@ -1,7 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-// ignore: constant_identifier_names
-const String FIREBASE_TOPIC_NAME = "NEWWIT_NOTIFICATION";
+const String firebaseTopicName = "Flutter_Library_Firebase_Messaging";
 
 class FirebaseCloudMessaging {
   late FirebaseMessaging _messaging;
@@ -10,7 +9,7 @@ class FirebaseCloudMessaging {
   Future<void> registerFCM() async {
     _messaging = FirebaseMessaging.instance;
 
-    _messaging.subscribeToTopic(FIREBASE_TOPIC_NAME);
+    _messaging.subscribeToTopic(firebaseTopicName);
 
     final NotificationSettings settings = await _messaging.requestPermission();
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
@@ -22,6 +21,5 @@ class FirebaseCloudMessaging {
 
   Future<void> getToken() async {
     deviceToken = await _messaging.getToken();
-    print(deviceToken);
   }
 }

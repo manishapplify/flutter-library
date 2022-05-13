@@ -9,3 +9,9 @@ class UploadImagesEvent extends HomeEvent {
 }
 
 class ResetImageUploadStatus extends HomeEvent {}
+
+class _OnUploadedImageUrlsLoadEvent extends HomeEvent {
+  _OnUploadedImageUrlsLoadEvent(this.uploadedImageUrls);
+
+  final List<String> uploadedImageUrls;
+}

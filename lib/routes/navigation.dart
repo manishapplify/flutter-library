@@ -163,6 +163,7 @@ class Navigation {
             create: (_) => HomeBloc(
               s3imageUpload: _s3imageUpload,
               authCubit: _authCubit,imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
+              persistence: _persistence,
             ),
             child: const HomePage(),
           ),

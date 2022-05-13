@@ -127,18 +127,33 @@ class _HomeState extends BasePageState<HomePage> {
 
   @override
   Widget body(BuildContext context) {
-    return BlocListener<HomeBloc, HomeState>(
-      listener: (BuildContext context, HomeState state) {
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (BuildContext context, HomeState state) {
         final bool _isLoading = state.blocStatus is InProgress ||
             state.imageUploadStatus is InProgress;
         if (_isLoading != isLoading) {
           Future<void>.microtask(() => isLoading = _isLoading);
         }
-      },
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+
+        final List<String> uploadedImageUrls = state.uploadedImageUrls;
+
+        return Column(
           children: <Widget>[
+            Flexible(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(16.0),
+                itemCount: uploadedImageUrls.length,
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 50,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
+                ),
+                itemBuilder: (_, int index) => ImageContainer(
+                  imageUrl: uploadedImageUrls[index],
+                  circularDecoration: false,
+                ),
+              ),
+            ),
             ElevatedButton(
               onPressed: () => multiImageSelectionBottomSheet(
                 context: context,
@@ -152,8 +167,8 @@ class _HomeState extends BasePageState<HomePage> {
               child: const Text('Pick images'),
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

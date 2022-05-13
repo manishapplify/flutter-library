@@ -23,24 +23,6 @@ class Persistence {
     return null;
   }
 
-  Future<void> saveNotifications(Set<FirebaseMessage> notifications) async {
-    final List<String> encodedNotificaions = <String>[];
-    for (FirebaseMessage notification in notifications) {
-      encodedNotificaions.add(jsonEncode(notification.toMap()));
-    }
-    _preferences.setStringList(_notification, encodedNotificaions);
-  }
-
-  Set<FirebaseMessage>? fetchNotifications() {
-    final List<String>? jsonList = _preferences.getStringList(_notification);
-
-    final Set<FirebaseMessage> decodedNotificaions = <FirebaseMessage>{};
-    for (String element in jsonList!) {
-      decodedNotificaions.add(FirebaseMessage.fromMap(jsonDecode(element)));
-    }
-    return decodedNotificaions;
-  }
-
   Future<void> deleteUser() => _preferences.remove(_user);
 
   Future<bool> saveCountryCode(String countryCode) =>
@@ -66,9 +48,39 @@ class Persistence {
 
   Future<void> deleteForgotPasswordToken() =>
       _preferences.remove(_forgotPasswordToken);
+
+  Future<bool> saveNotifications(Set<FirebaseMessage> notifications) async {
+    final List<String> encodedNotifications = <String>[];
+    for (FirebaseMessage notification in notifications) {
+      encodedNotifications.add(jsonEncode(notification.toMap()));
+    }
+    return _preferences.setStringList(_notifications, encodedNotifications);
+  }
+
+  Set<FirebaseMessage>? fetchNotifications() {
+    final List<String>? jsonList = _preferences.getStringList(_notifications);
+
+    final Set<FirebaseMessage> decodedNotifications = <FirebaseMessage>{};
+    if (jsonList != null) {
+      for (String element in jsonList) {
+        decodedNotifications.add(FirebaseMessage.fromMap(jsonDecode(element)));
+      }
+    }
+    return decodedNotifications;
+  }
+
+  Future<bool> saveUploadedImages(List<String> imageUrls) =>
+      _preferences.setStringList(_uploadedImageUrls, imageUrls);
+
+  List<String>? fetchUploadedImages() =>
+      _preferences.getStringList(_uploadedImageUrls);
+
+  Future<void> deleteUploadedImages() =>
+      _preferences.remove(_uploadedImageUrls);
 }
 
 const String _user = 'user';
 const String _countryCode = 'countryCode';
 const String _forgotPasswordToken = 'forgotPasswordToken';
-const String _notification = 'notification';
+const String _notifications = 'notifications';
+const String _uploadedImageUrls = 'uploadedImageUrls';
