@@ -38,14 +38,13 @@ class NotificationsBloc
         if (!_authCubit.state.isAuthorized) {
           throw AppException.authenticationException();
         }
-        final User currentUser = _authCubit.state.user!;
         final Set<FirebaseMessage> notifications =
             await _firebaseRealtimeDatabase.getNotifications();
 
+        final User currentUser = _authCubit.state.user!;
         notifications.removeWhere(
-          (FirebaseMessage element) =>
-              !element.chatDialogId.contains(currentUser.firebaseId) ||
-              currentUser.firebaseId == element.senderId,
+          (FirebaseMessage message) =>
+              message.messageReadStatus != currentUser.firebaseId,
         );
         emit(state.copyWith(
           notifications: notifications,
@@ -68,21 +67,23 @@ class NotificationsBloc
             _firebaseRealtimeDatabase.getNotificationStream();
 
         final StreamSubscription<Set<FirebaseMessage>>
-            notificationsSubscription =
-            notificationsStream.listen((Set<FirebaseMessage> notifications) {
-          notifications.removeWhere(
-            (FirebaseMessage message) {
-              final User currentUser = _authCubit.state.user!;
-              return !message.chatDialogId.contains(currentUser.firebaseId) ||
-                  currentUser.firebaseId == message.senderId;
-            },
-          );
-          add(_OnNotificationsEvent(notifications: notifications));
-        });
+            notificationsSubscription = notificationsStream.listen(
+          (Set<FirebaseMessage> notifications) {
+            notifications.removeWhere(
+              (FirebaseMessage message) {
+                final User currentUser = _authCubit.state.user!;
+                return message.messageReadStatus != currentUser.firebaseId;
+              },
+            );
+            add(_OnNotificationsEvent(notifications: notifications));
+          },
+        );
 
-        emit(state.copyWith(
-          notificationsSubscription: notificationsSubscription,
-        ));
+        emit(
+          state.copyWith(
+            notificationsSubscription: notificationsSubscription,
+          ),
+        );
       },
       emit: emit,
       emitFailureOnly: true,
