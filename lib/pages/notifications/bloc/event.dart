@@ -12,3 +12,10 @@ class _OnNotificationEvent extends NotificationEvent {
 
   final Set<FirebaseMessage> notifications;
 }
+
+class _OnLocalNotificationEvent extends NotificationEvent{
+_OnLocalNotificationEvent({
+    required this.notifications,
+  });
+  final Set<FirebaseMessage> notifications;
+}

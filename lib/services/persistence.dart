@@ -24,7 +24,6 @@ class Persistence {
   }
 
   Future<void> saveNotifications(Set<FirebaseMessage> notifications) async {
-    //_preferences.setString(_user, jsonEncode(user.toJson()));
     final List<String> encodedNotificaion = <String>[];
     for (FirebaseMessage element in notifications) {
       encodedNotificaion.add(jsonEncode(element.toMap()));
@@ -36,13 +35,10 @@ class Persistence {
     final List<String>? jsonList = _preferences.getStringList(_notification);
 
     final Set<FirebaseMessage> decodedNotificaions = <FirebaseMessage>{};
-    //if (jsonList is List<String>){
     for (String element in jsonList!) {
       decodedNotificaions.add(FirebaseMessage.fromMap(jsonDecode(element)));
     }
     return decodedNotificaions;
-    //  }
-    //   return null;
   }
 
   Future<void> deleteUser() => _preferences.remove(_user);

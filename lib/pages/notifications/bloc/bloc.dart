@@ -11,13 +11,16 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
         _localNotificationService = localNotificationService,
         _persistence = persistence,
         super(const NotificationState()) {
-    // final Set<FirebaseMessage>? notifications =
-    //     _persistence.fetchNotifications();
-
     on<GetNotificationEvent>(_getNotificationsEventHandler);
     on<GetNotificationSubscriptionEvent>(
         _getNotificationSubscriptionEventHandler);
     on<_OnNotificationEvent>(_onNotificationEventHandler);
+    on<_OnLocalNotificationEvent>(_onLocalNotificationEventHandler);
+    final Set<FirebaseMessage>? notifications =
+        _persistence.fetchNotifications();
+    if (notifications != null && notifications.isNotEmpty) {
+      add(_OnLocalNotificationEvent(notifications: notifications));
+    }
   }
   final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
   final AuthCubit _authCubit;
@@ -101,5 +104,12 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
       );
       _persistence.saveNotifications(event.notifications);
     }
+  }
+
+  void _onLocalNotificationEventHandler(
+      _OnLocalNotificationEvent event, Emitter<NotificationState> emit) {
+    emit(
+      state.copyWith(notifications: event.notifications),
+    );
   }
 }
