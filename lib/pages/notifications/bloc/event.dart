@@ -1,20 +1,22 @@
 part of blocs;
-abstract class NotificationEvent extends BaseEvent {}
+abstract class NotificationsEvent extends BaseEvent {}
 
-class GetNotificationEvent extends NotificationEvent {}
+class GetNotificationsEvent extends NotificationsEvent {}
 
-class GetNotificationSubscriptionEvent  extends NotificationEvent {}
+class _GetNotificationsSubscriptionEvent  extends NotificationsEvent {}
 
-class _OnNotificationEvent extends NotificationEvent {
-  _OnNotificationEvent({
+class _NotificationsSubscriptionDisposeEvent extends NotificationsEvent {}
+
+class _OnNotificationsEvent extends NotificationsEvent {
+  _OnNotificationsEvent({
     required this.notifications,
   });
 
   final Set<FirebaseMessage> notifications;
 }
 
-class _OnLocalNotificationEvent extends NotificationEvent{
-_OnLocalNotificationEvent({
+class _OnLocalNotificationsLoadEvent extends NotificationsEvent{
+_OnLocalNotificationsLoadEvent({
     required this.notifications,
   });
   final Set<FirebaseMessage> notifications;

@@ -17,7 +17,7 @@ class NotificationPage extends BasePage {
 }
 
 class _NotificationState extends BasePageState<NotificationPage> {
-  late final NotificationBloc notificationBloc;
+  late final NotificationsBloc notificationBloc;
   late final User currentUser;
 
   @override
@@ -28,7 +28,7 @@ class _NotificationState extends BasePageState<NotificationPage> {
     }
 
     currentUser = authCubit.state.user!;
-    notificationBloc = BlocProvider.of(context)..add(GetNotificationEvent());
+    notificationBloc = BlocProvider.of(context)..add(GetNotificationsEvent());
     super.initState();
   }
 
@@ -39,20 +39,24 @@ class _NotificationState extends BasePageState<NotificationPage> {
 
   @override
   Widget body(BuildContext context) {
-    return BlocBuilder<NotificationBloc, NotificationState>(
-      builder: (BuildContext context, NotificationState state) {
+    return BlocBuilder<NotificationsBloc, NotificationsState>(
+      builder: (BuildContext context, NotificationsState state) {
         final List<FirebaseMessage> notifications =
             state.notifications.toList();
         return state.blocStatus is InProgress
             ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: notifications.length,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return NotificationTile(
-                    notification: notifications[index],
-                  );
-                });
+            : notifications.isEmpty
+                ? const Center(
+                    child: Text("No Notification Yet!"),
+                  )
+                : ListView.builder(
+                    itemCount: notifications.length,
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return NotificationTile(
+                        notification: notifications[index],
+                      );
+                    });
       },
     );
   }

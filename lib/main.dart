@@ -47,13 +47,14 @@ class MyApp extends StatelessWidget {
               imageBaseUrl: compositionRoot.s3imageUpload.s3BaseUrl + 'users/',
               api: compositionRoot.api),
         ),
-        BlocProvider<NotificationBloc>(
-          create: (_) => NotificationBloc(
-            firebaseRealtimeDatabase: compositionRoot.firebaseRealtimeDatabase,
-            authCubit: compositionRoot.authCubit,
-            localNotificationService: compositionRoot.localNotificationService,
-            persistence: compositionRoot.persistence
-          )..add(GetNotificationSubscriptionEvent()),
+        BlocProvider<NotificationsBloc>(
+          create: (_) => NotificationsBloc(
+              firebaseRealtimeDatabase:
+                  compositionRoot.firebaseRealtimeDatabase,
+              authCubit: compositionRoot.authCubit,
+              localNotificationsService:
+                  compositionRoot.localNotificationsService,
+              persistence: compositionRoot.persistence),
           lazy: false,
         ),
         BlocProvider<UsersBloc>(

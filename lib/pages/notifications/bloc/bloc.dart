@@ -1,33 +1,38 @@
 part of blocs;
 
-class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
-  NotificationBloc({
+class NotificationsBloc
+    extends BaseBloc<NotificationsEvent, NotificationsState> {
+  NotificationsBloc({
     required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
     required AuthCubit authCubit,
-    required LocalNotificationService localNotificationService,
+    required LocalNotificationsService localNotificationsService,
     required Persistence persistence,
   })  : _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
         _authCubit = authCubit,
-        _localNotificationService = localNotificationService,
+        _localNotificationsService = localNotificationsService,
         _persistence = persistence,
-        super(const NotificationState()) {
-    on<GetNotificationEvent>(_getNotificationsEventHandler);
-    on<GetNotificationSubscriptionEvent>(
-        _getNotificationSubscriptionEventHandler);
-    on<_OnNotificationEvent>(_onNotificationEventHandler);
-    on<_OnLocalNotificationEvent>(_onLocalNotificationEventHandler);
+        super(const NotificationsState()) {
+    on<GetNotificationsEvent>(_getNotificationsEventHandler);
+    on<_GetNotificationsSubscriptionEvent>(
+        _getNotificationsSubscriptionEventHandler);
+    on<_OnNotificationsEvent>(_onNotificationsEventHandler);
+    on<_OnLocalNotificationsLoadEvent>(_onLocalNotificationsLoadEventHandler);
+    on<_NotificationsSubscriptionDisposeEvent>(
+        _notificationsSubscriptionDisposeEventHandler);
     final Set<FirebaseMessage>? notifications =
         _persistence.fetchNotifications();
     if (notifications != null && notifications.isNotEmpty) {
-      add(_OnLocalNotificationEvent(notifications: notifications));
+      add(_OnLocalNotificationsLoadEvent(notifications: notifications));
     }
+    _handleAuthChanges(_authCubit.state);
+    _authCubit.stream.listen(_handleAuthChanges);
   }
   final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
   final AuthCubit _authCubit;
-  final LocalNotificationService _localNotificationService;
+  final LocalNotificationsService _localNotificationsService;
   final Persistence _persistence;
   void _getNotificationsEventHandler(
-      GetNotificationEvent event, Emitter<NotificationState> emit) async {
+      GetNotificationsEvent event, Emitter<NotificationsState> emit) async {
     await _commonHandler(
       handlerJob: () async {
         if (!_authCubit.state.isAuthorized) {
@@ -50,9 +55,9 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
     );
   }
 
-  void _getNotificationSubscriptionEventHandler(
-      GetNotificationSubscriptionEvent event,
-      Emitter<NotificationState> emit) async {
+  void _getNotificationsSubscriptionEventHandler(
+      _GetNotificationsSubscriptionEvent event,
+      Emitter<NotificationsState> emit) async {
     await _commonHandler(
       handlerJob: () async {
         if (!_authCubit.state.isAuthorized) {
@@ -62,39 +67,37 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
         final Stream<Set<FirebaseMessage>> notificationsStream =
             _firebaseRealtimeDatabase.getNotificationStream();
 
-        if (_authCubit.state.user!.notificationEnabled == 1) {
-          final StreamSubscription<Set<FirebaseMessage>>
-              notificationsSubscription =
-              notificationsStream.listen((Set<FirebaseMessage> notifications) {
-            notifications.removeWhere(
-              (FirebaseMessage message) {
-                final User currentUser = _authCubit.state.user!;
-                return !message.chatDialogId.contains(currentUser.firebaseId) ||
-                    currentUser.firebaseId == message.senderId;
-              },
-            );
-            add(_OnNotificationEvent(notifications: notifications));
-          });
+        final StreamSubscription<Set<FirebaseMessage>>
+            notificationsSubscription =
+            notificationsStream.listen((Set<FirebaseMessage> notifications) {
+          notifications.removeWhere(
+            (FirebaseMessage message) {
+              final User currentUser = _authCubit.state.user!;
+              return !message.chatDialogId.contains(currentUser.firebaseId) ||
+                  currentUser.firebaseId == message.senderId;
+            },
+          );
+          add(_OnNotificationsEvent(notifications: notifications));
+        });
 
-          emit(state.copyWith(
-            notificationsSubscription: notificationsSubscription,
-          ));
-        }
+        emit(state.copyWith(
+          notificationsSubscription: notificationsSubscription,
+        ));
       },
       emit: emit,
       emitFailureOnly: true,
     );
   }
 
-  void _onNotificationEventHandler(
-      _OnNotificationEvent event, Emitter<NotificationState> emit) {
+  void _onNotificationsEventHandler(
+      _OnNotificationsEvent event, Emitter<NotificationsState> emit) {
     if (event.notifications != state.notifications) {
       final Set<String> newNotifications = event.notifications
           .difference(state.notifications)
           .map((FirebaseMessage notification) => notification.message)
           .toSet();
       for (final String notification in newNotifications) {
-        _localNotificationService.showLocalNotification(
+        _localNotificationsService.showLocalNotification(
           title: "Flutter Library",
           body: notification,
         );
@@ -106,10 +109,28 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
     }
   }
 
-  void _onLocalNotificationEventHandler(
-      _OnLocalNotificationEvent event, Emitter<NotificationState> emit) {
+  void _onLocalNotificationsLoadEventHandler(
+      _OnLocalNotificationsLoadEvent event, Emitter<NotificationsState> emit) {
     emit(
       state.copyWith(notifications: event.notifications),
     );
+  }
+
+  void _notificationsSubscriptionDisposeEventHandler(
+      _NotificationsSubscriptionDisposeEvent event,
+      Emitter<NotificationsState> emit) {
+    state.notificationsSubscription?.cancel();
+
+    emit(const NotificationsState());
+  }
+
+  void _handleAuthChanges(AuthState event) {
+    if (event.isAuthorized) {
+      event.user!.notificationEnabled == 1
+          ? add(_GetNotificationsSubscriptionEvent())
+          : add(_NotificationsSubscriptionDisposeEvent());
+    } else {
+      add(_NotificationsSubscriptionDisposeEvent());
+    }
   }
 }

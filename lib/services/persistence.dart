@@ -24,11 +24,11 @@ class Persistence {
   }
 
   Future<void> saveNotifications(Set<FirebaseMessage> notifications) async {
-    final List<String> encodedNotificaion = <String>[];
-    for (FirebaseMessage element in notifications) {
-      encodedNotificaion.add(jsonEncode(element.toMap()));
+    final List<String> encodedNotificaions = <String>[];
+    for (FirebaseMessage notification in notifications) {
+      encodedNotificaions.add(jsonEncode(notification.toMap()));
     }
-    _preferences.setStringList(_notification, encodedNotificaion);
+    _preferences.setStringList(_notification, encodedNotificaions);
   }
 
   Set<FirebaseMessage>? fetchNotifications() {

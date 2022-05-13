@@ -30,7 +30,7 @@ class CompositionRoot {
     required this.firebaseStorageService,
     required this.api,
     required this.s3imageUpload,
-    required this.localNotificationService,
+    required this.localNotificationsService,
     required this.persistence
   });
 
@@ -41,7 +41,7 @@ class CompositionRoot {
   final FirebaseStorageService firebaseStorageService;
   final Api api;
   final S3ImageUpload s3imageUpload;
-  final LocalNotificationService localNotificationService;
+  final LocalNotificationsService localNotificationsService;
   final Persistence persistence;
 }
 
@@ -87,9 +87,9 @@ Future<CompositionRoot> configureDependencies() async {
       FirebaseRealtimeDatabase();
   final FirebaseStorageService firebaseStorageService =
       FirebaseStorageService();
-  final LocalNotificationService localNotificationService =
-      LocalNotificationService();
-  await localNotificationService.initialize();
+  final LocalNotificationsService localNotificationsService =
+      LocalNotificationsService();
+  await localNotificationsService.initialize();
 
   final AuthRepository authRepository = AuthRepository(
     api: api,
@@ -144,7 +144,7 @@ Future<CompositionRoot> configureDependencies() async {
     firebaseStorageService: firebaseStorageService,
     api: api,
     s3imageUpload: s3imageUpload,
-    localNotificationService: localNotificationService,
+    localNotificationsService: localNotificationsService,
     persistence: persistence
   );
 }

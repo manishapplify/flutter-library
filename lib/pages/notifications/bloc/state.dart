@@ -1,7 +1,7 @@
 part of blocs;
 
-class NotificationState extends BaseState {
-  const NotificationState({
+class NotificationsState extends BaseState {
+  const NotificationsState({
     this.notifications = const <FirebaseMessage>{},
     this.notificationsSubscription,
     WorkStatus blocStatus = const Idle(),
@@ -9,12 +9,12 @@ class NotificationState extends BaseState {
 
   final Set<FirebaseMessage> notifications;
   final StreamSubscription<Set<FirebaseMessage>>? notificationsSubscription;
-  NotificationState copyWith({
+  NotificationsState copyWith({
     Set<FirebaseMessage>? notifications,
     StreamSubscription<Set<FirebaseMessage>>? notificationsSubscription,
     WorkStatus? blocStatus,
   }) {
-    return NotificationState(
+    return NotificationsState(
       notifications: notifications ?? this.notifications,
       notificationsSubscription:
           notificationsSubscription ?? this.notificationsSubscription,
@@ -23,7 +23,7 @@ class NotificationState extends BaseState {
   }
 
   @override
-  BaseState resetState() => const NotificationState();
+  BaseState resetState() => const NotificationsState();
 
   @override
   BaseState updateStatus(WorkStatus blocStatus) =>
