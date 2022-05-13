@@ -98,6 +98,7 @@ class NotificationsBloc
           .map((FirebaseMessage notification) => notification.message)
           .toSet();
       for (final String notification in newNotifications) {
+        // TODO: Update read status of the notification in firebase db.
         _localNotificationsService.showLocalNotification(
           title: "Flutter Library",
           body: notification,
