@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
             firebaseRealtimeDatabase: compositionRoot.firebaseRealtimeDatabase,
             authCubit: compositionRoot.authCubit,
             localNotificationService: compositionRoot.localNotificationService,
+            persistence: compositionRoot.persistence
           )..add(GetNotificationSubscriptionEvent()),
           lazy: false,
         ),

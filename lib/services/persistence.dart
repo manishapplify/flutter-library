@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:components/cubits/models/forgot_password.dart';
 import 'package:components/cubits/models/user.dart';
+import 'package:components/services/firebase_realtime_database/models/message/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Persistence {
@@ -20,6 +21,28 @@ class Persistence {
       return User.fromJson(jsonDecode(json));
     }
     return null;
+  }
+
+  Future<void> saveNotifications(Set<FirebaseMessage> notifications) async {
+    //_preferences.setString(_user, jsonEncode(user.toJson()));
+    final List<String> encodedNotificaion = <String>[];
+    for (FirebaseMessage element in notifications) {
+      encodedNotificaion.add(jsonEncode(element.toMap()));
+    }
+    _preferences.setStringList(_notification, encodedNotificaion);
+  }
+
+  Set<FirebaseMessage>? fetchNotifications() {
+    final List<String>? jsonList = _preferences.getStringList(_notification);
+
+    final Set<FirebaseMessage> decodedNotificaions = <FirebaseMessage>{};
+    //if (jsonList is List<String>){
+    for (String element in jsonList!) {
+      decodedNotificaions.add(FirebaseMessage.fromMap(jsonDecode(element)));
+    }
+    return decodedNotificaions;
+    //  }
+    //   return null;
   }
 
   Future<void> deleteUser() => _preferences.remove(_user);
@@ -52,3 +75,4 @@ class Persistence {
 const String _user = 'user';
 const String _countryCode = 'countryCode';
 const String _forgotPasswordToken = 'forgotPasswordToken';
+const String _notification = 'notification';

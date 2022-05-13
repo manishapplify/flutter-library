@@ -7,8 +7,8 @@ class GetNotificationSubscriptionEvent  extends NotificationEvent {}
 
 class _OnNotificationEvent extends NotificationEvent {
   _OnNotificationEvent({
-    required this.notification,
+    required this.notifications,
   });
 
-  final Set<FirebaseMessage> notification;
+  final Set<FirebaseMessage> notifications;
 }

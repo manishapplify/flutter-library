@@ -5,10 +5,15 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
     required FirebaseRealtimeDatabase firebaseRealtimeDatabase,
     required AuthCubit authCubit,
     required LocalNotificationService localNotificationService,
+    required Persistence persistence,
   })  : _firebaseRealtimeDatabase = firebaseRealtimeDatabase,
         _authCubit = authCubit,
         _localNotificationService = localNotificationService,
+        _persistence = persistence,
         super(const NotificationState()) {
+    // final Set<FirebaseMessage>? notifications =
+    //     _persistence.fetchNotifications();
+
     on<GetNotificationEvent>(_getNotificationsEventHandler);
     on<GetNotificationSubscriptionEvent>(
         _getNotificationSubscriptionEventHandler);
@@ -17,6 +22,7 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
   final FirebaseRealtimeDatabase _firebaseRealtimeDatabase;
   final AuthCubit _authCubit;
   final LocalNotificationService _localNotificationService;
+  final Persistence _persistence;
   void _getNotificationsEventHandler(
       GetNotificationEvent event, Emitter<NotificationState> emit) async {
     await _commonHandler(
@@ -29,9 +35,8 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
             await _firebaseRealtimeDatabase.getNotifications();
 
         notifications.removeWhere((FirebaseMessage element) =>
-            !element.chatDialogId.split(',').contains(currentUser.firebaseId) 
-            || currentUser.firebaseId == element.senderId
-            );
+            !element.chatDialogId.split(',').contains(currentUser.firebaseId) ||
+            currentUser.firebaseId == element.senderId);
         emit(state.copyWith(
           notifications: notifications,
         ));
@@ -60,10 +65,9 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
             notifications.removeWhere((FirebaseMessage element) =>
                 !element.chatDialogId
                     .split(',')
-                    .contains(currentUser.firebaseId) 
-                    || currentUser.firebaseId == element.senderId
-                    );
-            add(_OnNotificationEvent(notification: notifications));
+                    .contains(currentUser.firebaseId) ||
+                currentUser.firebaseId == element.senderId);
+            add(_OnNotificationEvent(notifications: notifications));
           });
 
           emit(state.copyWith(
@@ -78,18 +82,19 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
 
   void _onNotificationEventHandler(
       _OnNotificationEvent event, Emitter<NotificationState> emit) {
-    if (event.notification != state.notifications) {
-      final Set<String> addedNotification = event.notification
+    if (event.notifications != state.notifications) {
+      final Set<String> addedNotification = event.notifications
           .difference(state.notifications)
           .map((FirebaseMessage notification) => notification.message)
           .toSet();
       for (final String notification in addedNotification) {
-         _localNotificationService.showLocalNotification(
-             title: "Flutter Library", body: notification);
+        _localNotificationService.showLocalNotification(
+            title: "Flutter Library", body: notification);
       }
+      emit(
+        state.copyWith(notifications: event.notifications),
+      );
+      _persistence.saveNotifications(event.notifications);
     }
-    emit(
-      state.copyWith(notifications: event.notification),
-    );
   }
 }
