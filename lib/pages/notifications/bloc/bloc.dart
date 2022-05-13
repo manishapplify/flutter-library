@@ -54,14 +54,15 @@ class NotificationBloc extends BaseBloc<NotificationEvent, NotificationState> {
             _firebaseRealtimeDatabase.getNotificationStream();
 
         if (_authCubit.state.user!.notificationEnabled == 1) {
-          final User currentUser = _authCubit.state.user!;
           final StreamSubscription<Set<FirebaseMessage>>
               notificationsSubscription =
               notificationsStream.listen((Set<FirebaseMessage> notifications) {
             notifications.removeWhere(
-              (FirebaseMessage element) =>
-                  !element.chatDialogId.contains(currentUser.firebaseId) ||
-                  currentUser.firebaseId == element.senderId,
+              (FirebaseMessage message) {
+                final User currentUser = _authCubit.state.user!;
+                return !message.chatDialogId.contains(currentUser.firebaseId) ||
+                    currentUser.firebaseId == message.senderId;
+              },
             );
             add(_OnNotificationEvent(notification: notifications));
           });
