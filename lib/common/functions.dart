@@ -46,7 +46,7 @@ Future<File> cropImage({
     ],
     uiSettings: <PlatformUiSettings>[
       AndroidUiSettings(
-        toolbarTitle: "Edit Image",
+        toolbarTitle: 'Edit Image',
         toolbarColor: const Color(0xfff3dfa2),
         toolbarWidgetColor: Colors.black,
         activeControlsWidgetColor: const Color(0xffb71f3a),
@@ -58,8 +58,12 @@ Future<File> cropImage({
       ),
       IOSUiSettings(
         minimumAspectRatio: 1.0,
-        aspectRatioLockDimensionSwapEnabled: true,
-        aspectRatioLockEnabled: true,
+        title: 'Edit Image',
+        aspectRatioLockDimensionSwapEnabled:
+            cropAspectRatioPreset != CropAspectRatioPreset.original,
+        aspectRatioLockEnabled:
+            cropAspectRatioPreset != CropAspectRatioPreset.original,
+            
       ),
     ],
   );
