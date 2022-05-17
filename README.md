@@ -12,7 +12,7 @@ A new Flutter project.
 ## AmazonSNS BodyStructure
 
 {
-  "GCM":"{ \"notification\": { \"body\": \"Sample message for Android endpoints\", \"title\":\"TitleTest\" } }"
+  "GCM":"{ \"notification\": { \"body\": \"Sample message body.\", \"title\":\"Flutter library\" } }"
 }
 
 # iOS certificates, provisioning profiles.
