@@ -88,7 +88,8 @@ Future<CompositionRoot> configureDependencies() async {
   final FirebaseStorageService firebaseStorageService =
       FirebaseStorageService();
   final LocalNotificationsService localNotificationsService =
-      LocalNotificationsService();
+      LocalNotificationsService()
+      ..registerNotification();
   await localNotificationsService.initialize();
 
   final AuthRepository authRepository = AuthRepository(

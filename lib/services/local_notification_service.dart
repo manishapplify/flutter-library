@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotificationsService {
@@ -21,13 +22,24 @@ class LocalNotificationsService {
     return _flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  void showLocalNotification(
-      {String? title, String? body, String? payload}) async {
+  void showLocalNotification({String? title, String? body}) async {
     await _flutterLocalNotificationsPlugin.show(
       _notificationId++,
       title,
       body,
       _notificationDetails,
     );
+  }
+
+  Future<void> registerNotification() async {
+    FirebaseMessaging.onMessage.listen(showFCMNotification);
+  }
+
+  void showFCMNotification(RemoteMessage message) {
+    final RemoteNotification? notification = message.notification;
+    final AndroidNotification? android = message.notification?.android;
+    if (notification != null && android != null) {
+      showLocalNotification(title: notification.title, body: notification.body);
+    }
   }
 }
