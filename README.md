@@ -9,8 +9,12 @@ A new Flutter project.
 * `baseUrl` -> Sets the api base url.
 * `s3BaseUrl` -> Sets the base url for amazon s3 bucket.
 
-## AmazonSMS BodyStructure
+## AmazonSNS BodyStructure
 
 {
   "GCM":"{ \"notification\": { \"body\": \"Sample message for Android endpoints\", \"title\":\"TitleTest\" } }"
 }
+
+# iOS certificates, provisioning profiles.
+
+https://drive.google.com/drive/folders/1wF9Z7sNaCTo7_OL7qmnw6IoUELvGw6QM?usp=sharing
