@@ -130,6 +130,18 @@ class _HomeState extends BasePageState<HomePage> {
         if (_isLoading != isLoading) {
           Future<void>.microtask(() => isLoading = _isLoading);
         }
+        if (state.imageUploadStatus is Failure) {
+          final Failure failure = state.imageUploadStatus as Failure;
+          Future<void>.microtask(
+            () => showSnackBar(
+              SnackBar(
+                content: Text(failure.message ?? 'Failure'),
+              ),
+            ),
+          );
+
+          homeBloc.add(ResetImageUploadStatus());
+        }
 
         final List<String> uploadedImageUrls = state.uploadedImageUrls;
 

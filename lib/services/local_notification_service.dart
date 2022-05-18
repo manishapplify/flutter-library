@@ -31,6 +31,7 @@ class LocalNotificationsService {
     );
   }
 
+  // TODO: Move this method into configuration_root.dart
   Future<void> registerNotification() async {
     FirebaseMessaging.onMessage.listen(showFCMNotification);
   }
