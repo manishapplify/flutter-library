@@ -108,7 +108,6 @@ abstract class BaseBloc<E extends BaseEvent, S extends BaseState>
     required Emitter<BaseState> emit,
     bool emitFailureOnly = false,
     Function(WorkStatus status)? onStatusUpdate,
-
   }) async {
     // _handleStatusUpdate should not be inherited.
     // ignore: prefer_function_declarations_over_variables

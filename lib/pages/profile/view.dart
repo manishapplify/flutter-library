@@ -1,20 +1,19 @@
 import 'dart:io';
 
-import 'package:components/common/work_status.dart';
-import 'package:components/pages/base_page.dart';
-import 'package:components/cubits/auth_cubit.dart';
-import 'package:components/cubits/models/user.dart';
-import 'package:components/common/dialogs.dart';
-import 'package:components/enums/gender.dart';
-import 'package:components/enums/screen.dart';
-import 'package:components/common/app_exception.dart';
-import 'package:components/blocs/blocs.dart';
-import 'package:components/routes/navigation.dart';
-
-import 'package:components/common/widgets/image_container.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:components/blocs/blocs.dart';
+import 'package:components/common/app_exception.dart';
+import 'package:components/common/dialogs.dart';
+import 'package:components/common/widgets/image_container.dart';
+import 'package:components/common/work_status.dart';
+import 'package:components/cubits/auth_cubit.dart';
+import 'package:components/cubits/models/user.dart';
+import 'package:components/enums/gender.dart';
+import 'package:components/enums/screen.dart';
+import 'package:components/pages/base_page.dart';
+import 'package:components/routes/navigation.dart';
 
 class ProfilePage extends BasePage {
   const ProfilePage({Key? key}) : super(key: key);

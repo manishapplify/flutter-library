@@ -1,5 +1,5 @@
-import 'package:components/services/firebase_realtime_database/models/message/message.dart';
 import 'package:flutter/material.dart';
+import 'package:components/services/firebase_realtime_database/models/message/message.dart';
 
 class NotificationTile extends StatelessWidget {
   const NotificationTile({Key? key, required this.notification})

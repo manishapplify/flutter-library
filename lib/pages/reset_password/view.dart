@@ -1,9 +1,9 @@
-import 'package:components/common/work_status.dart';
-import 'package:components/pages/base_page.dart';
-import 'package:components/cubits/password_auth.dart';
-import 'package:components/blocs/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:components/blocs/blocs.dart';
+import 'package:components/common/work_status.dart';
+import 'package:components/cubits/password_auth.dart';
+import 'package:components/pages/base_page.dart';
 
 class ResetPasswordPage extends BasePage {
   const ResetPasswordPage({Key? key}) : super(key: key);

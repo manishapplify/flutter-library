@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:components/Authentication/repo.dart';
 import 'package:components/common/app_exception.dart';
-import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 part 'state.dart';

@@ -21,7 +21,7 @@ class TextMessage extends FirebaseMessage {
           senderId: senderId,
         );
 
- factory  TextMessage.fromMap(Map<dynamic, dynamic> map) {
+  factory TextMessage.fromMap(Map<dynamic, dynamic> map) {
     return TextMessage(
       chatDialogId: map['chat_dialog_id'],
       firebaseMessageTime: DateTime.fromMillisecondsSinceEpoch(

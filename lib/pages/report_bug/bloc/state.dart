@@ -35,7 +35,7 @@ class ReportBugState extends BaseState {
   }
 
   @override
-  BaseState resetState() => const ReportBugState();
+  ReportBugState resetState() => const ReportBugState();
 
   @override
   BaseState updateStatus(WorkStatus blocStatus) =>

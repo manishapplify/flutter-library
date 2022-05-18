@@ -44,7 +44,8 @@ class _SplashState extends BasePageState<SplashPage> {
                 actions: <Widget>[
                   if (!state.isForceful)
                     TextButton(
-                      onPressed: navigateToNextScreen,
+                      onPressed: () => Navigation.navigateAfterSplashOrLogin(
+                          authCubit.state.user),
                       child: const Text('Skip'),
                     ),
                 ],
@@ -53,7 +54,7 @@ class _SplashState extends BasePageState<SplashPage> {
             ),
           );
         } else if (state is LatestApp) {
-          navigateToNextScreen();
+          Navigation.navigateAfterSplashOrLogin(authCubit.state.user);
         }
 
         return Center(
@@ -67,10 +68,5 @@ class _SplashState extends BasePageState<SplashPage> {
         );
       },
     );
-  }
-
-  void navigateToNextScreen() {
-   
-    Navigation.navigateAfterSplashOrLogin(authCubit.state.user);
   }
 }

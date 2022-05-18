@@ -63,7 +63,6 @@ Future<File> cropImage({
             cropAspectRatioPreset != CropAspectRatioPreset.original,
         aspectRatioLockEnabled:
             cropAspectRatioPreset != CropAspectRatioPreset.original,
-            
       ),
     ],
   );

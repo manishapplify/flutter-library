@@ -1,4 +1,3 @@
-
 import 'package:components/services/api/models/report_item.dart';
 
 class ReportPostRequest extends ReportItemRequest {
@@ -6,7 +5,8 @@ class ReportPostRequest extends ReportItemRequest {
     String? itemId,
     required String description,
   }) : super(
-            description: description,
-            itemType: 'POST',
-            itemId: itemId);
+          description: description,
+          itemType: 'POST',
+          itemId: itemId,
+        );
 }

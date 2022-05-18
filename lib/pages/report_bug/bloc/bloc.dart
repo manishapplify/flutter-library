@@ -82,5 +82,5 @@ class ReportBugBloc extends BaseBloc<ReportBugEvent, ReportBugState> {
 
   void _resetFormStateHandler(
           ResetReportBugFormState event, Emitter<ReportBugState> emit) =>
-      emit(const ReportBugState());
+      emit(state.resetState());
 }

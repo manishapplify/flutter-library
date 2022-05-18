@@ -5,7 +5,8 @@ class ReportCommentRequest extends ReportItemRequest {
     String? itemId,
     required String description,
   }) : super(
-            description: description,
-            itemType: 'COMMENT',
-            itemId: itemId);
+          description: description,
+          itemType: 'COMMENT',
+          itemId: itemId,
+        );
 }

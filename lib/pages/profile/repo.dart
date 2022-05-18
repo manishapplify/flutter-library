@@ -1,17 +1,17 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
+import 'package:components/common/app_exception.dart';
+import 'package:components/common/config.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/models/user.dart';
 import 'package:components/enums/signup.dart';
-import 'package:components/common/app_exception.dart';
 import 'package:components/pages/profile/models/register_user_request.dart';
 import 'package:components/pages/profile/models/update_profile_request.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
-import 'package:components/common/config.dart';
-import 'package:dio/dio.dart';
 
 class ProfileRepository {
   ProfileRepository({

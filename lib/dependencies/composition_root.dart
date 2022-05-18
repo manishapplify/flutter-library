@@ -22,7 +22,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CompositionRoot {
-  CompositionRoot({
+  const CompositionRoot({
     required this.authCubit,
     required this.passwordAuthCubit,
     required this.navigation,
@@ -31,7 +31,7 @@ class CompositionRoot {
     required this.api,
     required this.s3imageUpload,
     required this.localNotificationsService,
-    required this.persistence
+    required this.persistence,
   });
 
   final AuthCubit authCubit;
@@ -88,8 +88,7 @@ Future<CompositionRoot> configureDependencies() async {
   final FirebaseStorageService firebaseStorageService =
       FirebaseStorageService();
   final LocalNotificationsService localNotificationsService =
-      LocalNotificationsService()
-      ..registerNotification();
+      LocalNotificationsService()..registerNotification();
   await localNotificationsService.initialize();
 
   final AuthRepository authRepository = AuthRepository(
@@ -146,7 +145,7 @@ Future<CompositionRoot> configureDependencies() async {
     api: api,
     s3imageUpload: s3imageUpload,
     localNotificationsService: localNotificationsService,
-    persistence: persistence
+    persistence: persistence,
   );
 }
 
