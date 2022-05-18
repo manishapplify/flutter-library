@@ -70,9 +70,11 @@ class AppException implements Exception {
     return AppException(message: 'Please enter valid otp');
   }
   factory AppException.imageCouldNotBeCropped() {
-    return AppException(message: 'Image could not be cropped.');
+    return AppException(message: 'Image could not be cropped');
   }
-
+  factory AppException.imageCouldNotBePicked() {
+    return AppException(message: 'Image could not be picked');
+  }
 
   final String message;
 }

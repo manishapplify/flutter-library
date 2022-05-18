@@ -28,6 +28,8 @@ import 'package:components/services/firebase_realtime_database/models/message/me
 import 'package:components/services/firebase_realtime_database/models/message/text_message.dart';
 import 'package:components/services/firebase_realtime_database/models/user.dart';
 import 'package:components/services/firebase_storage_service.dart';
+import 'package:components/services/image_cropping_service.dart';
+import 'package:components/services/image_picking_service.dart';
 import 'package:components/services/local_notification_service.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
@@ -35,6 +37,8 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+
+part 'package:components/blocs/image_manipulation.dart';
 
 // ChangePassWordPage
 part 'package:components/pages/change_password/bloc/bloc.dart';

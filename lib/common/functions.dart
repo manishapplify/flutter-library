@@ -23,6 +23,7 @@ String displayMessageTime(DateTime? time) {
   }
 }
 
+// TODO(image manipulation): remove this function, taken care of in the ImageCroppingService.
 Future<File> cropImage({
   required String imagePath,
   CropAspectRatioPreset cropAspectRatioPreset = CropAspectRatioPreset.original,

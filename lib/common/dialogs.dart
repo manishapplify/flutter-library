@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 // TODO: Disable multiselection of image in iOS.
-// TODO: Return picked image file instead of calling image cropper internally.
+// TODO(image manipulation): Register callbacks `onGallerySelected`, `onCameraSelected` instead calling `_pickImage`.
 dynamic showImagePickerPopup({
   required BuildContext context,
   required Function(File) onImagePicked,
