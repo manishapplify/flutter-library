@@ -135,6 +135,11 @@ class _HomeState extends BasePageState<HomePage> {
 
         return Column(
           children: <Widget>[
+            ElevatedButton(
+                onPressed: () => navigator.pushNamed(
+                      Routes.videoViewerPage,
+                    ),
+                child: const Text('Video')),
             Flexible(
               child: GridView.builder(
                 padding: const EdgeInsets.all(16.0),

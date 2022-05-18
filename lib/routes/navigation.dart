@@ -27,6 +27,7 @@ import 'package:components/pages/settings/view.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/view.dart';
 import 'package:components/pages/users/view.dart';
+import 'package:components/pages/video/view.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
@@ -162,7 +163,8 @@ class Navigation {
           builder: (_) => BlocProvider<HomeBloc>(
             create: (_) => HomeBloc(
               s3imageUpload: _s3imageUpload,
-              authCubit: _authCubit,imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
+              authCubit: _authCubit,
+              imageBaseUrl: _s3imageUpload.s3BaseUrl + 'users/',
               persistence: _persistence,
             ),
             child: const HomePage(),
@@ -263,6 +265,11 @@ class Navigation {
           settings: settings,
           builder: (_) => const NotificationPage(),
         );
+      case Routes.videoViewerPage:
+        return MaterialPageRoute<dynamic>(
+          settings: settings,
+          builder: (_) => const NetworkPlayerPage(),
+        );
     }
 
     return MaterialPageRoute<LoginPage>(
@@ -344,4 +351,5 @@ class Routes {
   static const String feedbackThird = "/feedbackThirdScreen";
   static const String pdfViewerPage = "/pdfViewerPage";
   static const String notifications = '/notifications';
+  static const String videoViewerPage = "/videoViewerPage";
 }
