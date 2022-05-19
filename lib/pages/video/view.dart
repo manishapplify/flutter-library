@@ -11,6 +11,8 @@ class NetworkPlayerPage extends BasePage {
 }
 
 class _NetworkPlayerState extends BasePageState<NetworkPlayerPage> {
+  
+  // TODO(image manipulation): Make this late final, since we know it's being initialized before being used.
   VideoPlayerController? controller;
 
   @override
@@ -18,7 +20,7 @@ class _NetworkPlayerState extends BasePageState<NetworkPlayerPage> {
     super.initState();
 
     controller = VideoPlayerController.network(
-        'https://multiplatform-f.akamaihd.net/i/multi/will/bunny/big_buck_bunny_,640x360_400,640x360_700,640x360_1000,950x540_1500,.f4v.csmil/master.m3u8')
+        'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8')
       ..addListener(() => setState(() {}))
       ..setLooping(true)
       ..initialize().then((_) => controller!.play());
