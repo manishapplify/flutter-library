@@ -12,6 +12,8 @@ import 'package:components/services/api/api.dart';
 import 'package:components/services/firebase_cloud_messaging.dart';
 import 'package:components/services/firebase_realtime_database/firebase_realtime_database.dart';
 import 'package:components/services/firebase_storage_service.dart';
+import 'package:components/services/image_cropping_service.dart';
+import 'package:components/services/image_picking_service.dart';
 import 'package:components/services/local_notification_service.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
@@ -100,7 +102,8 @@ Future<CompositionRoot> configureDependencies() async {
     passwordAuthCubit: passwordAuthCubit,
     firebaseRealtimeDatabase: firebaseRealtimeDatabase,
   );
-
+  final ImagePickingService imagePickingService = ImagePickingService();
+  final ImageCroppingService imageCroppingService = ImageCroppingService();
   final S3ImageUpload s3imageUpload = S3ImageUpload(
     baseOptions: BaseOptions(
       baseUrl: const String.fromEnvironment(
@@ -132,14 +135,15 @@ Future<CompositionRoot> configureDependencies() async {
     authCubit: authCubit,
     passwordAuthCubit: passwordAuthCubit,
     navigation: Navigation(
-      api: api,
-      authRepository: authRepository,
-      profileRepository: profileRepository,
-      authCubit: authCubit,
-      config: config,
-      persistence: persistence,
-      s3imageUpload: s3imageUpload,
-    ),
+        api: api,
+        authRepository: authRepository,
+        profileRepository: profileRepository,
+        authCubit: authCubit,
+        config: config,
+        persistence: persistence,
+        s3imageUpload: s3imageUpload,
+        imageCroppingService: imageCroppingService,
+        imagePickingService: imagePickingService),
     firebaseRealtimeDatabase: firebaseRealtimeDatabase,
     firebaseStorageService: firebaseStorageService,
     api: api,

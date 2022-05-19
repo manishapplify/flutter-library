@@ -10,6 +10,8 @@ import 'package:image_picker/image_picker.dart';
 dynamic showImagePickerPopup({
   required BuildContext context,
   required Function(File) onImagePicked,
+  VoidCallback? onGallerySelected,
+  VoidCallback? onCameraSelected,
   bool galleryAllowed = true,
   bool cameraAllowed = true,
 }) {
@@ -26,13 +28,7 @@ dynamic showImagePickerPopup({
                 color: Colors.black,
               ),
             ),
-            onPressed: () async {
-              onImagePicked(
-                await _pickImage(
-                  ImageSource.gallery,
-                ),
-              );
-            },
+            onPressed: onGallerySelected!,
           ),
         if (cameraAllowed)
           CupertinoActionSheetAction(
@@ -42,13 +38,7 @@ dynamic showImagePickerPopup({
                 color: Colors.black,
               ),
             ),
-            onPressed: () async {
-              onImagePicked(
-                await _pickImage(
-                  ImageSource.camera,
-                ),
-              );
-            },
+            onPressed: onCameraSelected!,
           ),
       ],
       cancelButton: Container(

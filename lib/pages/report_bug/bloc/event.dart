@@ -1,6 +1,7 @@
 part of blocs;
 
-abstract class ReportBugEvent extends BaseEvent {}
+abstract class ReportBugEvent extends BaseEvent
+    implements BaseImageManipulationEvent {}
 
 class ReportBugTitleChanged extends ReportBugEvent {
   ReportBugTitleChanged({required this.title});
@@ -12,15 +13,30 @@ class ReportBugDescriptionChanged extends ReportBugEvent {
   final String description;
 }
 
-class ReportBugScreenShotChanged extends ReportBugEvent {
-  ReportBugScreenShotChanged({required this.screenShot});
-  final File screenShot;
-}
-
-class ReportBugScreenShotRemoved extends ReportBugEvent {}
-
 class ReportBugSubmitted extends ReportBugEvent {}
 
 class ResetReportBugFormStatus extends ReportBugEvent {}
 
 class ResetReportBugFormState extends ReportBugEvent {}
+
+class ReportBugImagePickEvent extends ReportBugEvent
+    implements BaseImagePickEvent {
+  ReportBugImagePickEvent(this.imagePickerConfiguration);
+
+  @override
+  final ImagePickerConfiguration imagePickerConfiguration;
+}
+
+class ReportBugCropImageEvent extends ReportBugEvent
+    implements BaseImageCropEvent {
+  ReportBugCropImageEvent(this.imageCropperConfiguration);
+
+  @override
+  final ImageCropperConfiguration imageCropperConfiguration;
+}
+
+class ReportBugResetImageEvent extends ReportBugEvent
+    implements ResetPickImageState {}
+
+class ReportBugResetImageCropEvent extends ReportBugEvent
+    implements ResetCropImageState {}

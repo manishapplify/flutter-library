@@ -1,21 +1,30 @@
 part of blocs;
 
-class ReportBugBloc extends BaseBloc<ReportBugEvent, ReportBugState> {
+class ReportBugBloc
+    extends BaseImageManipulationBloc<ReportBugEvent, ReportBugState> {
   ReportBugBloc({
     required Api api,
     required S3ImageUpload s3imageUpload,
     required AuthCubit authCubit,
+    required ImagePickingService imagePickingService,
+    required ImageCroppingService imageCroppingService,
   })  : _api = api,
         _s3imageUpload = s3imageUpload,
         _authCubit = authCubit,
-        super(const ReportBugState()) {
+        super(
+          const ReportBugState(),
+          imageCroppingService,
+          imagePickingService,
+        ) {
     on<ReportBugTitleChanged>(_reportBugTitleChangedHandler);
     on<ReportBugDescriptionChanged>(_reportBugDescriptionChangedHandler);
-    on<ReportBugScreenShotChanged>(_reportBugScreenShotChangedHandler);
-    on<ReportBugScreenShotRemoved>(_reportBugScreenShotRemovedHandler);
     on<ReportBugSubmitted>(_reportBugSubmittedHandler);
     on<ResetReportBugFormStatus>(_resetFormStatusHandler);
     on<ResetReportBugFormState>(_resetFormStateHandler);
+    on<ReportBugImagePickEvent>(_baseImagePickEventHandler);
+    on<ReportBugCropImageEvent>(_baseImageCropEventHandler);
+    on<ReportBugResetImageEvent>(_resetPickImageStateEventHandler);
+    on<ReportBugResetImageCropEvent>(_resetCropImageStateEventHandler);
   }
 
   final Api _api;
@@ -32,20 +41,6 @@ class ReportBugBloc extends BaseBloc<ReportBugEvent, ReportBugState> {
     emit(state.copyWith(description: event.description));
   }
 
-  void _reportBugScreenShotChangedHandler(
-      ReportBugScreenShotChanged event, Emitter<ReportBugState> emit) {
-    emit(state.copyWith(screenShot: event.screenShot));
-  }
-
-  void _reportBugScreenShotRemovedHandler(
-      ReportBugScreenShotRemoved event, Emitter<ReportBugState> emit) {
-    emit(ReportBugState(
-      title: state.title,
-      description: state.description,
-      blocStatus: state.blocStatus,
-    ));
-  }
-
   void _reportBugSubmittedHandler(
       ReportBugSubmitted event, Emitter<ReportBugState> emit) async {
     if (!_authCubit.state.isAuthorized) {
@@ -55,7 +50,7 @@ class ReportBugBloc extends BaseBloc<ReportBugEvent, ReportBugState> {
       handlerJob: () async {
         final String? screenShotUrl = await _s3imageUpload.uploadImage(
           s3Directory: _authCubit.state.user!.s3Folders.users,
-          image: state.screenShot,
+          image: state.croppedImage,
         );
 
         if (screenShotUrl == null) {

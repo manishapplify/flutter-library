@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:components/services/image_cropping_service.dart';
+import 'package:components/services/image_picking_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:components/blocs/blocs.dart';
@@ -72,6 +74,13 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
           );
         }
 
+        if (state.pickImageStatus is Success) {
+          reportBugBloc
+            ..add(ReportBugCropImageEvent(
+                ImageCropperConfiguration(imagePath: state.pickedImage!.path)))
+            ..add(ReportBugResetImageEvent());
+        }
+
         return Column(
           children: <Widget>[
             Expanded(
@@ -128,21 +137,27 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                       OutlinedButton(
                         onPressed: () {
                           showImagePickerPopup(
-                            context: context,
-                            cameraAllowed: false,
-                            onImagePicked: (File selectedScreenShot) {
-                              if (!reportBugBloc.isClosed) {
-                                reportBugBloc.add(
-                                  ReportBugScreenShotChanged(
-                                    screenShot: selectedScreenShot,
-                                  ),
-                                );
-                              }
-                              if (mounted) {
-                                Navigator.pop(context);
-                              }
-                            },
-                          );
+                              context: context,
+                              cameraAllowed: false,
+                              onImagePicked: (File selectedScreenShot) {
+                             
+                              },
+                              onCameraSelected: () {
+                                reportBugBloc.add(ReportBugImagePickEvent(
+                                    ImagePickerConfiguration(
+                                        source: ImageSources.camera)));
+                                if (mounted) {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              onGallerySelected: () {
+                                reportBugBloc.add(ReportBugImagePickEvent(
+                                    ImagePickerConfiguration(
+                                        source: ImageSources.gallery)));
+                                if (mounted) {
+                                  Navigator.pop(context);
+                                }
+                              });
                         },
                         child: const Text(
                           "Include Screenshot",
@@ -156,11 +171,11 @@ class _ReportBugState extends BasePageState<ReportBugPage> {
                         SizedBox(
                           height: 200.0,
                           child: ImageContainer(
-                            imagePath: state.screenShot!.path,
+                            imagePath: state.croppedImage!.path,
                             iconAlignment: Alignment.topRight,
                             circularDecoration: false,
                             onContainerTap: () => reportBugBloc.add(
-                              ReportBugScreenShotRemoved(),
+                              ReportBugResetImageCropEvent()
                             ),
                             overlayIcon: const Icon(Icons.cancel),
                           ),

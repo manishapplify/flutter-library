@@ -29,6 +29,8 @@ import 'package:components/pages/splash/view.dart';
 import 'package:components/pages/users/view.dart';
 import 'package:components/pages/video/view.dart';
 import 'package:components/services/api/api.dart';
+import 'package:components/services/image_cropping_service.dart';
+import 'package:components/services/image_picking_service.dart';
 import 'package:components/services/persistence.dart';
 import 'package:components/services/s3_image_upload/s3_image_upload.dart';
 import 'package:components/common/config.dart';
@@ -44,13 +46,17 @@ class Navigation {
     required Config config,
     required Persistence persistence,
     required S3ImageUpload s3imageUpload,
+    required ImagePickingService imagePickingService,
+    required ImageCroppingService imageCroppingService,
   })  : _api = api,
         _authRepository = authRepository,
         _profileRepository = profileRepository,
         _authCubit = authCubit,
         _config = config,
         _persistence = persistence,
-        _s3imageUpload = s3imageUpload {
+        _s3imageUpload = s3imageUpload,
+        _imagePickingService = imagePickingService,
+        _imageCroppingService = imageCroppingService {
     _authCubit.stream.listen(
       (AuthState event) {
         if (!event.isAuthorized) {
@@ -74,6 +80,8 @@ class Navigation {
   final Config _config;
   final Persistence _persistence;
   final S3ImageUpload _s3imageUpload;
+  final ImagePickingService _imagePickingService;
+  final ImageCroppingService _imageCroppingService;
 
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -209,6 +217,8 @@ class Navigation {
               api: _api,
               authCubit: _authCubit,
               s3imageUpload: _s3imageUpload,
+              imageCroppingService: _imageCroppingService,
+              imagePickingService: _imagePickingService
             ),
             child: const ReportBugPage(),
           ),

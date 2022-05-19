@@ -23,7 +23,9 @@ abstract class BaseImageManipulationBloc<E extends BaseImageManipulationEvent,
         emit(state.setCroppedImage(image));
       },
       emit: emit,
-      onStatusUpdate: state.updateCropImageStatus,
+      onStatusUpdate: (WorkStatus status) {
+        emit(state.updateCropImageStatus(status));
+      },
     );
   }
 
@@ -39,8 +41,26 @@ abstract class BaseImageManipulationBloc<E extends BaseImageManipulationEvent,
         emit(state.setPickedImage(image));
       },
       emit: emit,
-      onStatusUpdate: state.updatePickImageStatus,
+      onStatusUpdate: (WorkStatus status) {
+        emit(state.updatePickImageStatus(status));
+      },
     );
+  }
+
+  void _resetPickImageStateEventHandler(
+    ResetPickImageState event,
+    Emitter<BaseImageManipulationState> emit,
+  ) {
+    emit(state.setPickedImage(null));
+    emit(state.updatePickImageStatus(const Idle()));
+  }
+
+  void _resetCropImageStateEventHandler(
+    ResetCropImageState event,
+    Emitter<BaseImageManipulationState> emit,
+  ) {
+    emit(state.setCroppedImage(null));
+    emit(state.updateCropImageStatus(const Idle()));
   }
 }
 
@@ -58,6 +78,10 @@ abstract class BaseImageCropEvent extends BaseImageManipulationEvent {
   final ImageCropperConfiguration imageCropperConfiguration;
 }
 
+abstract class ResetPickImageState extends BaseImageManipulationEvent {}
+
+abstract class ResetCropImageState extends BaseImageManipulationEvent {}
+
 @immutable
 abstract class BaseImageManipulationState extends BaseState {
   const BaseImageManipulationState(
@@ -74,85 +98,7 @@ abstract class BaseImageManipulationState extends BaseState {
 
   BaseImageManipulationState updatePickImageStatus(WorkStatus pickImageStatus);
 
-  BaseImageManipulationState setCroppedImage(File image);
+  BaseImageManipulationState setCroppedImage(File? image);
 
-  BaseImageManipulationState setPickedImage(File image);
-}
-
-// TODO(image manipulation): Remove this sample bloc.
-class ConcBloc extends BaseImageManipulationBloc<ConcEvents, ConcState> {
-  ConcBloc(
-    ImagePickingService imagePickingService,
-    ImageCroppingService imageCroppingService,
-  ) : super(
-          const ConcState(),
-          imageCroppingService,
-          imagePickingService,
-        ) {
-    on<ConcImagePickEvent>(_baseImagePickEventHandler);
-  }
-}
-
-class ConcEvents extends BaseEvent implements BaseImageManipulationEvent {}
-
-class ConcImagePickEvent extends ConcEvents implements BaseImagePickEvent {
-  ConcImagePickEvent(this.imagePickerConfiguration);
-
-  @override
-  final ImagePickerConfiguration imagePickerConfiguration;
-}
-
-class ConcState extends BaseState implements BaseImageManipulationState {
-  const ConcState({
-    WorkStatus blocSatus = const Idle(),
-    this.cropImageStatus = const Idle(),
-    this.pickImageStatus = const Idle(),
-    this.pickedImage,
-    this.croppedImage,
-  }) : super(blocSatus);
-
-  final File? pickedImage;
-  final File? croppedImage;
-
-  @override
-  final WorkStatus cropImageStatus;
-
-  @override
-  final WorkStatus pickImageStatus;
-
-  ConcState copyWith({
-    WorkStatus? blocSatus,
-    WorkStatus? cropImageStatus,
-    WorkStatus? pickImageStatus,
-    File? pickedImage,
-    File? croppedImage,
-  }) {
-    return ConcState(
-      blocSatus: blocSatus ?? this.blocStatus,
-      cropImageStatus: cropImageStatus ?? this.cropImageStatus,
-      pickImageStatus: pickImageStatus ?? this.pickImageStatus,
-      pickedImage: pickedImage ?? this.pickedImage,
-      croppedImage: croppedImage ?? this.croppedImage,
-    );
-  }
-
-  @override
-  ConcState resetState() => const ConcState();
-
-  @override
-  ConcState setCroppedImage(File image) => copyWith(croppedImage: image);
-  @override
-  ConcState setPickedImage(File image) => copyWith(pickedImage: image);
-
-  @override
-  ConcState updateCropImageStatus(WorkStatus pickImageStatus) =>
-      copyWith(pickImageStatus: pickImageStatus);
-
-  @override
-  ConcState updatePickImageStatus(WorkStatus cropImageStatus) =>
-      copyWith(cropImageStatus: cropImageStatus);
-
-  @override
-  ConcState updateStatus(WorkStatus blocStatus) =>
-      copyWith(blocSatus: blocStatus);
+  BaseImageManipulationState setPickedImage(File? image);
 }
