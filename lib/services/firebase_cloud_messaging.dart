@@ -5,18 +5,14 @@ const String firebaseTopicName = "Flutter_Library_Firebase_Messaging";
 class FirebaseCloudMessaging {
   late FirebaseMessaging _messaging;
   late String? deviceToken;
+  late NotificationSettings notificationSettings;
 
   Future<void> registerFCM() async {
     _messaging = FirebaseMessaging.instance;
 
     _messaging.subscribeToTopic(firebaseTopicName);
 
-    final NotificationSettings settings = await _messaging.requestPermission();
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission: ${settings.authorizationStatus}');
-    } else {
-      print('User declined or has not accepted permission');
-    }
+    notificationSettings = await _messaging.requestPermission();
   }
 
   Future<void> getToken() async {
