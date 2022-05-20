@@ -1,6 +1,5 @@
 part of blocs;
 
-
 abstract class ChatEvent extends BaseEvent {}
 
 class GetChatsEvent extends ChatEvent {}
@@ -81,16 +80,17 @@ class ImageUpdateEvent extends ChatEvent {
 
 class PdfUpdateEvent extends ChatEvent {
   PdfUpdateEvent({required this.pdfFile});
+
+  // TODO: Change this type to `File`.
   final PlatformFile pdfFile;
 }
 
 class SendImageEvent extends ChatEvent {}
 
-class SendDocEvent extends ChatEvent {
-}
+class SendDocEvent extends ChatEvent {}
 
 class OpenDocEvent extends ChatEvent {
-  OpenDocEvent({required this.docFilename,required this.docUrl});
+  OpenDocEvent({required this.docFilename, required this.docUrl});
   final String docUrl;
   final String docFilename;
 }
