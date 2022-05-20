@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:components/Authentication/repo.dart';
+import 'package:components/common/app_exception.dart';
 import 'package:components/common/config.dart';
 import 'package:components/cubits/auth_cubit.dart';
 import 'package:components/cubits/password_auth.dart';
 import 'package:components/enums/platform.dart' as enums;
-import 'package:components/common/app_exception.dart';
 import 'package:components/pages/profile/repo.dart';
 import 'package:components/routes/navigation.dart';
 import 'package:components/services/api/api.dart';
@@ -155,24 +155,24 @@ Future<CompositionRoot> configureDependencies() async {
 
 void _responseInterceptor(
     Response<dynamic> response, ResponseInterceptorHandler handler) {
-  print('Response');
-  print('(${response.realUri.path}) $response');
+  debugPrint('Response');
+  debugPrint('(${response.realUri.path}) $response');
 
   handler.next(response);
 }
 
 void _requestInterceptor(
     RequestOptions options, RequestInterceptorHandler handler) async {
-  print('Request');
-  print('(${options.method}) ${options.uri}');
-  print('${options.headers} ${options.data}');
+  debugPrint('Request');
+  debugPrint('(${options.method}) ${options.uri}');
+  debugPrint('${options.headers} ${options.data}');
 
   handler.next(options);
 }
 
 void _errorInterceptor(DioError error, ErrorInterceptorHandler handler) {
-  print('Error');
-  print('(${error.requestOptions.uri.path}) ${error.response}');
+  debugPrint('Error');
+  debugPrint('(${error.requestOptions.uri.path}) ${error.response}');
 
   final dynamic response = error.response?.data;
 

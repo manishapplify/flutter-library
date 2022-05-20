@@ -129,8 +129,6 @@ class AuthRepository {
     } else {
       throw AppException.appleSignInException();
     }
-
-    print(credential);
   }
 
   Future<void> _signInWithSocialId({

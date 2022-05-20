@@ -19,7 +19,6 @@ class FeedbackOneBloc extends Bloc<FeedbackEvent, FeedbackOneState> {
     on<FeedbackIssueChanged>(
         (FeedbackIssueChanged event, Emitter<FeedbackOneState> emit) {
       emit(state.copyWith(feebackIssue: event.feebackIssue));
-      print(event.feebackIssue);
     });
     on<FeedbackEmailChanged>(
         (FeedbackEmailChanged event, Emitter<FeedbackOneState> emit) {
@@ -28,7 +27,6 @@ class FeedbackOneBloc extends Bloc<FeedbackEvent, FeedbackOneState> {
     on<FeedbackReasonChanged>(
         (FeedbackReasonChanged event, Emitter<FeedbackOneState> emit) {
       emit(state.copyWith(reasons: event.reason));
-      print(event.reason);
     });
     on<FeedbackSubmitted>(
         (FeedbackSubmitted event, Emitter<FeedbackOneState> emit) async {
