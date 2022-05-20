@@ -37,7 +37,6 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-
 part 'package:components/blocs/image_manipulation.dart';
 
 // ChangePassWordPage
@@ -96,6 +95,10 @@ part 'package:components/pages/splash/bloc/state.dart';
 part 'package:components/pages/users/bloc/bloc.dart';
 part 'package:components/pages/users/bloc/event.dart';
 part 'package:components/pages/users/bloc/state.dart';
+// VideoPage
+part 'package:components/pages/video/bloc/bloc.dart';
+part 'package:components/pages/video/bloc/event.dart';
+part 'package:components/pages/video/bloc/state.dart';
 
 abstract class BaseBloc<E extends BaseEvent, S extends BaseState>
     extends Bloc<E, S> {

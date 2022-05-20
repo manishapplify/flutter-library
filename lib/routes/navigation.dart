@@ -27,7 +27,8 @@ import 'package:components/pages/settings/view.dart';
 import 'package:components/pages/signup/view.dart';
 import 'package:components/pages/splash/view.dart';
 import 'package:components/pages/users/view.dart';
-import 'package:components/pages/video/view.dart';
+import 'package:components/pages/video/video.dart';
+import 'package:components/pages/video/videos.dart';
 import 'package:components/services/api/api.dart';
 import 'package:components/services/image_cropping_service.dart';
 import 'package:components/services/image_picking_service.dart';
@@ -214,12 +215,11 @@ class Navigation {
           settings: settings,
           builder: (_) => BlocProvider<ReportBugBloc>(
             create: (_) => ReportBugBloc(
-              api: _api,
-              authCubit: _authCubit,
-              s3imageUpload: _s3imageUpload,
-              imageCroppingService: _imageCroppingService,
-              imagePickingService: _imagePickingService
-            ),
+                api: _api,
+                authCubit: _authCubit,
+                s3imageUpload: _s3imageUpload,
+                imageCroppingService: _imageCroppingService,
+                imagePickingService: _imagePickingService),
             child: const ReportBugPage(),
           ),
         );
@@ -241,6 +241,27 @@ class Navigation {
       case Routes.comments:
         return MaterialPageRoute<CommentScreen>(
           builder: (_) => const CommentScreen(),
+        );
+      case Routes.pdfViewerPage:
+        return MaterialPageRoute<dynamic>(
+          settings: settings,
+          builder: (_) => const PdfViewerPage(),
+        );
+      case Routes.notifications:
+        return MaterialPageRoute<NotificationPage>(
+          settings: settings,
+          builder: (_) => const NotificationPage(),
+        );
+      case Routes.videos:
+        return MaterialPageRoute<VideosPage>(
+          builder: (_) => BlocProvider<VideoBloc>(
+            create: (_) => VideoBloc(),
+            child: const VideosPage(),
+          ),
+        );
+      case Routes.video:
+        return MaterialPageRoute<VideoPage>(
+          builder: (_) => const VideoPage(),
         );
 
       case Routes.feedbackScreens:
@@ -264,21 +285,6 @@ class Navigation {
         return MaterialPageRoute<FeedbackScreenThird>(
           settings: settings,
           builder: (_) => const FeedbackScreenThird(),
-        );
-      case Routes.pdfViewerPage:
-        return MaterialPageRoute<dynamic>(
-          settings: settings,
-          builder: (_) => const PdfViewerPage(),
-        );
-      case Routes.notifications:
-        return MaterialPageRoute<NotificationPage>(
-          settings: settings,
-          builder: (_) => const NotificationPage(),
-        );
-      case Routes.videoViewerPage:
-        return MaterialPageRoute<dynamic>(
-          settings: settings,
-          builder: (_) => const NetworkPlayerPage(),
         );
     }
 
@@ -354,12 +360,13 @@ class Routes {
   static const String comments = '/comments';
   static const String multiImageSelectionBottomSheet =
       '/multiImageSelectionBottomSheet';
+  static const String videos = '/videos';
+  static const String video = '/video';
+  static const String pdfViewerPage = "/pdfViewerPage";
+  static const String notifications = '/notifications';
 
   static const String loginOne = "/loginScreenOne";
   static const String feedbackScreens = "/feedbackScreens";
   static const String feedbackOne = "/feedbackOneScreen";
   static const String feedbackThird = "/feedbackThirdScreen";
-  static const String pdfViewerPage = "/pdfViewerPage";
-  static const String notifications = '/notifications';
-  static const String videoViewerPage = "/videoViewerPage";
 }

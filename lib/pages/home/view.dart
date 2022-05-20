@@ -103,6 +103,13 @@ class _HomeState extends BasePageState<HomePage> {
               ),
               const Divider(),
               ListTile(
+                title: const Text('Videos'),
+                onTap: () => navigator.pushNamed(
+                  Routes.videos,
+                ),
+              ),
+              const Divider(),
+              ListTile(
                 title: const Text('Feedback'),
                 onTap: () => navigator.popAndPushNamed(
                   Routes.feedback,
@@ -147,11 +154,6 @@ class _HomeState extends BasePageState<HomePage> {
 
         return Column(
           children: <Widget>[
-            ElevatedButton(
-                onPressed: () => navigator.pushNamed(
-                      Routes.videoViewerPage,
-                    ),
-                child: const Text('Video')),
             Flexible(
               child: GridView.builder(
                 padding: const EdgeInsets.all(16.0),
